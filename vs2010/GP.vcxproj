@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\GP.h" />
+    <ClInclude Include="..\src\cov\CovSEIso.hpp" />
+    <ClInclude Include="..\src\mean\MeanZero.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

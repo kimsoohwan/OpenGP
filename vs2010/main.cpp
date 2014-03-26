@@ -1,8 +1,9 @@
 #include "GP.h"
+using namespace GP;
 
 int main()
 {
-	GP::GP<float, MeanZero, CovSEIso, InfExact> gp;
+	GP<float, MeanZero, CovSEIso, InfExact> gp;
 	gp.hyp(hyp);
 	gp.setTrainingData(Training Data);
 	gp.train(10);

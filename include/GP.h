@@ -1,7 +1,19 @@
 #ifndef _Gaussian_Processes_H_
 #define _Gaussian_Processes_H_
 
-#define EIGEN_USE_MKL_ALL
-#include <Eigen/Dense>
+// Data Types
+#include "../src/gp/datatypes.h"
 
-#endif // _Gaussian_Processes_H_
+// GP
+#include "../src/gp/gp.hpp"
+
+// Mean Functions
+#include "../src/mean/meanzero.hpp"
+
+// Covariance Functions
+#include "../src/cov/covseiso.hpp"
+
+// Inference Methods
+#include "../src/inf/infexact.hpp"
+
+#endif
