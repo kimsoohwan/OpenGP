@@ -20,7 +20,7 @@ class MeanZero : public TrainingDataSetter<Scalar>
 {
 public:
 	// Hyperparameters
-	typedef	DataTypes<Scalar>::Hyp0		Hyp;
+	typedef	TypeTraits<Scalar>::Hyp0		Hyp;
 
 	/**
 		* @brief	The mean vector at the training positions. f(X)

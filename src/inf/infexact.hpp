@@ -1,8 +1,8 @@
 #ifndef _INFERENCE_METHOD_EXACT_HPP_
 #define _INFERENCE_METHOD_EXACT_HPP_
 
-#include "DataTypes.h"
-#include "../Hyp.hpp"
+#include "../util/typetraits.hpp"
+#include "../gp/Hyp.hpp"
 
 namespace GP{
 

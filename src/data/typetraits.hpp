@@ -1,5 +1,5 @@
-#ifndef _DATA_TYPES_HPP_
-#define _DATA_TYPES_HPP_
+#ifndef _TYPE_TRAITS_HPP_
+#define _TYPE_TRAITS_HPP_
 
 // Boost
 #include <boost/shared_ptr.hpp>
@@ -11,7 +11,7 @@
 #endif
 
 template<Scalar>
-struct DataTypes
+struct TypeTraits
 {
 	// Matrix and Vector
 	typedef	Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>		Matrix;

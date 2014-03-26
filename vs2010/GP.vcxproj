@@ -65,9 +65,18 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\GP.h" />
-    <ClInclude Include="..\src\cov\CovSEIso.hpp" />
-    <ClInclude Include="..\src\mean\MeanZero.hpp" />
+    <ClInclude Include="..\include\gp.h" />
+    <ClInclude Include="..\src\cov\covseiso.hpp" />
+    <ClInclude Include="..\src\data\typetraits.hpp" />
+    <ClInclude Include="..\src\data\sqdist.h" />
+    <ClInclude Include="..\src\data\sqdist.hpp" />
+    <ClInclude Include="..\src\data\testpositions.hpp" />
+    <ClInclude Include="..\src\data\trainingdata.hpp" />
+    <ClInclude Include="..\src\data\trainingdatasetter.hpp" />
+    <ClInclude Include="..\src\gp\gp.hpp" />
+    <ClInclude Include="..\src\gp\hyp.hpp" />
+    <ClInclude Include="..\src\inf\infexact.hpp" />
+    <ClInclude Include="..\src\mean\meanzero.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

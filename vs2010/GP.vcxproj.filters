@@ -4,23 +4,64 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\GP.h" />
-    <ClInclude Include="..\src\mean\MeanZero.hpp">
-      <Filter>mean</Filter>
+    <ClInclude Include="..\src\cov\covseiso.hpp">
+      <Filter>src\cov</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cov\CovSEIso.hpp">
-      <Filter>cov</Filter>
+    <ClInclude Include="..\src\inf\infexact.hpp">
+      <Filter>src\inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mean\meanzero.hpp">
+      <Filter>src\mean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gp\gp.hpp">
+      <Filter>src\gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gp\hyp.hpp">
+      <Filter>src\gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\gp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\sqdist.h">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\sqdist.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\testpositions.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\trainingdata.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\trainingdatasetter.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\typetraits.hpp">
+      <Filter>src\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="mean">
-      <UniqueIdentifier>{0461e498-02d8-40e4-803f-db58a5e210df}</UniqueIdentifier>
+    <Filter Include="include">
+      <UniqueIdentifier>{eefb82dd-9482-4b5c-832f-66cfcc6f2c44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cov">
+    <Filter Include="src">
+      <UniqueIdentifier>{df523a46-c545-4b75-9229-db4a2e669b22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cov">
       <UniqueIdentifier>{a2895955-7a89-438c-80ba-123504b1868d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="inf">
+    <Filter Include="src\inf">
       <UniqueIdentifier>{17a53e69-43e4-4b60-9f43-4d9fef654ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mean">
+      <UniqueIdentifier>{0461e498-02d8-40e4-803f-db58a5e210df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gp">
+      <UniqueIdentifier>{5e60d6dc-abb2-4751-8e2b-e9291af74969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\data">
+      <UniqueIdentifier>{1d083b80-321d-4456-94d3-03f23a96b759}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

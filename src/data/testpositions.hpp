@@ -1,7 +1,7 @@
 #ifndef _TEST_POSITIONS_HPP_
 #define _TEST_POSITIONS_HPP_
 
-#include "DataTypes.hpp"
+#include "typetraits.hpp"
 
 /**
  * @class	TestPositions
@@ -40,7 +40,7 @@ public:
 	}
 
 protected:
-	DataTypes<Scalar>::Matrix Xs_; /// [MxD] training inputs
+	TypeTraits<Scalar>::Matrix Xs_; /// [MxD] training inputs
 };
 
 #endif

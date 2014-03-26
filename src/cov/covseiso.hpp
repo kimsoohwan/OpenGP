@@ -20,7 +20,7 @@ class CovSEIso : public TrainingDataSetter<Scalar>
 {
 public:
 	// Hyperparameters: sf, l
-	typedef	DataTypes<Scalar>::Hyp2		Hyp;
+	typedef	TypeTraits<Scalar>::Hyp2		Hyp;
 };
 
 }

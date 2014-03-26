@@ -1,7 +1,7 @@
 #ifndef _TRAINING_DATA_HPP_
 #define _TRAINING_DATA_HPP_
 
-#include "DataTypes.hpp"
+#include "typetraits.hpp"
 
 /**
  * @class	TrainingData
@@ -40,8 +40,8 @@ public:
 	}
 
 protected:
-	DataTypes<Scalar>::Matrix X_; /// [NxD] training inputs
-	DataTypes<Scalar>::Vector y_; /// [Nx1] training outputs
+	TypeTraits<Scalar>::Matrix X_; /// [NxD] training inputs
+	TypeTraits<Scalar>::Vector y_; /// [Nx1] training outputs
 };
 
 #endif
