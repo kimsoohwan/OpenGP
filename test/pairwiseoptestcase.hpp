@@ -1,16 +1,15 @@
-#ifndef _PAIRWISE_OPERATION_TEST_HPP_
-#define _PAIRWISE_OPERATION_TEST_HPP_
+#ifndef _PAIRWISE_OPERATION_TEST_CASE_HPP_
+#define _PAIRWISE_OPERATION_TEST_CASE_HPP_
 
 #include "testdatasetting.hpp"
 
 /**
  * @class	PairwiseOpTestCase
- * @brief	A pairwise operation test fixture.
- *
+ * @brief	Test fixture for testing PairwiseOp class
  * @author	Soohwankim
  * @date	28/03/2014
  */
-class PairwiseOpTestCase : public DataSetting
+class PairwiseOpTestCase : public TestDataSetting
 {
 };
 

@@ -1,4 +1,5 @@
 #include "pairwiseoptestcase.hpp"
+#include "covseisotestcase.hpp"
 
 int main(int argc, char** argv) 
 { 

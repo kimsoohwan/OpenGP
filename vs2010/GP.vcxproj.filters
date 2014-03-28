@@ -25,20 +25,11 @@
     <ClInclude Include="..\include\gp.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\data\testpositions.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\trainingdata.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\data\typetraits.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
     <ClInclude Include="..\src\util\pairwiseop.hpp">
       <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\trainingdatasettable.hpp">
-      <Filter>src\data</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cov\usingsqdist.hpp">
       <Filter>src\cov</Filter>
@@ -48,6 +39,12 @@
     </ClInclude>
     <ClInclude Include="..\test\pairwiseoptestcase.hpp">
       <Filter>src\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\covseisotestcase.hpp">
+      <Filter>src\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\trainingdatasettable.hpp">
+      <Filter>src\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

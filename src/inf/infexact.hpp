@@ -22,11 +22,23 @@ namespace GP{
 		 * @param	data	The training data.
 		 */
 		//void setTrainingData(const typename TrainingData::ConstPtr data)
-		bool set(const TrainingDataConstPtr data)
+		//bool set(const TrainingDataConstPtr data)
+		//{
+		//	m_MeanFunc.setTrainingData(data);
+		//	m_CovFunc.setTrainingData(data);
+		//	m_LikFunc.setTrainingData(data);
+
+		//	return true;
+		//}
+		bool set(MatrixConstPtr pX, VectorConstPtr pY)
 		{
-			m_MeanFunc.setTrainingData(data);
-			m_CovFunc.setTrainingData(data);
-			m_LikFunc.setTrainingData(data);
+			// Check if the training data are the same.
+			if(!TrainingDataSettable::set(pX, pY))		return false;
+
+			// Set the training data
+			m_MeanFunc.set(pX);
+			m_CovFunc.set(pX);
+			m_LikFunc.set(pX);
 
 			return true;
 		}
