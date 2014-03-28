@@ -1,8 +1,8 @@
 #ifndef _Gaussian_Processes_H_
 #define _Gaussian_Processes_H_
 
-// Data Types
-#include "../src/gp/datatypes.h"
+// Type Traits
+#include "../src/data/typetraits.hpp"
 
 // GP
 #include "../src/gp/gp.hpp"
@@ -15,5 +15,8 @@
 
 // Inference Methods
 #include "../src/inf/infexact.hpp"
+
+// Util
+#include "../src/util/pairwiseop.hpp"
 
 #endif

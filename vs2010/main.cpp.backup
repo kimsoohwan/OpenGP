@@ -1,3 +1,112 @@
+// STL
+#include <iostream>
+
+// Google Test
+#include "gtest/gtest.h"
+
+// GP
+#include "gp.h"
+using namespace GP;
+
+
+/**
+ * @class	DataSetting
+ * @brief	A data setting test fixture
+ * @author	Soohwankim
+ * @date	28/03/2014
+ */
+class DataSetting : public ::testing::Test
+{
+protected:
+	// Constructor
+	DataSetting() :
+		pX (new MatrixXf(5, 3)),	// Training inputs,	N = 5, D = 3
+	   pXs(new MatrixXf(4, 3))		// Test inputs,		M = 4, D = 3
+	{
+	}
+
+	virtual void SetUp()
+	{
+		// Training inputs
+		(*pX) << 0.118997681558377,   0.223811939491137,   0.890903252535799,
+				   0.498364051982143,   0.751267059305653,   0.959291425205444,
+					0.959743958516081,   0.255095115459269,   0.547215529963803,
+					0.340385726666133,   0.505957051665142,   0.138624442828679,
+					0.585267750979777,   0.699076722656686,   0.149294005559057;
+
+		// Test inputs
+		(*pXs) << 0.257508254123736,   0.243524968724989,   0.251083857976031,
+			       0.840717255983663,   0.929263623187228,   0.616044676146639,
+					 0.254282178971531,   0.349983765984809,   0.473288848902729,
+					 0.814284826068816,   0.196595250431208,   0.351659507062997;
+	}
+
+	//virtual void TearDown() {}
+
+protected:
+	MatrixXfPtr pX;		/// Training inputs
+	MatrixXfPtr pXs;		/// Test inputs
+};
+
+/**
+ * @class	PairwiseOperation
+ * @brief	A pairwise operation test fixture.
+ *
+ * @author	Soohwankim
+ * @date	28/03/2014
+ */
+class PairwiseOperation : public DataSetting
+{
+};
+
+/** @brief	Self squared distances between the training inputs. */
+TEST_F(PairwiseOperation, SelfSqDist)
+{
+	// Expected value
+	MatrixXf SqDist1(5, 5);
+	SqDist1 <<                 0,   0.426804688588141,   0.825954189963619,   0.694541938374676,   0.993268666957043, 
+		        0.426804688588141,                   0,   0.628864559452765,   0.758628447081624,   0.666371903972809,
+				  0.825954189963619,   0.628864559452765,                   0,   0.613483006883516,   0.495693637124971,
+				  0.694541938374676,   0.758628447081624,   0.613483006883516,                   0,   0.097376252724688,
+				  0.993268666957043,   0.666371903972809,   0.495693637124971,   0.097376252724688,                   0;
+
+	// Actual value
+	MatrixXfPtr pSqDist2 = PairwiseOp<float>::sqDist(pX);
+
+	// Test
+	EXPECT_TRUE(SqDist1.isApprox(*pSqDist2));
+}
+
+/** @brief	Cross squared distances between the training inputs and test inputs. */
+TEST_F(PairwiseOperation, CrossSqDist)
+{
+	// Expected value
+	MatrixXf SqDist1(5, 4);
+	SqDist1 << 0.428942639888786,   1.094088459152940,   0.208623015162883,   0.774948778516402,
+		        0.817371504190236,   0.266706823783192,   0.456802746403667,   0.776683299005042,
+				  0.580962819973139,   0.473407984092142,   0.512145332569427,   0.062822751513393,
+				  0.088386393666608,   0.657450171904375,   0.143741751464412,   0.365669019070698,
+				  0.325314862344639,   0.336096647276545,   0.336389999788830,   0.345888246811163;
+
+	// Actual value
+	MatrixXfPtr pSqDist2 = PairwiseOp<float>::sqDist(pX, pXs);
+
+	// Test
+	EXPECT_TRUE(SqDist1.isApprox(*pSqDist2));
+}
+
+int main(int argc, char** argv) 
+{ 
+	// Initialize test environment
+	::testing::InitGoogleTest(&argc, argv);
+		
+	// Test
+	int ret = RUN_ALL_TESTS(); 
+
+	system("pause");
+	return ret;
+}
+
 /*
 
 

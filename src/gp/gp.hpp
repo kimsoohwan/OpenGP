@@ -3,12 +3,13 @@
 
 namespace GP{
 	template<typename MeanFunc, typename CovFunc, typename LikFunc,
-		      template <typename, typename, typename> typename InfMethod>
+		      template <typename, typename, typename> class InfMethod>
 	class GP : public InfMethod<MeanFunc, CovFunc, LikFunc>
 	{
 	public:
 		void train();
 	};
+
 }
 
 #endif

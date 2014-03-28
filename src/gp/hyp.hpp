@@ -14,7 +14,7 @@ class Hyp
 {
 public:
 		typedef	typename MeanFunc::Hyp		MeanHyp;
-		typedef	typename CovFunc::Hyp		CovHyp
+		typedef	typename CovFunc::Hyp		CovHyp;
 		typedef	typename LikFunc::Hyp		LikHyp;
 
 		MeanHyp	logMeanHyp;	/// Logarithm of the hyperparameter of the mean function

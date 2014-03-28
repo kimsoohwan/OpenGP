@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\test\test.cpp">
+      <Filter>src\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cov\covseiso.hpp">
@@ -22,23 +25,29 @@
     <ClInclude Include="..\include\gp.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\data\sqdist.h">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\sqdist.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\data\testpositions.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
     <ClInclude Include="..\src\data\trainingdata.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\data\trainingdatasetter.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\data\typetraits.hpp">
       <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\pairwiseop.hpp">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\trainingdatasettable.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\usingsqdist.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\testdatasetting.hpp">
+      <Filter>src\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\pairwiseoptestcase.hpp">
+      <Filter>src\test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +71,12 @@
     </Filter>
     <Filter Include="src\data">
       <UniqueIdentifier>{1d083b80-321d-4456-94d3-03f23a96b759}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{89b73f60-d9b4-4583-bda0-8d397113e7f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\test">
+      <UniqueIdentifier>{810053f3-f728-4976-b386-979f16ebaf2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

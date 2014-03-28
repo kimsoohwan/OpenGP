@@ -1,7 +1,8 @@
 #ifndef _INFERENCE_METHOD_EXACT_HPP_
 #define _INFERENCE_METHOD_EXACT_HPP_
 
-#include "../util/typetraits.hpp"
+#include "../data/typetraits.hpp"
+#include "../data/trainingdatasettable.hpp"
 #include "../gp/Hyp.hpp"
 
 namespace GP{
@@ -12,19 +13,22 @@ namespace GP{
 	 * @author	Soohwankim
 	 * @date	26/03/2014
 	 */
-	template<typename MeanFunc, typename CovFunc, typename LikFunc>
-	class InfExact
+	template<typename Scalar, typename MeanFunc, typename CovFunc, typename LikFunc>
+	class InfExact : public TrainingDataSettable<Scalar>
 	{
 	public:
 		/**
 		 * @brief	Sets the training data.
 		 * @param	data	The training data.
 		 */
-		void setTrainingData(const typename TrainingData::ConstPtr data)
+		//void setTrainingData(const typename TrainingData::ConstPtr data)
+		bool set(const TrainingDataConstPtr data)
 		{
 			m_MeanFunc.setTrainingData(data);
 			m_CovFunc.setTrainingData(data);
 			m_LikFunc.setTrainingData(data);
+
+			return true;
 		}
 
 		/**

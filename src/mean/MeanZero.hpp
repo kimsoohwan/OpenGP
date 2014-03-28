@@ -1,9 +1,9 @@
 #ifndef _MEAN_FUNCTION_ZERO_HPP_
 #define _MEAN_FUNCTION_ZERO_HPP_
 
-#include "../gp/datatypes.hpp"
-#include "../gp/trainingdata.hpp"
-#include "../gp/trainingdatasetter.hpp"
+#include "../data/typetraits.hpp"
+#include "../data/trainingdata.hpp"
+#include "../data/trainingdatasettable.hpp"
 
 namespace GP{
 
@@ -15,8 +15,8 @@ namespace GP{
 	* @author	Soohwan Kim
 	* @date		26/03/2014
 	*/
-template<Scalar>
-class MeanZero : public TrainingDataSetter<Scalar>
+template<typename Scalar>
+class MeanZero : public TrainingDataSettable<Scalar>
 {
 public:
 	// Hyperparameters
@@ -24,10 +24,10 @@ public:
 
 	/**
 		* @brief	The mean vector at the training positions. f(X)
-		* @param [in] pdIndex	(Optional) flag for derivatives (-1: function value, 1: function derivative)
+		* @param [in] pdCoord	(Optional) flag for derivatives (-1: function value, 1: function derivative)
 		* @return	The mean vector.
 		*/
-	VectorPtr operator()(const Hyp &logHyp, const int pdIndex = -1) const
+	VectorPtr operator()(const Hyp &logHyp, const int pdCoord = -1) const
 	{
 		// number of training data
 		const int n = m_pTrainingData->N();
@@ -40,7 +40,8 @@ public:
 		* @brief	The mean vector at the test positions. f(X*)
 		* @return	The mean vector.
 		*/
-	VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
+	//VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
+	VectorPtr operator()(const MatrixConstPtr pXs, const Hyp &logHyp) const
 	{
 		// number of training data
 		const int m = pXs->M();

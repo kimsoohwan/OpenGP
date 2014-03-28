@@ -3,6 +3,8 @@
 
 #include "typetraits.hpp"
 
+namespace GP{
+
 /**
  * @class	TrainingData
  * @brief	A training data.
@@ -12,8 +14,8 @@
  * @author	Soohwankim
  * @date		26/03/2014
  */
-template<Scalar>
-class TrainingData
+template<typename Scalar>
+class TrainingData : public TypeTraits<Scalar>
 {
 public:
 	// Boost shared pointers
@@ -26,8 +28,8 @@ public:
 	 */
 	inline int N() const
 	{
-		assert(X_.rows() == y_.size());
-		return X_.rows();
+		assert(m_X.rows() == m_y.size());
+		return m_X.rows();
 	}
 
 	/**
@@ -36,12 +38,22 @@ public:
 	 */
 	inline int D() const
 	{
-		return X_.cols();
+		return m_X.cols();
+	}
+
+	/**
+	 * @brief	Gets the const pointer to the training inputs.
+	 * @return	A matrix const pointer.
+	 */
+	const MatrixConstPtr pX() const
+	{
+		return MatrixConstPtr(&m_X);
 	}
 
 protected:
-	TypeTraits<Scalar>::Matrix X_; /// [NxD] training inputs
-	TypeTraits<Scalar>::Vector y_; /// [Nx1] training outputs
+	Matrix m_X; /// [NxD] training inputs
+	Vector m_y; /// [Nx1] training outputs
 };
 
+}
 #endif
