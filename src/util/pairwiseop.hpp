@@ -145,9 +145,10 @@ public:
 
 	/**
 	 * @brief	Pairwise differences between the coord-th coordinates of N training inputs
-	 * @param	pX	training inputs (NxD)
-	 * 				N: The number of training inputs
-	 * 				D: The number of dimensions
+	 * @param	pX			Training inputs (NxD)
+	 * 						N: The number of training inputs
+	 * 						D: The number of dimensions
+	 * @param	coord		Corresponding coordinate. [result]_ij = Xi_coord - Xj_coord
 	 * @return	NxN matrix
 	 */
 	static MatrixPtr delta(const MatrixConstPtr pX, const int coord)
@@ -157,12 +158,13 @@ public:
 
 	/**
 	 * @brief	Pairwise differences between the coord-th coordinates of N training inputs and M test inputs
-	 * @param	pX		training inputs (NxD)
-	 * 					N: The number of training inputs
-	 * 					D: The number of dimensions
-	 * @param	pXs	test inputs (MxD)
-	 * 					M: The number of test inputs
-	 * 					D: The number of dimensions
+	 * @param	pX			Training inputs (NxD)
+	 * 						N: The number of training inputs
+	 * 						D: The number of dimensions
+	 * @param	pXs		Test inputs (MxD)
+	 * 						M: The number of test inputs
+	 * 						D: The number of dimensions
+	 * @param	coord		Corresponding coordinate. [result]_ij = Xi_coord - X'j_coord
 	 * @return	NxM matrix
 	 */
 	static MatrixPtr delta(const MatrixConstPtr pX, const MatrixConstPtr pXs, const int coord)

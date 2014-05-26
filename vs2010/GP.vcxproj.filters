@@ -31,9 +31,6 @@
     <ClInclude Include="..\src\util\pairwiseop.hpp">
       <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cov\usingsqdist.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
     <ClInclude Include="..\test\testdatasetting.hpp">
       <Filter>src\test</Filter>
     </ClInclude>
@@ -43,8 +40,14 @@
     <ClInclude Include="..\test\covseisotestcase.hpp">
       <Filter>src\test</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\data\trainingdatasettable.hpp">
+    <ClInclude Include="..\src\data\derivativetrainingdata.hpp">
       <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisoder.hpp">
+      <Filter>src\cov</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -75,5 +78,10 @@
     <Filter Include="src\test">
       <UniqueIdentifier>{810053f3-f728-4976-b386-979f16ebaf2c}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\data\trainingdata.hpp">
+      <Filter>src\data</Filter>
+    </None>
   </ItemGroup>
 </Project>

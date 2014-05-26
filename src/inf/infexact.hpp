@@ -2,7 +2,7 @@
 #define _INFERENCE_METHOD_EXACT_HPP_
 
 #include "../data/typetraits.hpp"
-#include "../data/trainingdatasettable.hpp"
+#include "../data/trainingdata.hpp"
 #include "../gp/Hyp.hpp"
 
 namespace GP{
@@ -10,11 +10,11 @@ namespace GP{
 	/**
 	 * @class	InfExact
 	 * @brief	Exact inference
-	 * @author	Soohwankim
+	 * @author	Soohwan Kim
 	 * @date	26/03/2014
 	 */
 	template<typename Scalar, typename MeanFunc, typename CovFunc, typename LikFunc>
-	class InfExact : public TrainingDataSettable<Scalar>
+	class InfExact : public TypeTraits<Scalar>
 	{
 	public:
 		/**
@@ -30,30 +30,31 @@ namespace GP{
 
 		//	return true;
 		//}
-		bool set(MatrixConstPtr pX, VectorConstPtr pY)
-		{
-			// Check if the training data are the same.
-			if(!TrainingDataSettable::set(pX, pY))		return false;
+		//bool set(MatrixConstPtr pX, VectorConstPtr pY)
+		//{
+		//	// Check if the training data are the same.
+		//	if(!TrainingDataSettable::set(pX, pY))		return false;
 
-			// Set the training data
-			m_MeanFunc.set(pX);
-			m_CovFunc.set(pX);
-			m_LikFunc.set(pX);
+		//	// Set the training data
+		//	m_MeanFunc.set(pX);
+		//	m_CovFunc.set(pX);
+		//	m_LikFunc.set(pX);
 
-			return true;
-		}
+		//	return true;
+		//}
 
 		/**
 		 * @brief	Predict the mean and [co]variance.
-		 * @param [in]		hyp				 	The hyperparameters.
+		 * @param [in]		logHyp				The log hyperparameters.
 		 * @param [in]		pXs				 	The test positions.
 		 * @param [out]	pMu	 				The mean vector.
 		 * @param [out]	pSigma 				The covariance matrix or variance vector.
 		 * @param [in]		fVarianceVector 	(Optional) flag for true: variance vector, false: covariance matrix
 		 * @param [in]		fBatchProcessing	(Optional) flag for the batch processing.
 		 */
-		void predict(const Hyp<MeanFunc, CovFunc, LikFunc>	&hyp, 
-						 MatrixConstPtr		pXs, 
+		void predict(const Hyp<MeanFunc, CovFunc, LikFunc>	&logHyp, 
+						 TrainingData<Scalar>	&trainingData, 
+						 const MatrixConstPtr		pXs, 
 						 VectorPtr				&pMu, 
 						 MatrixPtr				&pSigma, 
 						 const bool				fVarianceVector = true,

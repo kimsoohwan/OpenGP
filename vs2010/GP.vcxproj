@@ -82,9 +82,10 @@
   <ItemGroup>
     <ClInclude Include="..\include\gp.h" />
     <ClInclude Include="..\src\cov\covseiso.hpp" />
-    <ClInclude Include="..\src\cov\usingsqdist.hpp" />
+    <ClInclude Include="..\src\cov\covseisoder.hpp" />
+    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp" />
+    <ClInclude Include="..\src\data\derivativetrainingdata.hpp" />
     <ClInclude Include="..\src\data\typetraits.hpp" />
-    <ClInclude Include="..\src\data\trainingdatasettable.hpp" />
     <ClInclude Include="..\src\gp\gp.hpp" />
     <ClInclude Include="..\src\gp\hyp.hpp" />
     <ClInclude Include="..\src\inf\infexact.hpp" />
@@ -93,6 +94,9 @@
     <ClInclude Include="..\test\covseisotestcase.hpp" />
     <ClInclude Include="..\test\pairwiseoptestcase.hpp" />
     <ClInclude Include="..\test\testdatasetting.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\data\trainingdata.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

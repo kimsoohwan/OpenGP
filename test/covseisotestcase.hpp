@@ -18,18 +18,12 @@ protected:
 		// Call the parent set up.
 		TestDataSetting::SetUp();
 
-		// Set the training data.
-		covSEIso.set(pX, pY);
-
 		// Set the hyperparameters.
 		logHyp(0) = log(ell);
 		logHyp(1) = log(sigma_f);
 	}
 
 protected:
-	/** @brief Squared exponential covariance function. */
-	CovSEIso<float> covSEIso;
-
 	/** @brief Log hyperparameters: log([ell, sigma_f]). */
 	CovSEIso<float>::Hyp logHyp;
 };
@@ -46,7 +40,7 @@ TEST_F(CovSEIsoTestCase, KTest)
 			0.308631547122618f, 0.593443307553922f, 0.834888531682446f, 1.851836243293809f, 2.250000000000000f;
 
 	// Actual value
-	MatrixXfPtr pK2 = covSEIso.K(logHyp);
+	MatrixXfPtr pK2 = CovSEIso<float>::K(logHyp, trainingData);
 
 	// Test
 	EXPECT_TRUE(K1.isApprox(*pK2))
@@ -66,7 +60,7 @@ TEST_F(CovSEIsoTestCase, pdK0Test)
 			1.226216181565493f, 1.581815787018512f, 1.655395731454394f, 0.721299496126858f, 0.000000000000000f;
 
 	// Actual value
-	MatrixXfPtr pK2 = covSEIso.K(logHyp, 0);
+	MatrixXfPtr pK2 = CovSEIso<float>::K(logHyp, trainingData, 0);
 
 	// Test
 	EXPECT_TRUE(K1.isApprox(*pK2))
@@ -86,7 +80,7 @@ TEST_F(CovSEIsoTestCase, pdK1Test)
 			0.617263094245237f, 1.186886615107843f, 1.669777063364892f, 3.703672486587619f, 4.500000000000000f;
 
 	// Actual value
-	MatrixXfPtr pK2 = covSEIso.K(logHyp, 1);
+	MatrixXfPtr pK2 = CovSEIso<float>::K(logHyp, trainingData, 1);
 
 	// Test
 	EXPECT_TRUE(K1.isApprox(*pK2))
@@ -106,7 +100,7 @@ TEST_F(CovSEIsoTestCase, KsTest)
 			 1.173863554051925f, 1.148821830108717f, 1.148148008255321f, 1.126543080103098f;
 
 	// Actual value
-	MatrixXfPtr pKs2 = covSEIso.Ks(pXs, logHyp);
+	MatrixXfPtr pKs2 = CovSEIso<float>::Ks(logHyp, trainingData, pXs);
 
 	// Test
 	EXPECT_TRUE(Ks1.isApprox(*pKs2))
@@ -125,7 +119,7 @@ TEST_F(CovSEIsoTestCase, KssTest)
 			  2.250000000000000f;
 
 	// Actual value
-	MatrixXfPtr pKss2 = covSEIso.Kss(pXs, logHyp);
+	MatrixXfPtr pKss2 = CovSEIso<float>::Kss(logHyp, pXs);
 
 	// Test
 	EXPECT_TRUE(Kss1.isApprox(*pKss2))

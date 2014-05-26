@@ -5,10 +5,9 @@
 #include <boost/shared_ptr.hpp>
 
 // Eigen
-#ifndef EIGEN_USE_MKL_ALL
-#define EIGEN_USE_MKL_ALL
+#define EIGEN_NO_DEBUG		// to speed up
+#define EIGEN_USE_MKL_ALL	// to use Intel Math Kernel Library
 #include <Eigen/Dense>
-#endif
 
 namespace GP{
 

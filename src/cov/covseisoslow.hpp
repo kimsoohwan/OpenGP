@@ -152,12 +152,10 @@ protected:
 		// mode
 		switch(pdHypIndex)
 		{
-		// pd[k]/pd[log(ell)]: partial derivative of covariance function w.r.t log(ell).
+		// dk/dlog(ell): partial derivative of covariance function w.r.t log(ell).
 		case 0:
 			{
-				//				 k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
-				// pd[k]/pd[log(ell)] = sigma_f^2 * exp(-r^2/(2*ell^2)) * (r^2/ell^3) * ell
-				//					       = sigma_f^2 * exp(-r^2/(2*ell^2)) * (r^2/ell^2)
+				// dk/dlog(ell) = dk/dr * dr/dlog(ell)
 				(*pK).noalias() = sigma_f2_inv_ell2 * ((neg_half_inv_ell2 * (*pSqDist)).array().exp() * (*pSqDist).array()).matrix();
 				break;
 			}

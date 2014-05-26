@@ -51,6 +51,9 @@ protected:
 					0.538342435260057f,
 					0.996134716626885f;
 
+		// Set the training data
+		trainingData.set(pX, pY);
+
 		// Initialize the test inputs. A 4x3 matrix.
 		(*pXs) << 0.257508254123736f,   0.243524968724989f,   0.251083857976031f,
 			       0.840717255983663f,   0.929263623187228f,   0.616044676146639f,
@@ -61,6 +64,9 @@ protected:
 	//virtual void TearDown() {}
 
 protected:
+	/** @brief The Training data. */
+	TrainingData<float>	trainingData;
+
 	/** @brief The Training inputs. */
 	MatrixXfPtr pX;
 

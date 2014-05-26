@@ -4,6 +4,9 @@
 // Type Traits
 #include "../src/data/typetraits.hpp"
 
+// Data
+#include "../src/data/trainingdata.hpp"
+
 // GP
 #include "../src/gp/gp.hpp"
 
