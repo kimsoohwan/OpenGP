@@ -4,13 +4,13 @@
     <ClCompile Include="..\test\test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\test\covseisotestcase.hpp">
-      <Filter>test</Filter>
-    </ClInclude>
-    <ClInclude Include="..\test\pairwiseoptestcase.hpp">
-      <Filter>test</Filter>
-    </ClInclude>
     <ClInclude Include="..\test\testdatasetting.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\testcasecovseiso.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\testcasepairwiseop.hpp">
       <Filter>test</Filter>
     </ClInclude>
   </ItemGroup>

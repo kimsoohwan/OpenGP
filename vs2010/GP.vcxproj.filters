@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\test\test.cpp">
-      <Filter>src\test</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cov\covseiso.hpp">
@@ -30,15 +27,6 @@
     </ClInclude>
     <ClInclude Include="..\src\util\pairwiseop.hpp">
       <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\test\testdatasetting.hpp">
-      <Filter>src\test</Filter>
-    </ClInclude>
-    <ClInclude Include="..\test\pairwiseoptestcase.hpp">
-      <Filter>src\test</Filter>
-    </ClInclude>
-    <ClInclude Include="..\test\covseisotestcase.hpp">
-      <Filter>src\test</Filter>
     </ClInclude>
     <ClInclude Include="..\src\data\derivativetrainingdata.hpp">
       <Filter>src\data</Filter>
@@ -74,9 +62,6 @@
     </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{89b73f60-d9b4-4583-bda0-8d397113e7f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\test">
-      <UniqueIdentifier>{810053f3-f728-4976-b386-979f16ebaf2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

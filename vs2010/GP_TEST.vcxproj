@@ -82,8 +82,8 @@
     <ClCompile Include="..\test\test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\test\covseisotestcase.hpp" />
-    <ClInclude Include="..\test\pairwiseoptestcase.hpp" />
+    <ClInclude Include="..\test\testcasecovseiso.hpp" />
+    <ClInclude Include="..\test\testcasepairwiseop.hpp" />
     <ClInclude Include="..\test\testdatasetting.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
