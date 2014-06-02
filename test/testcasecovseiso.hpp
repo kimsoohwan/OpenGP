@@ -1,15 +1,15 @@
-#ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_TEST_CASE_HPP_
-#define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_TEST_CASE_HPP_
+#ifndef _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
+#define _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 
 /**
- * @class	CovSEIsoTestCase
+ * @class	TestCaseCovSEIso
  * @brief	Test fixture for testing CovSEIso class.
  * @note		Inherits from TestDataSetting
  * 			to use the initialized training data and test positions.
  * @author	Soohwan Kim
  * @date		28/03/2014
  */
-class CovSEIsoTestCase : public TestDataSetting
+class TestCaseCovSEIso : public TestDataSetting
 {
 protected:
 	/** @brief	Overloading the test fixture set up. */
@@ -29,7 +29,7 @@ protected:
 };
 
 /** @brief	K: (NxN) self covariance matrix between the training data. */  
-TEST_F(CovSEIsoTestCase, KTest)
+TEST_F(TestCaseCovSEIso, KTest)
 {
 	// Expected value
 	MatrixXf K1(5, 5);
@@ -49,7 +49,7 @@ TEST_F(CovSEIsoTestCase, KTest)
 }
 
 /** @brief	pd[K]/pd[log(ell)]: (NxN) partial derivative of K with respect to log(ell). */  
-TEST_F(CovSEIsoTestCase, pdK0Test)
+TEST_F(TestCaseCovSEIso, pdK0Test)
 {
 	// Expected value
 	MatrixXf K1(5, 5);
@@ -69,7 +69,7 @@ TEST_F(CovSEIsoTestCase, pdK0Test)
 }
 
 /** @brief	pd[K]/pd[log(sigma_f)]: (NxN) partial derivative of K with respect to log(sigma_f). */  
-TEST_F(CovSEIsoTestCase, pdK1Test)
+TEST_F(TestCaseCovSEIso, pdK1Test)
 {
 	// Expected value
 	MatrixXf K1(5, 5);
@@ -89,7 +89,7 @@ TEST_F(CovSEIsoTestCase, pdK1Test)
 }
 
 /** @brief	Ks: (NxM) cross covariance matrix between the training data and test data. */  
-TEST_F(CovSEIsoTestCase, KsTest)
+TEST_F(TestCaseCovSEIso, KsTest)
 {
 	// Expected value
 	MatrixXf Ks1(5, 4);
@@ -109,7 +109,7 @@ TEST_F(CovSEIsoTestCase, KsTest)
 }
 
 /** @brief	Kss: (Nx1) self variance matrix between the test data. */  
-TEST_F(CovSEIsoTestCase, KssTest)
+TEST_F(TestCaseCovSEIso, KssTest)
 {
 	// Expected value
 	MatrixXf Kss1(4, 1);

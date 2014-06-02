@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\test\test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\test\covseisotestcase.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\pairwiseoptestcase.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\testdatasetting.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="test">
+      <UniqueIdentifier>{d3565dc7-6bb5-4113-908d-9774bc7f54f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

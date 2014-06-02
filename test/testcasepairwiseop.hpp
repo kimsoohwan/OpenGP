@@ -1,20 +1,20 @@
-#ifndef _PAIRWISE_OPERATION_TEST_CASE_HPP_
-#define _PAIRWISE_OPERATION_TEST_CASE_HPP_
+#ifndef _TEST_CASE_PAIRWISE_OPERATION_HPP_
+#define _TEST_CASE_PAIRWISE_OPERATION_HPP_
 
 #include "testdatasetting.hpp"
 
 /**
- * @class	PairwiseOpTestCase
+ * @class	TestCasePairwiseOp
  * @brief	Test fixture for testing PairwiseOp class
  * @author	Soohwankim
  * @date	28/03/2014
  */
-class PairwiseOpTestCase : public TestDataSetting
+class TestCasePairwiseOp : public TestDataSetting
 {
 };
 
 /** @brief	Self squared distances between the training inputs. */
-TEST_F(PairwiseOpTestCase, SelfSqDistTest)
+TEST_F(TestCasePairwiseOp, SelfSqDistTest)
 {
 	// Expected value
 	MatrixXf SqDist1(5, 5);
@@ -34,7 +34,7 @@ TEST_F(PairwiseOpTestCase, SelfSqDistTest)
 }
 
 /** @brief	Cross squared distances between the training inputs and test inputs. */
-TEST_F(PairwiseOpTestCase, CrossSqDistTest)
+TEST_F(TestCasePairwiseOp, CrossSqDistTest)
 {
 	// Expected value
 	MatrixXf SqDist1(5, 4);
@@ -54,7 +54,7 @@ TEST_F(PairwiseOpTestCase, CrossSqDistTest)
 }
 
 /** @brief	Self differences between the training inputs. */
-TEST_F(PairwiseOpTestCase, SelfDeltaTest)
+TEST_F(TestCasePairwiseOp, SelfDeltaTest)
 {
 	// Expected value
 	MatrixXf SqDist1(5, 5);
@@ -74,7 +74,7 @@ TEST_F(PairwiseOpTestCase, SelfDeltaTest)
 }
 
 /** @brief	Cross differences between the training inputs and test inputs. */
-TEST_F(PairwiseOpTestCase, CrossDeltaTest)
+TEST_F(TestCasePairwiseOp, CrossDeltaTest)
 {
 	// Expected value
 	MatrixXf SqDist1(5, 4);
