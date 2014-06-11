@@ -69,13 +69,14 @@
       <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalOptions>-DEIGEN_NO_DEBUG %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>E:\Documents\gtest-1.7.0\msvc\gtest\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libiomp5md.lib;mkl_core.lib;mkl_intel_thread.lib;mkl_intel_lp64.lib;mkl_blas95_lp64.lib;mkl_lapack95_lp64.lib;gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libiomp5md.lib;mkl_core.lib;mkl_intel_c.lib;mkl_intel_thread.lib;gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -83,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\test\testcasecovseiso.hpp" />
+    <ClInclude Include="..\test\testcasecovseisoslow.hpp" />
     <ClInclude Include="..\test\testcasepairwiseop.hpp" />
     <ClInclude Include="..\test\testdatasetting.hpp" />
   </ItemGroup>

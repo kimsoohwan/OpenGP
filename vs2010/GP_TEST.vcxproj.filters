@@ -13,6 +13,9 @@
     <ClInclude Include="..\test\testcasepairwiseop.hpp">
       <Filter>test</Filter>
     </ClInclude>
+    <ClInclude Include="..\test\testcasecovseisoslow.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="test">

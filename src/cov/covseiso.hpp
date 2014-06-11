@@ -5,7 +5,7 @@
 
 namespace GP{
 
-/**
+ /**
 	* @class		CovSEIso
 	* @brief		Isotropic squared exponential covariance function.
 	* 				It inherits from TrainingDataSetter

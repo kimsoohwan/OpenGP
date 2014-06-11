@@ -14,12 +14,13 @@
 #include "../src/mean/meanzero.hpp"
 
 // Covariance Functions
-#include "../src/cov/covseiso.hpp"
+#include "cov.h"
 
 // Inference Methods
 #include "../src/inf/infexact.hpp"
 
 // Util
 #include "../src/util/pairwiseop.hpp"
+#include "../src/util/macros.hpp"
 
 #endif

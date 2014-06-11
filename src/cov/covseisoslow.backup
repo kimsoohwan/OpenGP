@@ -1,0 +1,229 @@
+#ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_SLOW_HPP_
+#define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_SLOW_HPP_
+
+#include "../util/macros.hpp"
+#include "../data/trainingdata.hpp"
+
+namespace GP{
+
+/**
+	* @class		CovSEIsoSlow
+	* @brief		Isotropic squared exponential covariance function.
+	* 				It inherits from TrainingDataSetter
+	* 				to be able to set a training data.
+	* 				k(x, x') = sigma_f^2 * exp(s), s = -r^2/(2*ell^2), r = |x-x'|
+	* @author	Soohwan Kim
+	* @date		03/06/2014
+	*/
+template<typename Scalar>
+class CovSEIsoSlow
+{
+public:
+	// define types
+	TYPE_DEFINE_MATRIX(Scalar);
+	TYPE_DEFINE_HYP(Scalar, 2); // ell, sigma_f
+
+protected:
+	// k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s = -r^2/(2*ell^2), r = |x-x'|
+	static MatrixPtr k(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		// constants
+		const Scalar sigma_f2 = exp(static_cast<Scalar>(2.0) * logHyp(1));	// sigma_f^2
+
+		// k = sigma_f^2 * f(s)
+		MatrixPtr pM = s(logHyp, trainingData);
+		(*pM).noalias() *= sigma_f2;
+		return pM;
+	}
+
+	// k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s = -r^2/(2*ell^2), r = |x-x'|
+	static MatrixPtr f(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		// memory allocation
+		MatrixPtr pM = s(logHyp, trainingData);
+
+		// f(s) = exp(s)
+		(*pM).alias() = pM->array().exp();
+		return pM;
+	}
+
+	// k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s = -r^2/(2*ell^2), r = |x-x'|
+	static MatrixPtr s(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		// memory allocation
+		MatrixPtr pM(new Matrix(*trainingData.sqDist()));
+
+		// constants
+		const Scalar inv_ell2			= exp(static_cast<Scalar>(-2.0) * logHyp(0));	// 1/ell^2
+		const Scalar neg_half_inv_ell2	= static_cast<Scalar>(-0.5) * inv_ell2;			// -1/(2*ell^2)
+
+		// s = [-1/(2*ell^2)]*r^2
+		(*pM).noalias() *= neg_half_inv_ell2;
+		return pM;
+	}
+
+	//
+	// derivative w.r.t parameters(log_l, log_sf)
+	//
+
+	// k(x, x') = sigma_f^2 * exp(s)
+	//  dk
+	// ---- = k
+	//  ds
+	static MatrixPtr dk_ds(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		return k(logHyp, trainingData);
+	}
+
+	//  d^2k
+	// ------ = k
+	//  dr^2
+	static MatrixPtr d2k_dr2(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		return k(logHyp, trainingData);
+	}
+
+	//  d^3k
+	// ------ = k
+	//  dr^3
+	static MatrixPtr d3k_dr3(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		return k(logHyp, trainingData);
+	}
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i - x'_i)^2
+	//  ds       2
+	// ---- = - --- * s
+	//  dl       l
+	static MatrixPtr ds_dell(const Hyp &logHyp, TrainingData<Scalar> &trainingData) 
+	{
+		// constants
+		const Scalar inv_ell			= exp(static_cast<Scalar>(-1.0) * logHyp(0));	// 1/ell
+		const Scalar neg_double_inv_ell	= static_cast<Scalar>(-2.0) * inv_ell;			// -2/ell
+
+		// ds/dl = (-2/l)*s
+		MatrixPtr pM = s(logHyp, trainingData);
+		(*pM).noalias() *= neg_double_inv_ell;
+		return pM;
+	}
+
+	//
+	// derivative w.r.t xi, xj
+	//
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i - x'_i)^2
+	//   ds        x_i - x'_i
+	// ------ = - ------------
+	//  dx_i          l^2
+	static MatrixPtr ds_dxi(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int coord_i) 
+	{
+		// memory allocation
+		MatrixPtr pM(new Matrix(*trainingData.delta(coord_i)));
+
+		// constants
+		const Scalar inv_ell2		= exp(static_cast<Scalar>(-2.0) * logHyp(0));	// 1/ell^2
+		const Scalar neg_inv_ell2	= static_cast<Scalar>(-1.0) * inv_ell2;			// -1/ell^2
+
+		// ds/dx_i = (-1/ell^2) * (x_i - x'_i)
+		(*pM).noalias() *= neg_double_inv_ell;
+		return pM;
+	}
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i -  x'_i)^2
+	//   ds      x_j - x'_j
+	// ------ = ------------
+	//  dx'_j       l^2
+	static MatrixPtr ds_dxj(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int coord_j) 
+	{
+		// memory allocation
+		MatrixPtr pM(new Matrix(*trainingData.delta(coord_j)));
+
+		// constants
+		const Scalar inv_ell2		= exp(static_cast<Scalar>(-2.0) * logHyp(0));	// 1/ell^2
+
+		// ds/dx'_j = (1/ell^2) * (x_j - x'_j)
+		(*pM).noalias() *= inv_ell2;
+		return pM;
+	}
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i -  x'_i)^2
+	//     d^2s        d(i, j)
+	// ------------ = ---------
+	//  dx_i dx'_j       l^2
+	static Scalar d2s_dxi_dxj(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int coord_i, const int coord_j) 
+	{
+		// constants
+		const Scalar inv_ell2		= exp(static_cast<Scalar>(-2.0) * logHyp(0));	// 1/ell^2
+
+		if(coord_i == coord_j)	return inv_ell2;
+		else					return static_cast<Scalar>(0.0);
+	}
+
+	//
+	// derivative w.r.t xi, xj and derivative w.r.t parameters(log_l, log_sf)
+	//
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i -  x'_i)^2
+	//   ds        x_i - x'_i
+	// ------ = - ------------
+	//  dx_i          l^2
+	//
+	//   d^2s         2      ds
+	// --------- = - --- * -----
+	//  dl dx_i       l     dx_i
+	static MatrixPtr d2s_dxi_dell(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int coord_i) 
+	{
+		// constants
+		const Scalar inv_ell			= exp(static_cast<Scalar>(-1.0) * logHyp(0));	// 1/ell
+		const Scalar neg_double_inv_ell	= static_cast<Scalar>(-2.0) * inv_ell;			// -2/ell
+
+		// d^2s/(dl dx_i) = (-2/l)*ds/dx_i
+		MatrixPtr pM = ds_dxi(logHyp, trainingData, coord_i);
+		(*pM).noalias() *= neg_double_inv_ell;
+		return pM;
+	}
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i -  x'_i)^2
+	//   ds      x_j - x'_j
+	// ------ = ------------
+	//  dx'_j       l^2
+	//
+	//    d^2s        2      ds
+	// --------- = - --- * ------
+	//  dl dx'_j      l     dx'_j
+	static MatrixPtr d2s_dxj_dell(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int coord_j) 
+	{
+		// constants
+		const Scalar inv_ell			= exp(static_cast<Scalar>(-1.0) * logHyp(0));	// 1/ell
+		const Scalar neg_double_inv_ell	= static_cast<Scalar>(-2.0) * inv_ell;			// -2/ell
+
+		// d^2s/(dl dx'_j) = (-2/l)*ds/dx'_j
+		MatrixPtr pM = ds_dxj(logHyp, trainingData, coord_j);
+		(*pM).noalias() *= neg_double_inv_ell;
+		return pM;
+	}
+
+	// s = (-1/2) * l^{-2} * sum_{i_1}^d (x_i -  x'_i)^2
+	//     d^2s        d(i, j)
+	// ------------ = ---------
+	//  dx_i dx'_j       l^2
+	//
+	//       d^3s           2        d^2s
+	// --------------- = - --- * -----------
+	//  dl dx_i dx'_j       l     dx_i dx'_j
+
+	static Scalar d3s_dxi_dxj_dell(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int coord_i, const int coord_j) 
+	{
+		// constants
+		const Scalar inv_ell			= exp(static_cast<Scalar>(-1.0) * logHyp(0));	// 1/ell
+		const Scalar neg_double_inv_ell	= static_cast<Scalar>(-2.0) * inv_ell;			// -2/ell
+
+		// d^2s/(dl dx'_j) = (-2/l)*ds/dx'_j
+		return d2s_dxi_dxj(logHyp, trainingData, coord_i, coord_j);
+	}
+};
+
+
+}
+
+#endif

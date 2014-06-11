@@ -1,18 +1,17 @@
-#ifndef _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
-#define _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
+#ifndef _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_SLOW_HPP_
+#define _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_SLOW_HPP_
 
 #include "testdatasetting.hpp"
 
-
 /**
- * @class	TestCaseCovSEIso
- * @brief	Test fixture for testing CovSEIso class.
+ * @class	TestCaseCovSEIsoSlow
+ * @brief	Test fixture for testing CovSEIsoSlow class.
  * @note		Inherits from TestDataSetting
  * 			to use the initialized training data and test positions.
  * @author	Soohwan Kim
- * @date		28/03/2014
+ * @date		03/06/2014
  */
-class TestCaseCovSEIso : public TestDataSetting
+class TestCaseCovSEIsoSlow : public TestDataSetting
 {
 protected:
 	/** @brief	Overloading the test fixture set up. */
@@ -28,11 +27,12 @@ protected:
 
 protected:
 	/** @brief Log hyperparameters: log([ell, sigma_f]). */
-	CovSEIso<float>::Hyp logHyp;
+	//CovSEIsoSlow<float>::Hyp logHyp;
+	CovSEIsoSlow::Hyp logHyp;
 };
 
 /** @brief	K: (NxN) self covariance matrix between the training data. */  
-TEST_F(TestCaseCovSEIso, KTest)
+TEST_F(TestCaseCovSEIsoSlow, KTest)
 {
 	// Expected value
 	MatrixXf K1(5, 5);
@@ -43,7 +43,8 @@ TEST_F(TestCaseCovSEIso, KTest)
 			0.308631547122618f, 0.593443307553922f, 0.834888531682446f, 1.851836243293809f, 2.250000000000000f;
 
 	// Actual value
-	MatrixXfPtr pK2 = CovSEIso<float>::K(logHyp, trainingData);
+	//MatrixXfPtr pK2 = CovSEIsoSlow<float>::K(logHyp, trainingData);
+	MatrixXfPtr pK2 = CovSEIsoSlow::K(logHyp, trainingData);
 
 	// Test
 	EXPECT_TRUE(K1.isApprox(*pK2))
@@ -52,7 +53,7 @@ TEST_F(TestCaseCovSEIso, KTest)
 }
 
 /** @brief	pd[K]/pd[log(ell)]: (NxN) partial derivative of K with respect to log(ell). */  
-TEST_F(TestCaseCovSEIso, dKdlogellTest)
+TEST_F(TestCaseCovSEIsoSlow, dKdlogellTest)
 {
 	// Expected value
 	MatrixXf K1(5, 5);
@@ -63,7 +64,8 @@ TEST_F(TestCaseCovSEIso, dKdlogellTest)
 			1.226216181565493f, 1.581815787018512f, 1.655395731454394f, 0.721299496126858f, 0.000000000000000f;
 
 	// Actual value
-	MatrixXfPtr pK2 = CovSEIso<float>::K(logHyp, trainingData, 0);
+	//MatrixXfPtr pK2 = CovSEIsoSlow<float>::K(logHyp, trainingData, 0);
+	MatrixXfPtr pK2 = CovSEIsoSlow::K(logHyp, trainingData, 0);
 
 	// Test
 	EXPECT_TRUE(K1.isApprox(*pK2))
@@ -72,7 +74,7 @@ TEST_F(TestCaseCovSEIso, dKdlogellTest)
 }
 
 /** @brief	pd[K]/pd[log(sigma_f)]: (NxN) partial derivative of K with respect to log(sigma_f). */  
-TEST_F(TestCaseCovSEIso, dKdlogsigmafTest)
+TEST_F(TestCaseCovSEIsoSlow, dKdlogsigmafTest)
 {
 	// Expected value
 	MatrixXf K1(5, 5);
@@ -83,7 +85,8 @@ TEST_F(TestCaseCovSEIso, dKdlogsigmafTest)
 			0.617263094245237f, 1.186886615107843f, 1.669777063364892f, 3.703672486587619f, 4.500000000000000f;
 
 	// Actual value
-	MatrixXfPtr pK2 = CovSEIso<float>::K(logHyp, trainingData, 1);
+	//MatrixXfPtr pK2 = CovSEIsoSlow<float>::K(logHyp, trainingData, 1);
+	MatrixXfPtr pK2 = CovSEIsoSlow::K(logHyp, trainingData, 1);
 
 	// Test
 	EXPECT_TRUE(K1.isApprox(*pK2))
@@ -91,8 +94,9 @@ TEST_F(TestCaseCovSEIso, dKdlogsigmafTest)
 		<< "Actual: " << endl << *pK2 << endl << endl;
 }
 
+
 /** @brief	Ks: (NxM) cross covariance matrix between the training data and test data. */  
-TEST_F(TestCaseCovSEIso, KsTest)
+TEST_F(TestCaseCovSEIsoSlow, KsTest)
 {
 	// Expected value
 	MatrixXf Ks1(5, 4);
@@ -103,7 +107,8 @@ TEST_F(TestCaseCovSEIso, KsTest)
 			 1.173863554051925f, 1.148821830108717f, 1.148148008255321f, 1.126543080103098f;
 
 	// Actual value
-	MatrixXfPtr pKs2 = CovSEIso<float>::Ks(logHyp, trainingData, pXs);
+	//MatrixXfPtr pKs2 = CovSEIsoSlow<float>::Ks(logHyp, trainingData, pXs);
+	MatrixXfPtr pKs2 = CovSEIsoSlow::Ks(logHyp, trainingData, pXs);
 
 	// Test
 	EXPECT_TRUE(Ks1.isApprox(*pKs2))
@@ -112,7 +117,7 @@ TEST_F(TestCaseCovSEIso, KsTest)
 }
 
 /** @brief	Kss: (Nx1) self variance matrix between the test data. */  
-TEST_F(TestCaseCovSEIso, KssTest)
+TEST_F(TestCaseCovSEIsoSlow, KssTest)
 {
 	// Expected value
 	MatrixXf Kss1(4, 1);
@@ -122,7 +127,8 @@ TEST_F(TestCaseCovSEIso, KssTest)
 			  2.250000000000000f;
 
 	// Actual value
-	MatrixXfPtr pKss2 = CovSEIso<float>::Kss(logHyp, pXs);
+	//MatrixXfPtr pKss2 = CovSEIsoSlow<float>::Kss(logHyp, pXs);
+	MatrixXfPtr pKss2 = CovSEIsoSlow::Kss(logHyp, pXs);
 
 	// Test
 	EXPECT_TRUE(Kss1.isApprox(*pKss2))

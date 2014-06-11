@@ -40,9 +40,9 @@ public:
 	 */
 	TrainingData() :
 		m_fSqDistXd(false),
-		m_fSqDistXXd(false),
+		m_fSqDistXdX(false),
 		m_fDeltaListXd(false),
-	   m_fDeltaListXXd(false)
+	   m_fDeltaListXdX(false)
 	{
 	}
 
@@ -64,10 +64,9 @@ public:
 	 */
 	inline int D() const
 	{
-		assert(m_pXd || m_pX);
-		assert(m_pX && m_pXd ? m_pX->cols() == m_pXd->cols() : true);
-		if(m_pX)		return TrainingData<Scalar>::D();
-		if(m_pXd)	return m_pXd->cols();
+		assert(m_pXd);
+		assert(m_pX ? m_pXd->cols() == m_pX->cols() : true);
+		return m_pXd->cols();
 	}
 
 	/**
@@ -81,9 +80,9 @@ public:
 		m_pYd			= pYd;
 		m_pdYList	= pdYList;
 		m_fSqDistXd			= false;
-		m_fSqDistXXd		= false;
+		m_fSqDistXdX		= false;
 		m_fDeltaListXd		= false;
-		m_fDeltaListXXd	= false;
+		m_fDeltaListXdX	= false;
 	}
 
 	/**
@@ -108,20 +107,20 @@ public:
 	/**
 	 * @brief	Gets the const pointer to the pre-calculated
 	 * 			cross squared distances between the derivative training inputs and training inputs.
-	 * @return	An NxNd matrix const pointer.
+	 * @return	An NdxN matrix const pointer.
 	 */
-	const MatrixConstPtr sqDistXXd()
+	const MatrixConstPtr sqDistXdX()
 	{
-		assert(m_pX && m_pXd);
+		assert(m_pXd && m_pX);
 
 		// Calculate it only once.
-		if(!m_fSqDistXXd)
+		if(!m_fSqDistXdX)
 		{
-			m_pSqDistXXd = PairwiseOp<Scalar>::sqDist(m_pX, m_pXd);
-			m_fSqDistXXd = true;
+			m_pSqDistXdX = PairwiseOp<Scalar>::sqDist(m_pXd, m_pX);
+			m_fSqDistXdX = true;
 		}
 
-		return m_pSqDistXXd;
+		return m_pSqDistXdX;
 	}
 
 	/**
@@ -150,24 +149,24 @@ public:
 	/**
 	 * @brief	Gets the const pointer to the pre-calculated
 	 * 			cross differences between the derivative training inputs and training inputs.
-	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xj_coord - Xdi_coord
-	 * @return	An NxNd matrix const pointer.
+	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xdi_coord - Xj_coord
+	 * @return	An NdxN matrix const pointer.
 	 */
-	const MatrixConstPtr deltaXXd(const int coord)
+	const MatrixConstPtr deltaXdX(const int coord)
 	{
-		assert(m_pX && m_pXd);
+		assert(m_pXd && m_pX);
 		assert(coord >= 0 && coord < D());
 
 		// Calculate it only once.
-		if(!m_fDeltaListXXd)
+		if(!m_fDeltaListXdX)
 		{
-			m_pDeltaListXXd.resize(D());
+			m_pDeltaListXdX.resize(D());
 			for(int d = 0; d < D(); d++)
-				m_pDeltaListXXd[d] = PairwiseOp<Scalar>::sqDelta(m_pX, m_pXd, d);
-			m_fDeltaListXXd = true;
+				m_pDeltaListXdX[d] = PairwiseOp<Scalar>::sqDelta(m_pXd, m_pX, d);
+			m_fDeltaListXdX = true;
 		}
 
-		return m_pDeltaListXXd[coord];
+		return m_pDeltaListXdX[coord];
 	}
 
 	/**
@@ -210,27 +209,26 @@ protected:
 	MatrixConstPtr m_pSqDistXd;	// NdxNd matrix
 
 	/** @brief	Pre-calculated cross quared distances between the derivative training inputs and function training inputs. */
-	//MatrixConstPtr m_pSqDistXXd;	// NdxN matrix
-	MatrixConstPtr m_pSqDistXXd;	// NxNd matrix
+	MatrixConstPtr m_pSqDistXdX;	// NdxN matrix
 
 	/** @brief	Pre-calculated self differences between the derivative training inputs. */
 	std::vector<MatrixConstPtr> m_pDeltaXdList;	// NdxNd matrix per each dimension
 
 	/** @brief	Pre-calculated cross differences between the derivative training inputs and training inputs. */
-	std::vector<MatrixConstPtr> m_pDeltaXXdList;	// NxNd matrix per each dimension
+	std::vector<MatrixConstPtr> m_pDeltaXdXList;	// NdxN matrix per each dimension
 
 
 	/** @brief	Flag for the pre-calculated self squared distances between the derivative training inputs. */
 	bool m_fSqDistXd;
 
-	/** @brief	Flag for the pre-calculated cross quared distances between the function training inputs and derivative training inputs. */
-	bool m_fSqDistXXd;
+	/** @brief	Flag for the pre-calculated cross quared distances between the derivative training inputs and function training inputs. */
+	bool m_fSqDistXdX;
 
 	/** @brief	Flag for the pre-calculated self differences between the derivative training inputs. */
 	bool m_fDeltaListXd;
 
-	/** @brief	Flag for the pre-calculated cross differences between the function training inputs and derivativetraining inputs. */
-	bool m_fDeltaListXXd;
+	/** @brief	Flag for the pre-calculated cross differences between the derivative training inputs and training inputs. */
+	bool m_fDeltaListXdX;
 };
 
 }

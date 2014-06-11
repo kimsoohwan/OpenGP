@@ -37,6 +37,24 @@
     <ClInclude Include="..\src\cov\covseisoder.hpp">
       <Filter>src\cov</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\util\macros.hpp">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\isotropic.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisobase.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\cov.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisodiffbase.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
