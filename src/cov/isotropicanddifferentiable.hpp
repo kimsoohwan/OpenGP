@@ -370,14 +370,16 @@ protected:
 				const bool fSameCoords				= coord_i == coord_j;
 
 				// components
-				MatrixPtr pd3k_ds3		= d3k_ds3(logHyp, pSqDistXd);
-				MatrixPtr pds_dell		= ds_dell(logHyp, pSqDistXd);
-				MatrixPtr pds_dxi			= ds_dxi(logHyp, pSqDistXd, pDeltaXd_i);
-				MatrixPtr pds_dxj			= ds_dxj(logHyp, pSqDistXd, pDeltaXd_j);
+				MatrixPtr pd3k_ds3			= d3k_ds3(logHyp, pSqDistXd);
+				MatrixPtr pds_dell			= ds_dell(logHyp, pSqDistXd);
+				MatrixPtr pds_dxi				= ds_dxj(logHyp, pSqDistXd, pDeltaXd_i);
+				(*pds_dxi).noalias()			= static_cast<Scalar>(-1.0) * (*pds_dxi);
+				MatrixPtr pds_dxj				= ds_dxj(logHyp, pSqDistXd, pDeltaXd_j);
 
-				MatrixPtr pd2k_ds2		= d2k_ds2(logHyp, pSqDistXd);
-				MatrixPtr pd2s_dell_dxi	= d2s_dell_dxi(logHyp, pSqDistXd, pDeltaXd_i);
-				MatrixPtr pd2s_dell_dxj	= d2s_dell_dxj(logHyp, pSqDistXd, pDeltaXd_j);
+				MatrixPtr pd2k_ds2				= d2k_ds2(logHyp, pSqDistXd);
+				MatrixPtr pd2s_dell_dxi			= d2s_dell_dxj(logHyp, pSqDistXd, pDeltaXd_i);
+				(*pd2s_dell_dxi).noalias()		= static_cast<Scalar>(-1.0) * (*pd2s_dell_dxi);
+				MatrixPtr pd2s_dell_dxj			= d2s_dell_dxj(logHyp, pSqDistXd, pDeltaXd_j);
 
 				MatrixPtr pd2s_dxi_dxj			= d2s_dxi_dxj(logHyp, pSqDistXd, pDeltaXd_i, pDeltaXd_j, fSameCoords);
 

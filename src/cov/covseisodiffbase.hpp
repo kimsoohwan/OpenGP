@@ -62,31 +62,31 @@ protected:
 		return k(logHyP, pSqDist);
 	}
 
+	///**
+	// * @brief	  ds        x_i - x'_i        ds
+	// *          ------ = - ------------ = - -------
+	// *           dx_i         ell^2          dx'_i
+	// * @note		k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s(r) = -r^2/(2*ell^2), r = |x-x'|
+	// * @param	[in] logHyp		The log hyperparameters, log([ell, sigma_f]).
+	// * @param	[in] pSqDist	The squared distance between inputs, i.e.) pSqDistXXd and pSqDistXd
+	// * @param	[in] pDelta		The difference between inputs, i.e.) pDeltaXXd and pDeltaXd
+	// * @return	A matrix pointer.
+	// */
+	//static MatrixPtr ds_dxi(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta) 
+	//{
+	//	// memory allocation
+	//	MatrixPtr pK = ds_dxj(logHyp, pSqDist, pDelta);
+
+	//	// ds/dx_i = - ds/dx'_j
+	//	(*pK).noalias() *= static_cast<Scalar>(-1.0);
+
+	//	return pK;
+	//}
+
 	/**
-	 * @brief	  ds        x_i - x'_i        ds
-	 *          ------ = - ------------ = - -------
-	 *           dx_i         ell^2          dx'_i
-	 * @note		k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s(r) = -r^2/(2*ell^2), r = |x-x'|
-	 * @param	[in] logHyp		The log hyperparameters, log([ell, sigma_f]).
-	 * @param	[in] pSqDist	The squared distance between inputs, i.e.) pSqDistXXd and pSqDistXd
-	 * @param	[in] pDelta		The difference between inputs, i.e.) pDeltaXXd and pDeltaXd
-	 * @return	A matrix pointer.
-	 */
-	static MatrixPtr ds_dxi(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta) 
-	{
-		// memory allocation
-		MatrixPtr pK = ds_dxj(logHyp, pSqDist, pDelta);
-
-		// ds/dx_i = - ds/dx'_j
-		(*pK).noalias() *= static_cast<Scalar>(-1.0);
-
-		return pK;
-	}
-
-	/**
-	 * @brief	   ds      x_j - x'_j
-	 *          ------- = ------------
-	 *           dx'_j       ell^2
+	 * @brief	   ds      x_j - x'_j        ds
+	 *          ------- = ------------ = - ------
+	 *           dx'_j       ell^2          dx_j
 	 * @note		k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s(r) = -r^2/(2*ell^2), r = |x-x'|
 	 * @param	[in] logHyp		The log hyperparameters, log([ell, sigma_f]).
 	 * @param	[in] pSqDist	The squared distance between inputs, i.e.) pSqDistXXd and pSqDistXd
@@ -168,35 +168,35 @@ protected:
 		return k(logHyP, pSqDistXd);
 	}
 
+	///**
+	// * @brief	    d^2s           2       ds
+	// *          ------------ = - ----- * -------
+	// *           dell dx_i        ell      dx_i
+	// * @note		k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s(r) = -r^2/(2*ell^2), r = |x-x'|
+	// * @param	[in] logHyp			The log hyperparameters, log([ell, sigma_f]).
+	// * @param	[in] pSqDist	The squared distance between inputs, i.e.) pSqDistXXd and pSqDistXd
+	// * @param	[in] pDelta		The difference between inputs, i.e.) pDeltaXXd and pDeltaXd
+	// * @return	A matrix pointer.
+	// */
+	//static MatrixPtr d2s_dell_dxi(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta) 
+	//{
+	//	// constants
+	//	const Scalar negative_double_inv_ell = static_cast<Scalar>(-2.0) 
+	//													 * exp(static_cast<Scalar>(-1.0) * logHyp(0));	// -2/ell
+
+	//	// memory allocation
+	//	MatrixPtr pK(*ds_dxi(logHyp, pSqDist, pDelta));
+
+	//	// d^2s/dell dx'_j = (-2/ell) * ds/dx'_j
+	//	(*pK).noalias() *= negative_double_inv_ell;
+
+	//	return pK;
+	//}
+
 	/**
-	 * @brief	    d^2s           2       ds
-	 *          ------------ = - ----- * -------
-	 *           dell dx_i        ell      dx_i
-	 * @note		k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s(r) = -r^2/(2*ell^2), r = |x-x'|
-	 * @param	[in] logHyp			The log hyperparameters, log([ell, sigma_f]).
-	 * @param	[in] pSqDist	The squared distance between inputs, i.e.) pSqDistXXd and pSqDistXd
-	 * @param	[in] pDelta		The difference between inputs, i.e.) pDeltaXXd and pDeltaXd
-	 * @return	A matrix pointer.
-	 */
-	static MatrixPtr d2s_dell_dxi(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta) 
-	{
-		// constants
-		const Scalar negative_double_inv_ell = static_cast<Scalar>(-2.0) 
-														 * exp(static_cast<Scalar>(-1.0) * logHyp(0));	// -2/ell
-
-		// memory allocation
-		MatrixPtr pK(*ds_dxi(logHyp, pSqDist, pDelta));
-
-		// d^2s/dell dx'_j = (-2/ell) * ds/dx'_j
-		(*pK).noalias() *= negative_double_inv_ell;
-
-		return pK;
-	}
-
-	/**
-	 * @brief	    d^2s           2       ds
-	 *          ------------ = - ----- * -------
-	 *           dell dx'_j       ell     dx'_j
+	 * @brief	    d^2s           2       ds           d^2s
+	 *          ------------ = - ----- * ------- = - -----------
+	 *           dell dx'_j       ell     dx'_j       dell dx_j
 	 * @note		k(x, x') = sigma_f^2 * f(s), f(s) = exp(s), s(r) = -r^2/(2*ell^2), r = |x-x'|
 	 * @param	[in] logHyp			The log hyperparameters, log([ell, sigma_f]).
 	 * @param	[in] pSqDist	The squared distance between inputs, i.e.) pSqDistXXd and pSqDistXd
