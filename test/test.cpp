@@ -1,4 +1,4 @@
-#include "testcasepairwiseop.hpp"
+#include "TestcasePairwiseop.hpp"
 #include "testcasecovseiso.hpp"
 //#include "testcasecovseisoslow.hpp"
 
