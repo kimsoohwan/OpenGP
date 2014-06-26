@@ -2,7 +2,7 @@
 #define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 
 #include "../util/macros.hpp"
-#include "../data/trainingdata.hpp"
+#include "../data/TrainingData.hpp"
 
 namespace GP{
 
@@ -86,10 +86,10 @@ public:
 	 * 			fVarianceVector == false: An MxM matrix pointer.
 	 * 			M: The number of test data.
 	 */
-	static MatrixPtr Kss(const Hyp &logHyp, const MatrixConstPtr pXs, const bool fVarianceVector = true)
+	static MatrixPtr Kss(const Hyp &logHyp, const TestData<Scalar> &testData, const bool fVarianceVector = true)
 	{
 		// The number of test data.
-		const int M = pXs->rows();
+		const int M = testData.M();
 
 		// Some constant values.
 		const Scalar sigma_f2 = exp(static_cast<Scalar>(2.0) * logHyp(1)); // sigma_f^2
@@ -109,7 +109,7 @@ public:
 		{
 			// Calculate the pairwise squared distances
 			// between the test inputs.
-			MatrixPtr pSqDist = PairwiseOp<Scalar>::sqDist(pXs);
+			MatrixPtr pSqDist = PairwiseOp<Scalar>::sqDist(testData);
 
 			// Calculate the covariance matrix
 			// given the pairwise squared distances.

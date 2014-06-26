@@ -82,14 +82,18 @@
   <ItemGroup>
     <ClInclude Include="..\include\cov.h" />
     <ClInclude Include="..\include\gp.h" />
-    <ClInclude Include="..\src\cov\covseiso.hpp" />
+    <ClInclude Include="..\src\cov\CovDiff.hpp" />
+    <ClInclude Include="..\src\cov\CovSEiso.hpp" />
     <ClInclude Include="..\src\cov\covseisoder.hpp" />
+    <ClInclude Include="..\src\cov\CovSEisoDiff.hpp" />
     <ClInclude Include="..\src\cov\covseisodiffbase.hpp" />
     <ClInclude Include="..\src\cov\covseisobase.hpp" />
     <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp" />
     <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp" />
     <ClInclude Include="..\src\cov\isotropic.hpp" />
-    <ClInclude Include="..\src\data\derivativetrainingdata.hpp" />
+    <ClInclude Include="..\src\data\DerivativeTrainingData.hpp" />
+    <ClInclude Include="..\src\data\TestData.hpp" />
+    <ClInclude Include="..\src\data\TrainingData.hpp" />
     <ClInclude Include="..\src\data\typetraits.hpp" />
     <ClInclude Include="..\src\gp\gp.hpp" />
     <ClInclude Include="..\src\gp\hyp.hpp" />
@@ -97,9 +101,6 @@
     <ClInclude Include="..\src\mean\meanzero.hpp" />
     <ClInclude Include="..\src\util\macros.hpp" />
     <ClInclude Include="..\src\util\pairwiseop.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\data\trainingdata.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

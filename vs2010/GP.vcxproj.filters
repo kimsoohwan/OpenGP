@@ -4,9 +4,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\cov\covseiso.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\inf\infexact.hpp">
       <Filter>src\inf</Filter>
     </ClInclude>
@@ -27,9 +24,6 @@
     </ClInclude>
     <ClInclude Include="..\src\util\pairwiseop.hpp">
       <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\derivativetrainingdata.hpp">
-      <Filter>src\data</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp">
       <Filter>src\cov</Filter>
@@ -54,6 +48,24 @@
     </ClInclude>
     <ClInclude Include="..\src\cov\covseisodiffbase.hpp">
       <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\CovSEiso.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\CovDiff.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\CovSEisoDiff.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\TrainingData.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\TestData.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\DerivativeTrainingData.hpp">
+      <Filter>src\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -81,10 +93,5 @@
     <Filter Include="src\util">
       <UniqueIdentifier>{89b73f60-d9b4-4583-bda0-8d397113e7f7}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\data\trainingdata.hpp">
-      <Filter>src\data</Filter>
-    </None>
   </ItemGroup>
 </Project>

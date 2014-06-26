@@ -18,8 +18,9 @@ namespace GP{
 template<typename Scalar>
 class TrainingData
 {
-// define matrix types
+// define matrix and vector types
 protected:	TYPE_DEFINE_MATRIX(Scalar);
+				TYPE_DEFINE_VECTOR(Scalar);
 
 public:
 	/**	
@@ -132,7 +133,7 @@ public:
 	 * @param	[in] pXs		The test inputs. A MxD matrix.
 	 * @return	An NxM matrix const pointer.
 	 */
-	const MatrixPtr sqDist(const TestData<Scalar> testData) const
+	const MatrixPtr sqDist(const TestData<Scalar> &testData) const
 	{
 		assert(m_pX && testData.M() > 0);
 		assert(D() == testData.D());
@@ -146,7 +147,7 @@ public:
 	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xi_coord - Xsj_coord
 	 * @return	An NxM matrix const pointer.
 	 */
-	const MatrixPtr sqDelta(const TestData<Scalar> testData, const int coord) const
+	const MatrixPtr sqDelta(const TestData<Scalar> &testData, const int coord) const
 	{
 		assert(m_pX && testData.M() > 0);
 		assert(D() == testData.D());

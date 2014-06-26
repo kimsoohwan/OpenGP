@@ -17,8 +17,9 @@ namespace GP{
 template<typename Scalar>
 class TestData
 {
-// define matrix types
+// define matrix and vector types
 protected:	TYPE_DEFINE_MATRIX(Scalar);
+				TYPE_DEFINE_VECTOR(Scalar);
 
 public:
 	/**	

@@ -5,7 +5,8 @@
 #include "../src/data/typetraits.hpp"
 
 // Data
-#include "../src/data/trainingdata.hpp"
+#include "../src/data/TrainingData.hpp"
+#include "../src/data/DerivativeTrainingData.hpp"
 
 // GP
 #include "../src/gp/gp.hpp"
