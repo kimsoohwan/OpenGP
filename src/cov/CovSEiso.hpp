@@ -1,6 +1,7 @@
 #ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 #define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 
+#include "../util/macros.hpp"
 #include "../data/trainingdata.hpp"
 
 namespace GP{
@@ -15,14 +16,15 @@ namespace GP{
 	* @date		26/03/2014
 	*/
 template<typename Scalar>
-class CovSEIso : public TypeTraits<Scalar>
+class CovSEIso
 {
+// define matrix types
+protected:	TYPE_DEFINE_MATRIX(Scalar);
+
+// define hyperparameters
+public:		TYPE_DEFINE_HYP(Scalar, 2); // log(ell), log(sigma_f)
+
 public:
-	/**
-	 * @typedef	Hyp2 Hyp
-	 * @brief	Defines an alias representing the hyperparameters; ell, sigma_f.
-	 */
-	typedef	Hyp2	Hyp;
 
 	/**
 	 * @brief	K: Self covariance matrix between the training data.
