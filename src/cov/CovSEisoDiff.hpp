@@ -8,9 +8,37 @@ namespace GP{
 template<typename Scalar>
 class CovSEisoDiff : public CovSEiso<Scalar>
 {
+// for CovDerObs or CovNormalPoints
 protected:
-	// covariance matrix given pair-wise sqaured distances
-	MatrixPtr K_FD(MatrixConstPtr pSqDist, MatrixConstPtr pDelta, HypConstPtr pLogHyp, const int pdIndex = -1) const
+	static MatrixPtr K_FD(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const int coord_j, const int pdIndex)
+	{
+		return K_FD(logHyp, derivativeTrainingData.pSqDistXXd(), derivativeTrainingData.pDeltaXXd(coord_j), pdIndex);
+	}
+
+	static MatrixPtr K_DD(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const int coord_i, const int coord_j, const int pdIndex)
+	{
+		return K_FD(logHyp, derivativeTrainingData.pSqDistXdXd(), derivativeTrainingData.pDeltaXdXd(coord_i, coord_j), pdIndex);
+	}
+
+	static MatrixPtr Ks_DF(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const TestData<Scalar> &testData, const int coord_i)
+	{
+		// squared distance: FD
+		MatrixPtr pSqDistXdXs = derivativeTrainingData.sqDistXdXs(testData);
+		pSqDistXdXs->transposeInPlace();
+
+		// delta: FD
+		MatrixPtr deltaXdXs = derivativeTrainingData.deltaXdXs(testData, coord_i);
+		deltaXdXs->transposeInPlace();
+
+		// K_DF
+		MatrixPtr K = K_FD(logHyp, pSqDistXdXs, deltaXdXs);
+		K->transposeInPlace();
+
+		return K;
+	}
+
+protected:
+	static MatrixPtr K_FD(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta, const int pdIndex)
 	{
 		// input
 		// pSqDist (nxm): squared distances = r^2
@@ -62,11 +90,7 @@ protected:
 		return pK_FD;
 	}
 
-	// covariance matrix given pair-wise sqaured distances
-	MatrixPtr K_DD(MatrixConstPtr pSqDist, 
-									MatrixConstPtr pDelta1, const int i, 
-									MatrixConstPtr pDelta2, const int j,
-									HypConstPtr pLogHyp, const int pdIndex = -1) const
+	static MatrixPtr K_DD(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta, const int pdIndex)
 	{
 		// input
 		// pSqDist (nxm): squared distances = r^2
@@ -139,107 +163,6 @@ protected:
 #endif
 
 		return pK_DD;
-	}
-
-	// covariance matrix given pair-wise sqaured distances and delta
-	MatrixPtr K(MatrixPtr pSqDist, ConstDeltaList &deltaList, const int d, HypConstPtr pLogHyp, const int pdIndex = -1) const
-	{
-		// input
-		// pSqDist (nxn): squared distances
-		// deltaList: list of delta (nxn)
-		// d: dimension of training inputs
-		// pLogHyp: log hyperparameters
-		// pdIndex: partial derivatives with respect to this parameter index
-
-		// output
-		// K: n(d+1) by n(d+1)
-		// 
-		// for example, when d = 3
-		//                    |   F (n)   |  D1 (n)  |  D2 (n)  |  D3 (n)  |
-		// K = ---------------------
-		//        F    (n) |    FF,          FD1,        FD2,       FD3 
-		//        D1 (n) |        -,       D1D1,     D1D2,     D1D3
-		//        D2 (n) |        -,                -,     D2D2,     D2D3
-		//        D3 (n) |        -,                -,              -,     D3D3
-
-		assert(pSqDist->rows() == pSqDist->cols());
-
-		const int n = pSqDist->rows();
-
-		// covariance matrix
-		MatrixPtr pK(new Matrix(n*(d+1), n*(d+1))); // n(d+1) by n(d+1)
-
-		// fill block matrices of FF, FD and DD in order
-		for(int row = 0; row <= d; row++)
-		{
-			const int startingRow = n*row;
-			for(int col = row; col <= d; col++)
-			{
-				const int startingCol = n*col;
-
-				// calculate the upper triangle
-				if(row == 0)
-				{
-					// F-F
-					if(col == 0)	pK->block(startingRow, startingCol, n, n) = *(K_FF(pSqDist, pLogHyp, pdIndex));
-
-					// F-D
-					else				pK->block(startingRow, startingCol, n, n) = *(K_FD(pSqDist, deltaList[col-1], pLogHyp, pdIndex));
-				}
-				else
-				{
-					// D-D
-										pK->block(startingRow, startingCol, n, n) = *(K_DD(pSqDist, 
-																																	deltaList[row-1], row-1, deltaList[col-1], col-1,
-																																	pLogHyp, pdIndex));
-				}
-
-				// copy its transpose
-				if(row != col)	pK->block(startingCol, startingRow, n, n).noalias() = pK->block(startingRow, startingCol, n, n).transpose();
-			}
-		}
-
-		return pK;
-	}
-
-	// covariance matrix given pair-wise sqaured distances and delta
-	MatrixPtr Ks(MatrixConstPtr pSqDist, ConstDeltaList &deltaList, const int d, HypConstPtr pLogHyp) const
-	{
-		// input
-		// pSqDist (nxm): squared distances
-		// deltaList: list of delta (nxm)
-		// d: dimension of training inputs
-		// pLogHyp: log hyperparameters
-		// pdIndex: partial derivatives with respect to this parameter index
-
-		// output
-		// K: n(d+1) x m
-		// 
-		// for example, when d = 3
-		//                    |  F (m)  |
-		// K = ---------------------
-		//        F    (n) |       FF
-		//        D1 (n) |    D1F
-		//        D2 (n) |    D2F
-		//        D3 (n) |    D3F
-
-		const int n = pSqDist->rows();
-		const int m = pSqDist->cols();
-
-		// covariance matrix
-		MatrixPtr pK(new Matrix(n*(d+1), m)); // n(d+1) x m
-
-		// fill block matrices of FF, FD and DD in order
-		for(int row = 0; row <= d; row++)
-		{
-			// F-F
-			if(row == 0)		pK->block(n*row, 0, n, m) = *(K_FF(pSqDist, pLogHyp));
-
-			// D-F
-			else					pK->block(n*row, 0, n, m) = ((Scalar) -1.f) * (*(K_FD(pSqDist, deltaList[row-1], pLogHyp)));
-		}
-
-		return pK;
 	}
 };
 

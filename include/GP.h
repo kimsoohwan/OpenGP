@@ -7,6 +7,7 @@
 // Data
 #include "../src/data/TrainingData.hpp"
 #include "../src/data/DerivativeTrainingData.hpp"
+#include "../src/data/TestData.hpp"
 
 // GP
 #include "../src/gp/gp.hpp"

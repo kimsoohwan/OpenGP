@@ -20,7 +20,7 @@ namespace GP{
 													typedef boost::shared_ptr<const Vector>								VectorConstPtr;
 
 #define TYPE_DEFINE_ROW_VECTOR(Scalar)	typedef Eigen::Matrix<Scalar, 1, Eigen::Dynamic>					RowVector;\
-													typedef boost::shared_ptr<RowVector										RowVectorPtr;\
+													typedef boost::shared_ptr<RowVector>									RowVectorPtr;\
 													typedef boost::shared_ptr<const RowVector>							RowVectorConstPtr;
 
 #define TYPE_DEFINE_HYP(Scalar, N)		typedef Eigen::Matrix<Scalar, N, 1>										Hyp;

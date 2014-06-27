@@ -22,9 +22,6 @@
     <ClInclude Include="..\src\data\typetraits.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\util\pairwiseop.hpp">
-      <Filter>src\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp">
       <Filter>src\cov</Filter>
     </ClInclude>
@@ -66,6 +63,9 @@
     </ClInclude>
     <ClInclude Include="..\src\data\DerivativeTrainingData.hpp">
       <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\PairwiseOp.hpp">
+      <Filter>src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

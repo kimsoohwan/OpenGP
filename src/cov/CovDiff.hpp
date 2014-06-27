@@ -1,7 +1,8 @@
 #ifndef COVARIANCE_FUNCTION_WITH_DERIVATIVE_OBSERVATIONS_HPP_
 #define COVARIANCE_FUNCTION_WITH_DERIVATIVE_OBSERVATIONS_HPP_
 
-#include "../data/derivativetrainingdata.hpp"
+#include "../data/DerivativeTrainingData.hpp"
+#include "../data/TestData.hpp"
 
 namespace GP{
 
@@ -31,8 +32,8 @@ public:
 		// df(xd)/dx_3 : nd |   -  |      - ,          - ,        D3D3
 
 		const int d		= derivativeTrainingData.D();
-		const int nd	= derivativeTrainingData.Nd();
 		const int n		= derivativeTrainingData.N();
+		const int nd	= derivativeTrainingData.Nd();
 
 		const int nn			= n + nd*d;
 		const int numBlocks	= nd > 0 ? 1 + d : 1;
@@ -76,7 +77,7 @@ public:
 		return pK;
 	}
 
-	static MatrixPtr Ks(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const MatrixConstPtr pXs)
+	static MatrixPtr Ks(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const TestData<Scalar> &testData)
 	{
 		// output
 		// K: nn x m, nn  = n  + nd*d
@@ -90,20 +91,32 @@ public:
 		// df(xd)/dx_2 | D2F
 		// df(xd)/dx_3 | D3F
 
+		const int d		= derivativeTrainingData.D();
 		const int n		= derivativeTrainingData.N();
-		const int n		= derivativeTrainingData.N();
+		const int nd	= derivativeTrainingData.Nd();
+		const int m		= testData.M();
+
+		const int nn			= n + nd*d;
+		const int numBlocks	= nd > 0 ? 1 + d : 1;
 
 		// covariance matrix
-		MatrixPtr pK(new Matrix(n*(d+1), m)); // n(d+1) x m
+		MatrixPtr pK(new Matrix(nn, m)); // nn x m, nn = n + nd*d
 
 		// fill block matrices of FF, FD and DD in order
-		for(int rowBlock = 0; rowBlock <= d; rowBlock++)
+		// constants
+		const int startCol	= 0;
+		const int numCols		= m;
+		for(int rowBlock = 0; rowBlock < numBlocks; rowBlock++)
 		{
+			// constants
+			const int startRow	= rowBlock == 0 ? 0 : n + nd*(row_block-1);
+			const int numRows		= rowBlock == 0 ? n : nd;
+
 			// F-F
-			if(rowBlock == 0)		pK->block(n*rowBlock, 0, n, m) = *(K_FF(pSqDist, pLogHyp));
+			if(rowBlock == 0)		pK->block(startRow, startCol, numRows, numCols) = *(Ks(pLogHyp, static_cast<TrainingData<Scalar> >(derivativeTrainingData), testData));
 
 			// D-F
-			else					pK->block(n*rowBlock, 0, n, m) = ((Scalar) -1.f) * (*(K_FD(pSqDist, deltaList[rowBlock-1], pLogHyp)));
+			else						pK->block(startRow, startCol, numRows, numCols) = *(Ks_DF(pLogHyp, derivativeTrainingData, testData, rowBlock-1));
 		}
 
 		return pK;

@@ -1,7 +1,7 @@
 #ifndef _TEST_CASE_PAIRWISE_OPERATION_HPP_
 #define _TEST_CASE_PAIRWISE_OPERATION_HPP_
 
-#include "testdatasetting.hpp"
+#include "TestDataSetting.hpp"
 
 /**
  * @class	TestCasePairwiseOp

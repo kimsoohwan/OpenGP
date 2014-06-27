@@ -83,10 +83,10 @@
     <ClCompile Include="..\test\test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\test\testcasecovseiso.hpp" />
+    <ClInclude Include="..\test\TestcaseCovSEiso.hpp" />
     <ClInclude Include="..\test\testcasecovseisoslow.hpp" />
-    <ClInclude Include="..\test\testcasepairwiseop.hpp" />
-    <ClInclude Include="..\test\testdatasetting.hpp" />
+    <ClInclude Include="..\test\TestcasePairwiseOp.hpp" />
+    <ClInclude Include="..\test\TestDataSetting.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -48,7 +48,7 @@ public:
 	 */
 	void set(MatrixPtr pXs)
 	{
-		m_pX = pXs;
+		m_pXs = pXs;
 	}
 
 	/**

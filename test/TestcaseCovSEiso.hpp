@@ -1,7 +1,7 @@
 #ifndef _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 #define _TEST_CASE_COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 
-#include "testdatasetting.hpp"
+#include "TestDataSetting.hpp"
 
 
 /**
@@ -103,7 +103,7 @@ TEST_F(TestCaseCovSEIso, KsTest)
 			 1.173863554051925f, 1.148821830108717f, 1.148148008255321f, 1.126543080103098f;
 
 	// Actual value
-	MatrixXfPtr pKs2 = CovSEIso<float>::Ks(logHyp, trainingData, pXs);
+	MatrixXfPtr pKs2 = CovSEIso<float>::Ks(logHyp, trainingData, testData);
 
 	// Test
 	EXPECT_TRUE(Ks1.isApprox(*pKs2))
@@ -122,7 +122,7 @@ TEST_F(TestCaseCovSEIso, KssTest)
 			  2.250000000000000f;
 
 	// Actual value
-	MatrixXfPtr pKss2 = CovSEIso<float>::Kss(logHyp, pXs);
+	MatrixXfPtr pKss2 = CovSEIso<float>::Kss(logHyp, testData);
 
 	// Test
 	EXPECT_TRUE(Kss1.isApprox(*pKss2))

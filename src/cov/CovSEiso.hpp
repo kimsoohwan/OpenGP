@@ -47,7 +47,7 @@ public:
 
 		// The pairwise squared distances between the trainig inputs
 		// is already calculated in m_pSqDist when the training data was set.
-		return K(logHyp, trainingData.sqDist(), pdHypIndex);
+		return K(logHyp, trainingData.pSqDistXX(), pdHypIndex);
 	}
 
 	/**
@@ -64,12 +64,12 @@ public:
 	 * 			N: The number of training data.
 	 * 			M: The number of test data.
 	 */
-	static MatrixPtr Ks(const Hyp &logHyp, const TrainingData<Scalar> &trainingData, const MatrixConstPtr pXs)
+	static MatrixPtr Ks(const Hyp &logHyp, const TrainingData<Scalar> &trainingData, const TestData<Scalar> &testData)
 	{
 		// Calculate the cross covariance matrix
 		// given the pairwise squared distances
 		// between the training inputs and test inputs.
-		return K(logHyp, trainingData.sqDist(pXs));
+		return K(logHyp, trainingData.pSqDistXXs(testData));
 	}
 
 	/**
@@ -89,7 +89,7 @@ public:
 	static MatrixPtr Kss(const Hyp &logHyp, const TestData<Scalar> &testData, const bool fVarianceVector = true)
 	{
 		// The number of test data.
-		const int M = testData.M();
+		const int m = testData.M();
 
 		// Some constant values.
 		const Scalar sigma_f2 = exp(static_cast<Scalar>(2.0) * logHyp(1)); // sigma_f^2
@@ -101,7 +101,7 @@ public:
 		if(fVarianceVector)
 		{
 			// k(x, x') = sigma_f^2
-			pKss.reset(new Matrix(M, 1));
+			pKss.reset(new Matrix(m, 1));
 			pKss->fill(sigma_f2);
 		}
 		// K: self-covariance matrix (MxM).
@@ -109,11 +109,11 @@ public:
 		{
 			// Calculate the pairwise squared distances
 			// between the test inputs.
-			MatrixPtr pSqDist = PairwiseOp<Scalar>::sqDist(testData);
+			MatrixPtr pSqDistXXs = PairwiseOp<Scalar>::pSqDistXXs(testData.pXs());
 
 			// Calculate the covariance matrix
 			// given the pairwise squared distances.
-			pKss = K(logHyp, pSqDist);
+			pKss = K(logHyp, pSqDistXXs);
 		}
 
 		return pKss;

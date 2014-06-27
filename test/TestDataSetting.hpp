@@ -59,6 +59,9 @@ protected:
 			       0.840717255983663f,   0.929263623187228f,   0.616044676146639f,
 					 0.254282178971531f,   0.349983765984809f,   0.473288848902729f,
 					 0.814284826068816f,   0.196595250431208f,   0.351659507062997f;
+
+		// Set the test data
+		testData.set(pXs);
 	}
 
 	//virtual void TearDown() {}
@@ -66,6 +69,9 @@ protected:
 protected:
 	/** @brief The Training data. */
 	TrainingData<float>	trainingData;
+
+	/** @brief The Test data. */
+	TestData<float>		testData;
 
 	/** @brief The Training inputs. */
 	MatrixXfPtr pX;

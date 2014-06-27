@@ -90,7 +90,7 @@ public:
 	 * 			self squared distances between the training inputs.
 	 * @return	An NxN matrix const pointer.
 	 */
-	const MatrixConstPtr sqDist()
+	const MatrixConstPtr pSqDistXX()
 	{
 		assert(m_pX);
 
@@ -110,7 +110,7 @@ public:
 	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xi_coord - Xj_coord
 	 * @return	An NxN matrix const pointer.
 	 */
-	const MatrixConstPtr delta(const int coord)
+	const MatrixConstPtr pDeltaXX(const int coord)
 	{
 		assert(m_pX);
 		assert(coord >= 0 && coord < D());
@@ -133,11 +133,11 @@ public:
 	 * @param	[in] pXs		The test inputs. A MxD matrix.
 	 * @return	An NxM matrix const pointer.
 	 */
-	const MatrixPtr sqDist(const TestData<Scalar> &testData) const
+	const MatrixPtr pSqDistXXs(const TestData<Scalar> &testData) const
 	{
 		assert(m_pX && testData.M() > 0);
 		assert(D() == testData.D());
-		return PairwiseOp<Scalar>::sqDist(m_pX, testData.Xs()); // NxM
+		return PairwiseOp<Scalar>::sqDist(m_pX, testData.pXs()); // NxM
 	}
 
 	/**
@@ -147,11 +147,11 @@ public:
 	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xi_coord - Xsj_coord
 	 * @return	An NxM matrix const pointer.
 	 */
-	const MatrixPtr sqDelta(const TestData<Scalar> &testData, const int coord) const
+	const MatrixPtr pDeltaXXs(const TestData<Scalar> &testData, const int coord) const
 	{
 		assert(m_pX && testData.M() > 0);
 		assert(D() == testData.D());
-		return PairwiseOp<Scalar>::sqDelta(m_pX, testData.Xs(), coord); // NxM
+		return PairwiseOp<Scalar>::delta(m_pX, testData.pXs(), coord); // NxM
 	}
 
 protected:
