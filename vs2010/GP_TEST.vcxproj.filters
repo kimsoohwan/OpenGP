@@ -16,6 +16,9 @@
     <ClInclude Include="..\test\TestDataSetting.hpp">
       <Filter>test</Filter>
     </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovSEisoDerObs.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="test">

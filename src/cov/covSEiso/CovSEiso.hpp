@@ -1,22 +1,22 @@
 #ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 #define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 
-#include "../util/macros.hpp"
-#include "../data/TrainingData.hpp"
+#include "../../util/macros.hpp"
+#include "../../data/TrainingData.hpp"
 
 namespace GP{
 
- /**
-	* @class		CovSEIso
-	* @brief		Isotropic squared exponential covariance function.
-	* 				It inherits from TrainingDataSetter
-	* 				to be able to set a training data.
-	* 				k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
-	* @author	Soohwan Kim
-	* @date		26/03/2014
-	*/
+/**
+ * @class		CovSEiso
+ * @brief		Isotropic squared exponential covariance function.
+ * 				It inherits from TrainingDataSetter
+ * 				to be able to set a training data.
+ * 				k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
+ * @author	Soohwan Kim
+ * @date		26/03/2014
+ */
 template<typename Scalar>
-class CovSEIso
+class CovSEiso
 {
 // define matrix types
 protected:	TYPE_DEFINE_MATRIX(Scalar);
@@ -41,7 +41,9 @@ public:
 	 * @return	An NxN matrix pointer.
 	 * 			N: The number of training data.
 	 */
-	static MatrixPtr K(const Hyp &logHyp, TrainingData<Scalar> &trainingData, const int pdHypIndex = -1) 
+	static MatrixPtr K(const Hyp &logHyp, 
+							 TrainingData<Scalar> &trainingData, 
+							 const int pdHypIndex = -1) 
 	{
 		assert(pdHypIndex < logHyp.size());
 
@@ -64,7 +66,9 @@ public:
 	 * 			N: The number of training data.
 	 * 			M: The number of test data.
 	 */
-	static MatrixPtr Ks(const Hyp &logHyp, const TrainingData<Scalar> &trainingData, const TestData<Scalar> &testData)
+	static MatrixPtr Ks(const Hyp &logHyp, 
+							  const TrainingData<Scalar> &trainingData, 
+							  const TestData<Scalar> &testData)
 	{
 		// Calculate the cross covariance matrix
 		// given the pairwise squared distances
@@ -86,7 +90,9 @@ public:
 	 * 			fVarianceVector == false: An MxM matrix pointer.
 	 * 			M: The number of test data.
 	 */
-	static MatrixPtr Kss(const Hyp &logHyp, const TestData<Scalar> &testData, const bool fVarianceVector = true)
+	static MatrixPtr Kss(const Hyp &logHyp, 
+								const TestData<Scalar> &testData, 
+								const bool fVarianceVector = true)
 	{
 		// The number of test data.
 		const int m = testData.M();
@@ -109,7 +115,7 @@ public:
 		{
 			// Calculate the pairwise squared distances
 			// between the test inputs.
-			MatrixPtr pSqDistXXs = PairwiseOp<Scalar>::pSqDistXXs(testData.pXs());
+			MatrixPtr pSqDistXXs = PairwiseOp<Scalar>::sqDist(testData.pXs());
 
 			// Calculate the covariance matrix
 			// given the pairwise squared distances.
@@ -134,7 +140,9 @@ protected:
 	 * 									(Default = -1) K
 	 * @return	An matrix pointer of the same size of the pairwise squared distance matrix.
 	 */
-	static MatrixPtr K(const Hyp &logHyp, const MatrixConstPtr pSqDist, const int pdHypIndex = -1)
+	static MatrixPtr K(const Hyp &logHyp, 
+							 const MatrixConstPtr pSqDist, 
+							 const int pdHypIndex = -1)
 	{
 		// pdHypIndex should be greater than the number of hyperparameters
 		assert(pdHypIndex < 2); // logHyp.size() == 2;
@@ -145,11 +153,11 @@ protected:
 		MatrixPtr pK(new Matrix(pSqDist->rows(), pSqDist->cols()));
 
 		// some constant values
-		const Scalar inv_ell2					= exp(static_cast<Scalar>(-2.0) * logHyp(0));	// 1/ell^2
-		const Scalar sigma_f2					= exp(static_cast<Scalar>( 2.0) * logHyp(1));	// sigma_f^2
-		const Scalar neg_half_inv_ell2		= static_cast<Scalar>(-0.5) * inv_ell2;			// -1/(2*ell^2)
+		const Scalar inv_ell2					= exp(static_cast<Scalar>(-2.f) * logHyp(0));	// 1/ell^2
+		const Scalar sigma_f2					= exp(static_cast<Scalar>( 2.f) * logHyp(1));	// sigma_f^2
+		const Scalar neg_half_inv_ell2		= static_cast<Scalar>(-0.5f) * inv_ell2;			// -1/(2*ell^2)
 		const Scalar sigma_f2_inv_ell2		= sigma_f2 * inv_ell2;									// sigma_f^2/ell^2
-		const Scalar twice_sigma_f2			= static_cast<Scalar>(2.0) * sigma_f2;				// 2*sigma_f^2
+		const Scalar twice_sigma_f2			= static_cast<Scalar>(2.f) * sigma_f2;				// 2*sigma_f^2
 
 		// mode
 		switch(pdHypIndex)

@@ -25,9 +25,10 @@ class TestDataSetting : public ::testing::Test
 protected:
 	/** @brief	Constructor. */
 	TestDataSetting() :
-		pX (new MatrixXf(5, 3)),	// Training inputs,	N=5, D=3
-		pY (new VectorXf(5)),		// Training outputs, N=5, D=1
-	   pXs(new MatrixXf(4, 3)),	// Test inputs,		M=4, D=3
+		pX  (new MatrixXf(5, 3)),	// Training inputs,	N =5, D=3
+		pXd (new MatrixXf(4, 3)),	// Training inputs,	Nd=4, D=3
+		pY  (new VectorXf(5)),		// Training outputs, N =5, D=1
+	   pXs (new MatrixXf(3, 3)),	// Test inputs,		M =3, D=3
 		ell(0.5f),						// Settint the hyperparameter, ell
 		sigma_f(1.5f),					// Settint the hyperparameter, sigma_f
 		sigma_n(0.1f)					// Settint the hyperparameter, sigma_n
@@ -38,11 +39,17 @@ protected:
 	virtual void SetUp()
 	{
 		// Initialize the training inputs. A 5x3 matrix.
-		(*pX) << 0.118997681558377f,   0.223811939491137f,   0.890903252535799f,
-				   0.498364051982143f,   0.751267059305653f,   0.959291425205444f,
-					0.959743958516081f,   0.255095115459269f,   0.547215529963803f,
-					0.340385726666133f,   0.505957051665142f,   0.138624442828679f,
-					0.585267750979777f,   0.699076722656686f,   0.149294005559057f;
+		(*pX) << 0.789963029944531f, 0.111705744193203f, 0.189710406017580f, 
+					0.318524245398992f, 0.136292548938299f, 0.495005824990221f, 
+					0.534064127370726f, 0.678652304800188f, 0.147608221976689f, 
+					0.089950678770581f, 0.495177019089661f, 0.054974146906188f, 
+					0.089950678770581f, 0.495177019089661f, 0.054974146906188f;
+
+		// Initialize the derivative training inputs. A 4x3 matrix.
+		(*pXd) << 0.850712674289007f, 0.929608866756663f, 0.582790965175840f,
+					 0.560559527354885f, 0.696667200555228f, 0.815397211477421f, 
+					 0.089950678770581f, 0.495177019089661f, 0.054974146906188f, 
+					 0.560559527354885f, 0.696667200555228f, 0.815397211477421f;
 
 		// Initialize the training outputs. A 5x1 vector.
 		(*pY) << 0.913337361501670f,
@@ -51,14 +58,16 @@ protected:
 					0.538342435260057f,
 					0.996134716626885f;
 
+		// Initialize the test inputs. A 3x3 matrix.
+		(*pXs) << 0.879013904597178f, 0.988911616079589f, 0.000522375356945f, 
+					 0.089950678770581f, 0.495177019089661f, 0.054974146906188f, 
+					 0.560559527354885f, 0.696667200555228f, 0.815397211477421f;
+
 		// Set the training data
 		trainingData.set(pX, pY);
 
-		// Initialize the test inputs. A 4x3 matrix.
-		(*pXs) << 0.257508254123736f,   0.243524968724989f,   0.251083857976031f,
-			       0.840717255983663f,   0.929263623187228f,   0.616044676146639f,
-					 0.254282178971531f,   0.349983765984809f,   0.473288848902729f,
-					 0.814284826068816f,   0.196595250431208f,   0.351659507062997f;
+		// Set the derivative training data
+		derivativeTrainingData.set(pX, pXd, pY);
 
 		// Set the test data
 		testData.set(pXs);
@@ -68,13 +77,19 @@ protected:
 
 protected:
 	/** @brief The Training data. */
-	TrainingData<float>	trainingData;
+	TrainingData<float>				trainingData;
+
+	/** @brief The Derivative Training data. */
+	DerivativeTrainingData<float>	derivativeTrainingData;
 
 	/** @brief The Test data. */
 	TestData<float>		testData;
 
 	/** @brief The Training inputs. */
 	MatrixXfPtr pX;
+
+	/** @brief The Derivative Training inputs. */
+	MatrixXfPtr pXd;
 
 	/** @brief The Training outputs. */
 	VectorXfPtr pY;

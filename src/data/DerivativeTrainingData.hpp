@@ -35,10 +35,10 @@ public:
 	 * 			Initialize calculation flags to be zero
 	 */
 	DerivativeTrainingData() :
-		m_fSqDistXd(false),
+		m_fSqDistXdXd(false),
 		m_fSqDistXXd(false),
-		m_fDeltaListXd(false),
-	   m_fDeltaListXXd(false)
+		m_fDeltaXdXdList(false),
+	   m_fDeltaXXdList(false)
 	{
 	}
 
@@ -48,8 +48,9 @@ public:
 	 */
 	inline int Nd() const
 	{
-		if(!m_pXd || !m_pYd) return 0;
-		assert(m_pXd->rows() == m_pYd->size());
+		//if(!m_pXd || !m_pYd) return 0;
+		//assert(m_pXd->rows() == m_pYd->size());
+		if(!m_pXd) return 0;
 		return m_pXd->rows();
 	}
 
@@ -63,23 +64,38 @@ public:
 		if(!m_pX || !m_pXd) return 0;
 		assert(m_pX && m_pXd ? m_pX->cols() == m_pXd->cols() : true);
 		if(m_pX)		return TrainingData<Scalar>::D();
-		if(m_pXd)	return m_pXd->cols();
+		else			return m_pXd->cols();
 	}
+
+	///**
+	// * @brief	Resets the training inputs.
+	// * @param	[in] pXd		The training inputs.
+	// * @param	[in] pYd		The training outputs.
+	// */
+	//void set(MatrixPtr pXd, VectorPtr pYd, std::vector<VectorPtr> pdYList)
+	//{
+	//	m_pXd			= pXd;
+	//	m_pYd			= pYd;
+	//	m_pdYList	= pdYList;
+	//	m_fSqDistXdXd			= false;
+	//	m_fSqDistXXd		= false;
+	//	m_fDeltaXdXdList		= false;
+	//	m_fDeltaXXdList	= false;
+	//}
 
 	/**
 	 * @brief	Resets the training inputs.
 	 * @param	[in] pXd		The training inputs.
 	 * @param	[in] pYd		The training outputs.
 	 */
-	void set(MatrixPtr pXd, VectorPtr pYd, std::vector<VectorPtr> pdYList)
+	void set(MatrixPtr pX, MatrixPtr pXd, VectorPtr pY)
 	{
-		m_pXd			= pXd;
-		m_pYd			= pYd;
-		m_pdYList	= pdYList;
-		m_fSqDistXd			= false;
+		TrainingData<Scalar>::set(pX, pY);
+		m_pXd = pXd;
+		m_fSqDistXdXd		= false;
 		m_fSqDistXXd		= false;
-		m_fDeltaListXd		= false;
-		m_fDeltaListXXd	= false;
+		m_fDeltaXdXdList	= false;
+		m_fDeltaXXdList	= false;
 	}
 
 	/**
@@ -92,13 +108,13 @@ public:
 		assert(m_pXd);
 
 		// Calculate it only once.
-		if(!m_fSqDistXd)
+		if(!m_fSqDistXdXd)
 		{
-			m_pSqDistXd = PairwiseOp<Scalar>::sqDist(m_pXd);
-			m_fSqDistXd = true;
+			m_pSqDistXdXd = PairwiseOp<Scalar>::sqDist(m_pXd);
+			m_fSqDistXdXd = true;
 		}
 
-		return m_pSqDistXd;
+		return m_pSqDistXdXd;
 	}
 
 	/**
@@ -132,15 +148,15 @@ public:
 		assert(coord >= 0 && coord < D());
 
 		// Calculate it only once.
-		if(!m_fDeltaListXd)
+		if(!m_fDeltaXdXdList)
 		{
-			m_pDeltaListXd.resize(D());
+			m_pDeltaXdXdList.resize(D());
 			for(int d = 0; d < D(); d++)
-				m_pDeltaListXd[d] = PairwiseOp<Scalar>::delta(m_pXd, d);
-			m_fDeltaListXd = true;
+				m_pDeltaXdXdList[d] = PairwiseOp<Scalar>::delta(m_pXd, d);
+			m_fDeltaXdXdList = true;
 		}
 
-		return m_pDeltaListXd[coord];
+		return m_pDeltaXdXdList[coord];
 	}
 
 	/**
@@ -155,15 +171,15 @@ public:
 		assert(coord >= 0 && coord < D());
 
 		// Calculate it only once.
-		if(!m_fDeltaListXXd)
+		if(!m_fDeltaXXdList)
 		{
-			m_pDeltaListXXd.resize(D());
+			m_pDeltaXXdList.resize(D());
 			for(int d = 0; d < D(); d++)
-				m_pDeltaListXXd[d] = PairwiseOp<Scalar>::delta(m_pX, m_pXd, d);
-			m_fDeltaListXXd = true;
+				m_pDeltaXXdList[d] = PairwiseOp<Scalar>::delta(m_pX, m_pXd, d);
+			m_fDeltaXXdList = true;
 		}
 
-		return m_pDeltaListXXd[coord];
+		return m_pDeltaXXdList[coord];
 	}
 
 	/**
@@ -172,7 +188,7 @@ public:
 	 * @param	[in] pXs		The test inputs. A MxD matrix.
 	 * @return	An NdxM matrix const pointer.
 	 */
-	const MatrixPtr pSqDistXdXs(const TestData<Scalar> &testData) const
+	MatrixPtr pSqDistXdXs(const TestData<Scalar> &testData) const
 	{
 		assert(m_pXd && testData.M() > 0);
 		assert(D() == testData.D());
@@ -186,7 +202,7 @@ public:
 	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xdi_coord - Xsj_coord
 	 * @return	An NdxM matrix const pointer.
 	 */
-	const MatrixPtr pDeltaXdXs(const TestData<Scalar> &testData, const int coord) const
+	MatrixPtr pDeltaXdXs(const TestData<Scalar> &testData, const int coord) const
 	{
 		assert(m_pXd && testData.M() > 0);
 		assert(D() == testData.D());
@@ -197,38 +213,38 @@ protected:
 	/** @brief Training inputs */
 	MatrixPtr m_pXd;	// NdxD matrix
 
-	/** @brief Training outputs */
-	VectorPtr m_pYd;	// Ndx1 vector
+	///** @brief Training outputs */
+	//VectorPtr m_pYd;	// Ndx1 vector
 
-	/** @brief Derivative training outputs with respect to each dimension */
-	std::vector<VectorPtr>	m_pdYList;		// Ndx1 vector per each dimension
+	///** @brief Derivative training outputs with respect to each dimension */
+	//std::vector<VectorPtr>	m_pdYList;		// Ndx1 vector per each dimension
 
 
 	/** @brief	Pre-calculated self squared distances between the derivative training inputs. */
-	MatrixConstPtr m_pSqDistXd;	// NdxNd matrix
+	MatrixConstPtr m_pSqDistXdXd;	// NdxNd matrix
 
 	/** @brief	Pre-calculated cross quared distances between the derivative training inputs and function training inputs. */
-	//MatrixConstPtr m_pSqDistXXd;	// NdxN matrix
 	MatrixConstPtr m_pSqDistXXd;	// NxNd matrix
+	//MatrixConstPtr m_pSqDistXdX;	// NdxN matrix
 
 	/** @brief	Pre-calculated self differences between the derivative training inputs. */
-	std::vector<MatrixConstPtr> m_pDeltaXdList;	// NdxNd matrix per each dimension
+	std::vector<MatrixConstPtr> m_pDeltaXdXdList;	// NdxNd matrix per each dimension
 
 	/** @brief	Pre-calculated cross differences between the derivative training inputs and training inputs. */
 	std::vector<MatrixConstPtr> m_pDeltaXXdList;	// NxNd matrix per each dimension
 
 
 	/** @brief	Flag for the pre-calculated self squared distances between the derivative training inputs. */
-	bool m_fSqDistXd;
+	bool m_fSqDistXdXd;
 
 	/** @brief	Flag for the pre-calculated cross quared distances between the function training inputs and derivative training inputs. */
 	bool m_fSqDistXXd;
 
 	/** @brief	Flag for the pre-calculated self differences between the derivative training inputs. */
-	bool m_fDeltaListXd;
+	bool m_fDeltaXdXdList;
 
 	/** @brief	Flag for the pre-calculated cross differences between the function training inputs and derivativetraining inputs. */
-	bool m_fDeltaListXXd;
+	bool m_fDeltaXXdList;
 };
 
 }

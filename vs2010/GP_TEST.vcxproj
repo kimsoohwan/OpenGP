@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\test\TestcaseCovSEiso.hpp" />
+    <ClInclude Include="..\test\TestcaseCovSEisoDerObs.hpp" />
     <ClInclude Include="..\test\testcasecovseisoslow.hpp" />
     <ClInclude Include="..\test\TestcasePairwiseOp.hpp" />
     <ClInclude Include="..\test\TestDataSetting.hpp" />

@@ -28,8 +28,8 @@ public:
 	 * 			Initialize calculation flags to be zero
 	 */
 	TrainingData() :
-		m_fSqDist(false),
-	   m_fDeltaList(false)
+		m_fSqDistXX(false),
+	   m_fDeltaXXList(false)
 	{
 	}
 
@@ -63,8 +63,8 @@ public:
 	{
 		m_pX = pX;
 		m_pY = pY;
-		m_fSqDist = false;
-		m_fDeltaList = false;
+		m_fSqDistXX		= false;
+		m_fDeltaXXList = false;
 	}
 
 	///**
@@ -95,13 +95,13 @@ public:
 		assert(m_pX);
 
 		// Calculate it only once.
-		if(!m_fSqDist)
+		if(!m_fSqDistXX)
 		{
-			m_pSqDist = PairwiseOp<Scalar>::sqDist(m_pX);
-			m_fSqDist = true;
+			m_pSqDistXX = PairwiseOp<Scalar>::sqDist(m_pX);
+			m_fSqDistXX = true;
 		}
 
-		return m_pSqDist;
+		return m_pSqDistXX;
 	}
 
 	/**
@@ -116,15 +116,15 @@ public:
 		assert(coord >= 0 && coord < D());
 
 		// Calculate it only once.
-		if(!m_fDeltaList)
+		if(!m_fDeltaXXList)
 		{
-			m_pDeltaList.resize(D());
+			m_pDeltaXXList.resize(D());
 			for(int d = 0; d < D(); i++)
-				m_pDeltaList[d] = PairwiseOp<Scalar>::sqDelta(m_pX, d);
-			m_fDeltaList = true;
+				m_pDeltaXXList[d] = PairwiseOp<Scalar>::sqDelta(m_pX, d);
+			m_fDeltaXXList = true;
 		}
 
-		return m_pDeltaList[coord];
+		return m_pDeltaXXList[coord];
 	}
 
 	/**
@@ -133,7 +133,7 @@ public:
 	 * @param	[in] pXs		The test inputs. A MxD matrix.
 	 * @return	An NxM matrix const pointer.
 	 */
-	const MatrixPtr pSqDistXXs(const TestData<Scalar> &testData) const
+	MatrixPtr pSqDistXXs(const TestData<Scalar> &testData) const
 	{
 		assert(m_pX && testData.M() > 0);
 		assert(D() == testData.D());
@@ -147,7 +147,7 @@ public:
 	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xi_coord - Xsj_coord
 	 * @return	An NxM matrix const pointer.
 	 */
-	const MatrixPtr pDeltaXXs(const TestData<Scalar> &testData, const int coord) const
+	MatrixPtr pDeltaXXs(const TestData<Scalar> &testData, const int coord) const
 	{
 		assert(m_pX && testData.M() > 0);
 		assert(D() == testData.D());
@@ -163,17 +163,17 @@ protected:
 
 
 	/** @brief	Pre-calculated self squared distances between the training inputs. */
-	MatrixConstPtr m_pSqDist;	// NxN matrix
+	MatrixConstPtr m_pSqDistXX;	// NxN matrix
 
 	/** @brief	Pre-calculated self differences between the training inputs. */
-	std::vector<MatrixConstPtr> m_pDeltaList;	// NxN matrix per each dimension
+	std::vector<MatrixConstPtr> m_pDeltaXXList;	// NxN matrix per each dimension
 
 
 	/** @brief	Flag for the pre-calculated self squared distances between the training inputs. */
-	bool m_fSqDist;
+	bool m_fSqDistXX;
 
 	/** @brief	Flag for the pre-calculated self differences between the training inputs. */
-	bool m_fDeltaList;
+	bool m_fDeltaXXList;
 };
 
 }

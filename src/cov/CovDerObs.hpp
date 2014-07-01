@@ -6,18 +6,23 @@
 
 namespace GP{
 
-template<typename Scalar, template<> class Cov>
-class CovDiff : Cov<Scalar>
+template<typename Scalar, template<typename> class Cov>
+class CovDerObs : public Cov<Scalar>
 {
+// define matrix types
+protected:	TYPE_DEFINE_MATRIX(Scalar);
+
 public:
-	static MatrixPtr K(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const int pdHypIndex = -1)
+	static MatrixPtr K(const typename Cov<Scalar>::Hyp &logHyp, 
+							 DerivativeTrainingData<Scalar> &derivativeTrainingData, 
+							 const int pdHypIndex = -1)
 	{
 		// input
 		// pSqDist (nxn): squared distances
 		// deltaList: list of delta (nxn)
 		// d: dimension of training inputs
 		// pLogHyp: log hyperparameters
-		// pdIndex: partial derivatives with respect to this parameter index
+		// pdHypIndex: partial derivatives with respect to this parameter index
 
 		// output
 		// K: nn by nn, nn = n + nd*d
@@ -45,39 +50,48 @@ public:
 		for(int rowBlock = 0; rowBlock < numBlocks; rowBlock++)
 		{
 			// constants
-			const int startRow	= rowBlock == 0 ? 0 : n + nd*(row_block-1);
+			const int startRow	= rowBlock == 0 ? 0 : n + nd*(rowBlock-1);
 			const int numRows		= rowBlock == 0 ? n : nd;
 
 			for(int colBlock = rowBlock; colBlock < numBlocks; colBlock++)
 			{
 				// constants
-				const int startCol	= colBlock == 0 ? 0 : n + nd*(col_block-1);
+				const int startCol	= colBlock == 0 ? 0 : n + nd*(colBlock-1);
 				const int numCols		= colBlock == 0 ? n : nd;
 
 				// calculate the upper triangle
 				if(rowBlock == 0)
 				{
 					// F-F
-					if(colBlock == 0)	pK->block(startRow, startCol, numRows, numCols) = *(K(pLogHyp, static_cast<TrainingData<Scalar> >(derivativeTrainingData), pdIndex));
+					if(colBlock == 0)	
+						pK->block(startRow, startCol, numRows, numCols) 
+						= *(CovParent::K(logHyp, static_cast<TrainingData<Scalar> >(derivativeTrainingData), pdHypIndex));
 
 					// F-D
-					else					pK->block(startRow, startCol, numRows, numCols) = *(K_FD(pLogHyp, derivativeTrainingData, colBlock-1, pdIndex));
+					else					
+						pK->block(startRow, startCol, numRows, numCols) 
+						= *(K_FD(logHyp, derivativeTrainingData, colBlock-1, pdHypIndex));
 				}
 				else
 				{
 					// D-D
-											pK->block(startRow, startCol, numRows, numCols) = *(K_DD(pLogHyp, derivativeTrainingData, rowBlock-1, colBlock-1, pdIndex));
+						pK->block(startRow, startCol, numRows, numCols) 
+						= *(K_DD(logHyp, derivativeTrainingData, rowBlock-1, colBlock-1, pdHypIndex));
 				}
 
 				// copy its transpose
-				if(rowBlock != colBlock)	pK->block(startCol, startRow, numCols, numRows).noalias() = pK->block(startRow, startCol, numRows, numCols).transpose();
+				if(rowBlock != colBlock)	
+						pK->block(startCol, startRow, numCols, numRows).noalias()
+						= pK->block(startRow, startCol, numRows, numCols).transpose();
 			}
 		}
 
 		return pK;
 	}
 
-	static MatrixPtr Ks(const Hyp &logHyp, DerivativeTrainingData<Scalar> &derivativeTrainingData, const TestData<Scalar> &testData)
+	static MatrixPtr Ks(const typename Cov<Scalar>::Hyp &logHyp, 
+							  DerivativeTrainingData<Scalar> &derivativeTrainingData, 
+							  const TestData<Scalar> &testData)
 	{
 		// output
 		// K: nn x m, nn  = n  + nd*d
@@ -109,14 +123,18 @@ public:
 		for(int rowBlock = 0; rowBlock < numBlocks; rowBlock++)
 		{
 			// constants
-			const int startRow	= rowBlock == 0 ? 0 : n + nd*(row_block-1);
+			const int startRow	= rowBlock == 0 ? 0 : n + nd*(rowBlock-1);
 			const int numRows		= rowBlock == 0 ? n : nd;
 
 			// F-F
-			if(rowBlock == 0)		pK->block(startRow, startCol, numRows, numCols) = *(Ks(pLogHyp, static_cast<TrainingData<Scalar> >(derivativeTrainingData), testData));
+			if(rowBlock == 0)		
+				pK->block(startRow, startCol, numRows, numCols)
+				= *(CovParent::Ks(logHyp, static_cast<TrainingData<Scalar> >(derivativeTrainingData), testData));
 
 			// D-F
-			else						pK->block(startRow, startCol, numRows, numCols) = *(Ks_DF(pLogHyp, derivativeTrainingData, testData, rowBlock-1));
+			else						
+				pK->block(startRow, startCol, numRows, numCols)
+				= *(Ks_DF(logHyp, derivativeTrainingData, testData, rowBlock-1));
 		}
 
 		return pK;
