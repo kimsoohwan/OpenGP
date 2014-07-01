@@ -308,7 +308,7 @@ protected:
 	static MatrixPtr K(const Hyp &logHyp, const MatrixConstPtr pSqDist, const int pdHypIndex = -1)
 	{
 		// pdHypIndex should be greater than the number of hyperparameters
-		assert(pdHypIndex < 2); // logHyp.size() == 2;
+		assert(pdHypIndex < logHyp.size());
 
 		// Output.
 		// K: of the same size as the pairwise squared distance matrix

@@ -1,9 +1,9 @@
 #ifndef _MEAN_FUNCTION_ZERO_HPP_
 #define _MEAN_FUNCTION_ZERO_HPP_
 
-#include "../../util/macros.hpp"
-#include "../../data/DerivativeTrainingData.hpp"
-#include "../../data/TestData.hpp"
+#include "../util/macros.hpp"
+#include "../data/DerivativeTrainingData.hpp"
+#include "../data/TestData.hpp"
 
 namespace GP{
 
@@ -19,34 +19,22 @@ template<typename Scalar>
 class MeanZero
 {
 // define matrix types
-protected:	TYPE_DEFINE_MATRIX(Scalar);
+protected:	TYPE_DEFINE_VECTOR(Scalar);
 
 // define hyperparameters
 public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 
 	/**
 		* @brief	The mean vector at the training positions. f(X)
-	   * @param	[in] logHyp 			The log hyperparameters, nothing for MeanZero.
-	   * @param	[in] trainingData 	The training data.
+	   * @param	[in] logHyp 					The log hyperparameters, nothing for MeanZero.
+	   * @param	[in] generalTrainingData 	The training data or derivative training data
 		* @return	The mean vector.
 		*/
-	static VectorPtr m(const Hyp &logHyp, const TrainingData<Scalar> &trainingData)
+	template<typename GeneralTrainingData>
+	static VectorPtr m(const Hyp &logHyp, const GeneralTrainingData<Scalar> &generalTrainingData, , const int pdHypIndex = -1)
 	{
 		// Zero vector
-		VectorPtr pMu(new Vector(trainingData.N()));
-		pMu->setZero();
-		return pMu;
-	}
-
-	static VectorPtr m(const Hyp &logHyp, const DerivativeTrainingData<Scalar> &derivativeTrainingData)
-	{
-		// Zero vector
-		const int d		= derivativeTrainingData.D();
-		const int n		= derivativeTrainingData.N();
-		const int nd	= derivativeTrainingData.Nd();
-		const int nn	= n + nd*d;
-
-		VectorPtr pMu(new Vector(nn));
+		VectorPtr pMu(new Vector(generalTrainingData.NN()));
 		pMu->setZero();
 		return pMu;
 	}
@@ -67,6 +55,7 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 	}
 };
 
+using MeanZeroDerObs = MeanZero;
 }
 
 #endif

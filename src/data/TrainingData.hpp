@@ -44,6 +44,11 @@ public:
 		return m_pX->rows();
 	}
 
+	inline int NN() const
+	{
+		return N();
+	}
+
 	/**
 	 * @brief	Gets the number of dimensions, D.
 	 * @return	the number of dimensions.

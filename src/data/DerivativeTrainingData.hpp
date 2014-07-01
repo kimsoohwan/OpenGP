@@ -67,6 +67,11 @@ public:
 		else			return m_pXd->cols();
 	}
 
+	inline int NN() const
+	{
+		return N() + Nd()*D();
+	}
+
 	///**
 	// * @brief	Resets the training inputs.
 	// * @param	[in] pXd		The training inputs.

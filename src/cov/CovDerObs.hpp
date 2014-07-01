@@ -39,8 +39,7 @@ public:
 		const int d		= derivativeTrainingData.D();
 		const int n		= derivativeTrainingData.N();
 		const int nd	= derivativeTrainingData.Nd();
-
-		const int nn			= n + nd*d;
+		const int nn	= derivativeTrainingData.NN();
 		const int numBlocks	= nd > 0 ? 1 + d : 1;
 
 		// covariance matrix
@@ -108,9 +107,9 @@ public:
 		const int d		= derivativeTrainingData.D();
 		const int n		= derivativeTrainingData.N();
 		const int nd	= derivativeTrainingData.Nd();
+		const int nn	= derivativeTrainingData.NN();
 		const int m		= testData.M();
 
-		const int nn			= n + nd*d;
 		const int numBlocks	= nd > 0 ? 1 + d : 1;
 
 		// covariance matrix
