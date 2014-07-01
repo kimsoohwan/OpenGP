@@ -1,8 +1,9 @@
 #ifndef _MEAN_FUNCTION_ZERO_HPP_
 #define _MEAN_FUNCTION_ZERO_HPP_
 
-#include "../data/typetraits.hpp"
-#include "../data/trainingdata.hpp"
+#include "../../util/macros.hpp"
+#include "../../data/DerivativeTrainingData.hpp"
+#include "../../data/TestData.hpp"
 
 namespace GP{
 
@@ -15,23 +16,37 @@ namespace GP{
 	* @date		26/03/2014
 	*/
 template<typename Scalar>
-class MeanZero : public TypeTraits<Scalar>
+class MeanZero
 {
-public:
-	// Hyperparameters
-	typedef	TypeTraits<Scalar>::Hyp0		Hyp;
+// define matrix types
+protected:	TYPE_DEFINE_MATRIX(Scalar);
+
+// define hyperparameters
+public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 
 	/**
 		* @brief	The mean vector at the training positions. f(X)
 	   * @param	[in] logHyp 			The log hyperparameters, nothing for MeanZero.
 	   * @param	[in] trainingData 	The training data.
-		* @param [in] pdCoord			(Optional) flag for derivatives (-1: function value, 1: function derivative)
 		* @return	The mean vector.
 		*/
-	VectorPtr operator()(const Hyp &logHyp, const TrainingData<Scalar> &trainingData, const int pdCoord = -1) const
+	static VectorPtr m(const Hyp &logHyp, const TrainingData<Scalar> &trainingData)
 	{
 		// Zero vector
 		VectorPtr pMu(new Vector(trainingData.N()));
+		pMu->setZero();
+		return pMu;
+	}
+
+	static VectorPtr m(const Hyp &logHyp, const DerivativeTrainingData<Scalar> &derivativeTrainingData)
+	{
+		// Zero vector
+		const int d		= derivativeTrainingData.D();
+		const int n		= derivativeTrainingData.N();
+		const int nd	= derivativeTrainingData.Nd();
+		const int nn	= n + nd*d;
+
+		VectorPtr pMu(new Vector(nn));
 		pMu->setZero();
 		return pMu;
 	}
@@ -43,10 +58,10 @@ public:
 		* @return	The mean vector.
 		*/
 	//VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
-	VectorPtr operator()(const Hyp &logHyp, const MatrixConstPtr pXs) const
+	static VectorPtr m(const Hyp &logHyp, const TestData &testData)
 	{
 		// Zero vector
-		VectorPtr pMu(new Vector(pXs->M()));
+		VectorPtr pMu(new Vector(testData.M()));
 		pMu->setZero();
 		return pMu;
 	}

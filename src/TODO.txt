@@ -1,0 +1,39 @@
+MeanZero
+Inf
+GP
+Learn
+GPMap Test
+
+
+MeanGP
+1. template<Scalar> MeanGP_MeanZeroCovSEiso : template<Scalar, MeanZero, CovSEisoDerPred, InfExact> _MeanGP {};
+
+2. predict at derivative test inputs, df(z)/dzj
+2.1 template<Scalar>
+    class DerivativeTestData : public TestData<Scalar>
+
+2.2 mean, cov functions
+: Ks = FF,   FD1,  FD2,  FD3
+       D1F, D1D1, D1D2, D1D3
+       D2F, D2D1, D2D2, D2D3
+		 D3F, D3D1, D3D2, D3D3
+   (non-symmetric) != K(symmetric)
+: ms = F
+       D1
+		 D2
+		 D3
+
+class Data
+{
+protected:
+	DerivativeTrainingData	m_derivativeTrainingData;
+	TestData						m_testData;
+
+	MatrixPtr					m_pSqDistXXs;
+	MatrixPtr					m_pSqDistXdXs;
+	std::vector<MatrixPtr>	m_pDeltaXXsList;
+	std::vector<MatrixPtr>	m_pDeltaXdXsList;
+
+	bool							m_fSqDist;
+	bool							m_fDelta;
+};

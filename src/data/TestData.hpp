@@ -71,8 +71,12 @@ public:
 
 
 protected:
-	/** @brief test inputs */
+	/** @brief function test inputs */
 	MatrixPtr m_pXs;	// MxD matrix
+
+	/** @brief derivative test inputs */
+	MatrixPtr m_pXds;	// MdxD matrix
+
 
 	/** @brief test outputs */
 	VectorPtr m_pYs;	// Mx1 vector
