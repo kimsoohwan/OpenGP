@@ -25,4 +25,7 @@
       <UniqueIdentifier>{d3565dc7-6bb5-4113-908d-9774bc7f54f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\TODO.txt" />
+  </ItemGroup>
 </Project>

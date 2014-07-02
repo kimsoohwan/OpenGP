@@ -46,7 +46,7 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 		* @return	The mean vector.
 		*/
 	//VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
-	static VectorPtr m(const Hyp &logHyp, const TestData &testData)
+	static VectorPtr ms(const Hyp &logHyp, const TestData &testData)
 	{
 		// Zero vector
 		VectorPtr pMu(new Vector(testData.M()));

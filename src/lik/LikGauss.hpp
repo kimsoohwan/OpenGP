@@ -19,7 +19,7 @@ protected:	TYPE_DEFINE_VECTOR(Scalar);
 public:		TYPE_DEFINE_HYP(Scalar, 1); // sigma_n
 
 	// diagonal vector
-	static VectorPtr sn(const Hyp &logHyp, const TrainingData<Scalar> trainingData, const int pdHypIndex = -1)
+	static VectorPtr lik(const Hyp &logHyp, const TrainingData<Scalar> trainingData, const int pdHypIndex = -1)
 	{
 		assert(pdHypIndex < logHyp.size());
 
@@ -42,8 +42,8 @@ public:		TYPE_DEFINE_HYP(Scalar, 1); // sigma_n
 	//MatrixPtr operator()(MatrixConstPtr pX, const Hyp &logHyp, const int pdIndex = -1) const
 	//{
 	//	// number of training data
-	//	const int n = getN();
-	//	MatrixPtr pD(new Matrix(n, n));
+	//	const int N = getN();
+	//	MatrixPtr pD(new Matrix(N, N));
 	//	pD->setZero();
 
 	//	// derivatives w.r.t sn

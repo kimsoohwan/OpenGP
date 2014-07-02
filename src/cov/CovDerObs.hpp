@@ -20,43 +20,43 @@ public:
 		// input
 		// pSqDist (nxn): squared distances
 		// deltaList: list of delta (nxn)
-		// d: dimension of training inputs
+		// D: dimension of training inputs
 		// pLogHyp: log hyperparameters
 		// pdHypIndex: partial derivatives with respect to this parameter index
 
 		// output
-		// K: nn by nn, nn = n + nd*d
+		// K: NN by NN, NN = N + Nd*D
 		// 
-		// for example, when d = 3
+		// for example, when D = 3
 		//                  | f(x) | df(xd)/dx_1, df(xd)/dx_2, df(xd)/dx_3
-		//                  |  n   |     nd            nd           nd
+		//                  |  N   |     Nd            Nd           Nd
 		// ---------------------------------------------------------------
-		// f(x)        : n  |  FF  |     FD1,         FD2,         FD3
-		// df(xd)/dx_1 : nd |   -  |    D1D1,        D1D2,        D1D3  
-		// df(xd)/dx_2 : nd |   -  |      - ,        D2D2,        D2D3  
-		// df(xd)/dx_3 : nd |   -  |      - ,          - ,        D3D3
+		// f(x)        : N  |  FF  |     FD1,         FD2,         FD3
+		// df(xd)/dx_1 : Nd |   -  |    D1D1,        D1D2,        D1D3  
+		// df(xd)/dx_2 : Nd |   -  |      - ,        D2D2,        D2D3  
+		// df(xd)/dx_3 : Nd |   -  |      - ,          - ,        D3D3
 
-		const int d		= derivativeTrainingData.D();
-		const int n		= derivativeTrainingData.N();
-		const int nd	= derivativeTrainingData.Nd();
-		const int nn	= derivativeTrainingData.NN();
-		const int numBlocks	= nd > 0 ? 1 + d : 1;
+		const int D		= derivativeTrainingData.D();
+		const int N		= derivativeTrainingData.N();
+		const int Nd	= derivativeTrainingData.Nd();
+		const int NN	= derivativeTrainingData.NN();
+		const int numBlocks	= Nd > 0 ? 1 + D : 1;
 
 		// covariance matrix
-		MatrixPtr pK(new Matrix(nn, nn)); // nn by nn, nn = n + nd*d
+		MatrixPtr pK(new Matrix(NN, NN)); // NN by NN, NN = N + Nd*D
 
 		// fill block matrices of FF, FD and DD in order
 		for(int rowBlock = 0; rowBlock < numBlocks; rowBlock++)
 		{
 			// constants
-			const int startRow	= rowBlock == 0 ? 0 : n + nd*(rowBlock-1);
-			const int numRows		= rowBlock == 0 ? n : nd;
+			const int startRow	= rowBlock == 0 ? 0 : N + Nd*(rowBlock-1);
+			const int numRows		= rowBlock == 0 ? N : Nd;
 
 			for(int colBlock = rowBlock; colBlock < numBlocks; colBlock++)
 			{
 				// constants
-				const int startCol	= colBlock == 0 ? 0 : n + nd*(colBlock-1);
-				const int numCols		= colBlock == 0 ? n : nd;
+				const int startCol	= colBlock == 0 ? 0 : N + Nd*(colBlock-1);
+				const int numCols		= colBlock == 0 ? N : Nd;
 
 				// calculate the upper triangle
 				if(rowBlock == 0)
@@ -93,9 +93,9 @@ public:
 							  const TestData<Scalar> &testData)
 	{
 		// output
-		// K: nn x m, nn  = n  + nd*d
+		// K: NN x M, NN  = N  + Nd*D
 		// 
-		// for example, when d = 3
+		// for example, when D = 3
 		// K
 		//             | f(z)
 		// -------------------
@@ -104,26 +104,26 @@ public:
 		// df(xd)/dx_2 | D2F
 		// df(xd)/dx_3 | D3F
 
-		const int d		= derivativeTrainingData.D();
-		const int n		= derivativeTrainingData.N();
-		const int nd	= derivativeTrainingData.Nd();
-		const int nn	= derivativeTrainingData.NN();
-		const int m		= testData.M();
+		const int D		= derivativeTrainingData.D();
+		const int N		= derivativeTrainingData.N();
+		const int Nd	= derivativeTrainingData.Nd();
+		const int NN	= derivativeTrainingData.NN();
+		const int M		= testData.M();
 
-		const int numBlocks	= nd > 0 ? 1 + d : 1;
+		const int numBlocks	= Nd > 0 ? 1 + D : 1;
 
 		// covariance matrix
-		MatrixPtr pK(new Matrix(nn, m)); // nn x m, nn = n + nd*d
+		MatrixPtr pK(new Matrix(NN, M)); // NN x M, NN = N + Nd*D
 
 		// fill block matrices of FF, FD and DD in order
 		// constants
 		const int startCol	= 0;
-		const int numCols		= m;
+		const int numCols		= M;
 		for(int rowBlock = 0; rowBlock < numBlocks; rowBlock++)
 		{
 			// constants
-			const int startRow	= rowBlock == 0 ? 0 : n + nd*(rowBlock-1);
-			const int numRows		= rowBlock == 0 ? n : nd;
+			const int startRow	= rowBlock == 0 ? 0 : N + Nd*(rowBlock-1);
+			const int numRows		= rowBlock == 0 ? N : Nd;
 
 			// F-F
 			if(rowBlock == 0)		

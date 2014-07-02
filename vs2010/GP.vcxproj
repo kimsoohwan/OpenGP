@@ -96,9 +96,11 @@
     <ClInclude Include="..\src\data\TrainingData.hpp" />
     <ClInclude Include="..\src\data\typetraits.hpp" />
     <ClInclude Include="..\src\gp\gp.hpp" />
-    <ClInclude Include="..\src\gp\hyp.hpp" />
-    <ClInclude Include="..\src\inf\infexact.hpp" />
-    <ClInclude Include="..\src\mean\meanzero.hpp" />
+    <ClInclude Include="..\src\inf\InfExact.hpp" />
+    <ClInclude Include="..\src\lik\LikGauss.hpp" />
+    <ClInclude Include="..\src\lik\LikGaussDerObs.hpp" />
+    <ClInclude Include="..\src\mean\MeanZero.hpp" />
+    <ClInclude Include="..\src\util\Hyp.hpp" />
     <ClInclude Include="..\src\util\macros.hpp" />
     <ClInclude Include="..\src\util\PairwiseOp.hpp" />
   </ItemGroup>

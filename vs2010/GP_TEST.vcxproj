@@ -89,6 +89,9 @@
     <ClInclude Include="..\test\TestcasePairwiseOp.hpp" />
     <ClInclude Include="..\test\TestDataSetting.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\TODO.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

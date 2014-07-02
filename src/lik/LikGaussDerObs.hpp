@@ -19,18 +19,18 @@ protected:	TYPE_DEFINE_VECTOR(Scalar);
 public:		TYPE_DEFINE_HYP(Scalar, 2); // sigma_nf, sigma_nd
 
 	// diagonal vector
-	static VectorPtr sn(const Hyp &logHyp, const DerivativeTrainingData<Scalar> derivativeTrainingData, const int pdHypIndex = -1)
+	static VectorPtr lik(const Hyp &logHyp, const DerivativeTrainingData<Scalar> derivativeTrainingData, const int pdHypIndex = -1)
 	{
 		assert(pdHypIndex < logHyp.size());
 
 		// some constants
-		const int n  = derivativeTrainingData.N();
-		const int nd = derivativeTrainingData.Nd();
-		const int d  = derivativeTrainingData.D();
-		const int nn = derivativeTrainingData.NN();
+		const int N  = derivativeTrainingData.N();
+		const int Nd = derivativeTrainingData.Nd();
+		const int D  = derivativeTrainingData.D();
+		const int NN = derivativeTrainingData.NN();
 
 		// number of training data
-		VectorPtr pD(new Vector(nn));
+		VectorPtr pD(new Vector(NN));
 
 		const Scalar snf2 = exp(static_cast<Scalar>(2.f) * logHyp(0));
 		const Scalar snd2 = exp(static_cast<Scalar>(2.f) * logHyp(1));
@@ -44,22 +44,22 @@ public:		TYPE_DEFINE_HYP(Scalar, 2); // sigma_nf, sigma_nd
 		{
 		case 0:
 			{
-				pD->head(n).fill(static_cast<Scalar>(2.f) * snf2);
-				pD->tail(nd*d).setZero();
+				pD->head(N).fill(static_cast<Scalar>(2.f) * snf2);
+				pD->tail(Nd*D).setZero();
 				break;
 			}
 
 		case 1:
 			{
-				pD->head(n).setZero();
-				pD->tail(nd*d).fill(static_cast<Scalar>(2.f) * snd2);
+				pD->head(N).setZero();
+				pD->tail(Nd*D).fill(static_cast<Scalar>(2.f) * snd2);
 				break;
 			}
 
 		default:
 			{
-				pD->head(n).fill(snf2);
-				pD->tail(nd*d).fill(snd2);
+				pD->head(N).fill(snf2);
+				pD->tail(Nd*D).fill(snd2);
 			}
 		}
 
@@ -70,8 +70,8 @@ public:		TYPE_DEFINE_HYP(Scalar, 2); // sigma_nf, sigma_nd
 	//MatrixPtr operator()(MatrixConstPtr pX, const Hyp &logHyp, const int pdIndex = -1) const
 	//{
 	//	// number of training data
-	//	const int n = getN();
-	//	MatrixPtr pD(new Matrix(n, n));
+	//	const int N = getN();
+	//	MatrixPtr pD(new Matrix(N, N));
 	//	pD->setZero();
 
 	//	// derivatives w.r.t sn

@@ -95,7 +95,7 @@ public:
 								const bool fVarianceVector = true)
 	{
 		// The number of test data.
-		const int m = testData.M();
+		const int M = testData.M();
 
 		// Some constant values.
 		const Scalar sigma_f2 = exp(static_cast<Scalar>(2.0) * logHyp(1)); // sigma_f^2
@@ -107,7 +107,7 @@ public:
 		if(fVarianceVector)
 		{
 			// k(x, x') = sigma_f^2
-			pKss.reset(new Matrix(m, 1));
+			pKss.reset(new Matrix(M, 1));
 			pKss->fill(sigma_f2);
 		}
 		// K: self-covariance matrix (MxM).

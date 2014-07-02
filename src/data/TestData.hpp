@@ -52,6 +52,24 @@ public:
 	}
 
 	/**
+	 * @brief	Gets the pointer to the output means.
+	 * @return	A matrix const pointer.
+	 */
+	VectorPtr& pMu()
+	{
+		return m_pMu;
+	}
+
+	/**
+	 * @brief	Gets the pointer to the output (co)variances.
+	 * @return	A matrix const pointer.
+	 */
+	MatrixPtr& pSigma()
+	{
+		return m_pSigma;
+	}
+
+	/**
 	 * @brief	Gets the const pointer to the training inputs.
 	 * @return	A matrix const pointer.
 	 */
@@ -77,9 +95,9 @@ protected:
 	/** @brief derivative test inputs */
 	MatrixPtr m_pXds;	// MdxD matrix
 
-
 	/** @brief test outputs */
-	VectorPtr m_pYs;	// Mx1 vector
+	VectorPtr m_pMu;		// Mx1 vector
+	MatrixPtr m_pSigma;	// Mx1 vector or MxM matrix
 };
 
 }

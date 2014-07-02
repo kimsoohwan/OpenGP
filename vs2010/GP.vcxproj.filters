@@ -4,16 +4,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\inf\infexact.hpp">
-      <Filter>src\inf</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\mean\meanzero.hpp">
-      <Filter>src\mean</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\gp\gp.hpp">
-      <Filter>src\gp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\gp\hyp.hpp">
       <Filter>src\gp</Filter>
     </ClInclude>
     <ClInclude Include="..\include\gp.h">
@@ -67,6 +58,21 @@
     <ClInclude Include="..\src\cov\CovDerObs.hpp">
       <Filter>src\cov</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\mean\MeanZero.hpp">
+      <Filter>src\mean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\inf\InfExact.hpp">
+      <Filter>src\inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lik\LikGauss.hpp">
+      <Filter>src\lik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lik\LikGaussDerObs.hpp">
+      <Filter>src\lik</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\Hyp.hpp">
+      <Filter>src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -95,6 +101,9 @@
     </Filter>
     <Filter Include="src\cov\covSEiso">
       <UniqueIdentifier>{1581b0fa-b476-4467-9d6a-b187cfe23b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\lik">
+      <UniqueIdentifier>{5f47930b-ad79-445d-912b-9ccb20a359a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
