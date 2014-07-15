@@ -306,7 +306,7 @@ protected:
 				MatrixPtr pd2s_dell_dxj	= d2s_dell_dxj(logHyp, pSqDist, pDelta);
 
 				// calculation
-				(*pK).noalias() = ell * ( *(pd2k_ds2->cwiseProduct(*(pds_dell->cwiseProduct(*pds_dxj))))
+				pK->noalias() = ell * ( *(pd2k_ds2->cwiseProduct(*(pds_dell->cwiseProduct(*pds_dxj))))
 					                     + *(dk_ds->cwiseProduct(*pd2s_dell_dxj)) );
 
 				return pK;	
@@ -322,7 +322,7 @@ protected:
 				MatrixPtr pK = dk_dxj(logHyp, pSqDist, pDelta);
 
 				// dk/dlog(sigma_f) = sigma_f * k(x, x')
-				(*pK).noalias() = static_cast<Scalar>(2.0) * (*pK);
+				pK->noalias() = static_cast<Scalar>(2.0) * (*pK);
 
 				return pK;
 			}
@@ -338,7 +338,7 @@ protected:
 		MatrixPtr pK = dk_ds(logHyp, pSqDist);
 
 		// calculation
-		(*pK).noalias() = *(pK->cwiseProduct(*(ds_dxj(logHyp, pSqDist, pDelta)));
+		pK->noalias() = *(pK->cwiseProduct(*(ds_dxj(logHyp, pSqDist, pDelta)));
 
 		return pK;
 	}
@@ -387,7 +387,7 @@ protected:
 				MatrixPtr pd3s_dell_dxi_dxj	= d3s_dell_dxi_dxj(logHyp, pSqDistXd,  pDeltaXd_i, pDeltaXd_j, fSameCoords);
 
 				// calculation
-				(*pK).noalias() = ell * ( *(pd3k_ds3->cwiseProduct(*(pds_dell->cwiseProduct(*(pds_dxi->cwiseProduct(*pds_dxj))))))
+				pK->noalias() = ell * ( *(pd3k_ds3->cwiseProduct(*(pds_dell->cwiseProduct(*(pds_dxi->cwiseProduct(*pds_dxj))))))
 											   + *(pd2k_ds2->cwiseProduct( *(pd2s_dell_dxi->cwiseProduct(*(pds_dxj)))
 																				  + *(pds_dxi->cwiseProduct(*(pd2s_dell_dxj)))
 																				  + *(pds_dell->cwiseProduct(*(pd2s_dxi_dxj))) ))
@@ -406,7 +406,7 @@ protected:
 				MatrixPtr pK(new Matrix(pSqDistXd->rows(), pSqDist->cols()));
 
 				// calculation
-				(*pK).noalias() = static_cast<Scalar>(2.0) * (*pK);
+				pK->noalias() = static_cast<Scalar>(2.0) * (*pK);
 
 				return pK;
 			}
@@ -435,7 +435,7 @@ protected:
 		MatrixPtr pd2s_dxi_dxj	= d2s_dxi_dxj(logHyp, pSqDistXd, pDeltaXd_i, pDeltaXd_j, fSameCoords);
 
 		// calculation
-		(*pK).noalias() = ( *(pd2k_ds2->cwiseProduct(*(pds_dxi->cwiseProduct(*(pds_dxj)))))
+		pK->noalias() = ( *(pd2k_ds2->cwiseProduct(*(pds_dxi->cwiseProduct(*(pds_dxj)))))
 								+ *(pdk_ds->cwiseProduct(*pd2s_dxi_dxj)) );
 
 		return pK;

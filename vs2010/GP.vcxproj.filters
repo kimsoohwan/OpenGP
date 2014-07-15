@@ -4,50 +4,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\gp\gp.hpp">
-      <Filter>src\gp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\gp.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\typetraits.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisoder.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\util\macros.hpp">
-      <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\isotropic.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisobase.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\cov.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisodiffbase.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\TrainingData.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\TestData.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\DerivativeTrainingData.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\util\PairwiseOp.hpp">
-      <Filter>src\util</Filter>
+    <ClInclude Include="..\include\gp.h">
+      <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cov\covSEiso\CovSEiso.hpp">
       <Filter>src\cov\covSEiso</Filter>
@@ -58,10 +19,49 @@
     <ClInclude Include="..\src\cov\CovDerObs.hpp">
       <Filter>src\cov</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mean\MeanZero.hpp">
-      <Filter>src\mean</Filter>
+    <ClInclude Include="..\src\cov\covseisobase.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisoder.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisodiffbase.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\isotropic.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\DerivativeTrainingData.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\TestData.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\TrainingData.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\typetraits.hpp">
+      <Filter>src\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gp\GP.hpp">
+      <Filter>src\gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gp\Trainer.hpp">
+      <Filter>src\gp</Filter>
     </ClInclude>
     <ClInclude Include="..\src\inf\InfExact.hpp">
+      <Filter>src\inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\inf\InfExactGeneral.hpp">
+      <Filter>src\inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\inf\Hyp.hpp">
       <Filter>src\inf</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lik\LikGauss.hpp">
@@ -70,40 +70,49 @@
     <ClInclude Include="..\src\lik\LikGaussDerObs.hpp">
       <Filter>src\lik</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\util\Hyp.hpp">
+    <ClInclude Include="..\src\mean\MeanZero.hpp">
+      <Filter>src\mean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\Exception.hpp">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\macros.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\util\PairwiseOp.hpp">
       <Filter>src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
-      <UniqueIdentifier>{eefb82dd-9482-4b5c-832f-66cfcc6f2c44}</UniqueIdentifier>
+      <UniqueIdentifier>{76514ad3-8594-4b59-8819-f61ba873f9f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{df523a46-c545-4b75-9229-db4a2e669b22}</UniqueIdentifier>
+      <UniqueIdentifier>{d76919ad-7e24-47c1-8570-029dd2236c82}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\cov">
-      <UniqueIdentifier>{a2895955-7a89-438c-80ba-123504b1868d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\inf">
-      <UniqueIdentifier>{17a53e69-43e4-4b60-9f43-4d9fef654ea4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\mean">
-      <UniqueIdentifier>{0461e498-02d8-40e4-803f-db58a5e210df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\gp">
-      <UniqueIdentifier>{5e60d6dc-abb2-4751-8e2b-e9291af74969}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\data">
-      <UniqueIdentifier>{1d083b80-321d-4456-94d3-03f23a96b759}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\util">
-      <UniqueIdentifier>{89b73f60-d9b4-4583-bda0-8d397113e7f7}</UniqueIdentifier>
+      <UniqueIdentifier>{2806d2c1-73ca-493a-8d24-b51dcc649e0f}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\cov\covSEiso">
-      <UniqueIdentifier>{1581b0fa-b476-4467-9d6a-b187cfe23b5d}</UniqueIdentifier>
+      <UniqueIdentifier>{9cab7159-ac05-4b57-96e7-184a1d1f2fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\data">
+      <UniqueIdentifier>{7f8c6422-0452-4c43-bf3c-81da53d0dfc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gp">
+      <UniqueIdentifier>{f91b754d-dc8d-41b7-ac4d-6693efde45e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\inf">
+      <UniqueIdentifier>{21523a07-b1b1-4d1f-b4f4-e299dd1d4a43}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\lik">
-      <UniqueIdentifier>{5f47930b-ad79-445d-912b-9ccb20a359a9}</UniqueIdentifier>
+      <UniqueIdentifier>{249a3088-b7d5-4185-84b7-42be88cd326f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mean">
+      <UniqueIdentifier>{9737aa04-bbb1-48a3-822b-feaf10eb9f33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{1fee1f35-31d8-4db4-8fa1-eaab5a1ef7e1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

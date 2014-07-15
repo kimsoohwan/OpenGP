@@ -1,7 +1,7 @@
 #ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_BASE_HPP_
 #define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_BASE_HPP_
 
-#include "../util/macros.hpp"
+#include "../util/macros.h"
 #include "../data/trainingdata.hpp"
 
 namespace GP {

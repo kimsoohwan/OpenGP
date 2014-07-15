@@ -2,7 +2,7 @@
 #define _PAIRWISE_OPERATIONS_HPP_
 
 #include <assert.h>
-#include "macros.hpp"
+#include "macros.h"
 
 namespace GP{
 

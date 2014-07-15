@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F07AB8B6-3F16-4D7C-9611-9101BF47476B}</ProjectGuid>
+    <ProjectGuid>{A13DB780-6D86-4172-9585-EE18AE0A127F}</ProjectGuid>
     <RootNamespace>GP</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -26,7 +26,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseIntelMKL>Sequential</UseIntelMKL>
+    <UseIntelMKL>Parallel</UseIntelMKL>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -39,24 +39,24 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExecutablePath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\compiler;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\mkl;$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\lib\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\lib\ia32;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\Program Files\Intel\Composer XE 2013 SP1\redist\ia32\compiler;C:\Program Files\Intel\Composer XE 2013 SP1\redist\ia32\mkl;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>C:\Program Files\Intel\Composer XE 2013 SP1\compiler\lib\ia32;C:\Program Files\Intel\Composer XE 2013 SP1\mkl\lib\ia32;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\lib;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\msvc\gtest\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ExecutablePath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\compiler;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\mkl;$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\lib\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\lib\ia32;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\Program Files\Intel\Composer XE 2013 SP1\redist\ia32\compiler;C:\Program Files\Intel\Composer XE 2013 SP1\redist\ia32\mkl;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>C:\Program Files\Intel\Composer XE 2013 SP1\compiler\lib\ia32;C:\Program Files\Intel\Composer XE 2013 SP1\mkl\lib\ia32;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\lib;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\msvc\gtest\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\dlib-18.3;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\eigen-3.2.1;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\dlib-18.3;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\swan\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Documents\gtest-1.7.0\msvc\gtest\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\msvc\gtest\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libiomp5md.lib;mkl_core.lib;mkl_intel_c.lib;mkl_intel_thread.lib;gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -66,7 +66,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\dlib-18.3;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\eigen-3.2.1;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\dlib-18.3;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\swan\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>-DEIGEN_NO_DEBUG %(AdditionalOptions)</AdditionalOptions>

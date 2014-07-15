@@ -1,7 +1,7 @@
 #ifndef _TEST_DATA_HPP_
 #define _TEST_DATA_HPP_
 
-#include "../util/macros.hpp"
+#include "../util/macros.h"
 
 namespace GP{
 
@@ -22,6 +22,24 @@ protected:	TYPE_DEFINE_MATRIX(Scalar);
 				TYPE_DEFINE_VECTOR(Scalar);
 
 public:
+	// default constructor
+	TestData()
+	{
+	}
+
+	// copy constructor for batch processing
+	TestData(const TestData &other, const int startRow, const int n)
+	{
+		assert(other.M() > 0);
+		assert(startRow <= other.M());
+		assert(n > 0);
+		if(other.M() > 0 && startRow <= other.M() && n > 0)
+		{
+			m_pXs.reset(new Matrix(n, other.D()));
+			m_pXs->noalias() = other.m_pXs->middleRows(startRow, n);
+		}
+	}
+
 	/**	
 	 * @brief	Gets the number of test data, M.
 	 * @return	the number of test data

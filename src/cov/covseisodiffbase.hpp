@@ -1,7 +1,7 @@
 #ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_DERIVATIVE_OBSERVATIONS_BASE_HPP_
 #define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_DERIVATIVE_OBSERVATIONS_BASE_HPP_
 
-#include "../util/macros.hpp"
+#include "../util/macros.h"
 #include "../data/trainingdata.hpp"
 #include "covseisobase.hpp"
 
@@ -78,7 +78,7 @@ protected:
 	//	MatrixPtr pK = ds_dxj(logHyp, pSqDist, pDelta);
 
 	//	// ds/dx_i = - ds/dx'_j
-	//	(*pK).noalias() *= static_cast<Scalar>(-1.0);
+	//	pK->noalias() *= static_cast<Scalar>(-1.0);
 
 	//	return pK;
 	//}
@@ -102,7 +102,7 @@ protected:
 		MatrixPtr pK(new Matrix(*pDelta));
 
 		// ds/dx_i = (1/ell^2) * (x_i - x'_i)
-		(*pK).noalias() *= inv_ell2;
+		pK->noalias() *= inv_ell2;
 
 		return pK;
 	}
@@ -188,7 +188,7 @@ protected:
 	//	MatrixPtr pK(*ds_dxi(logHyp, pSqDist, pDelta));
 
 	//	// d^2s/dell dx'_j = (-2/ell) * ds/dx'_j
-	//	(*pK).noalias() *= negative_double_inv_ell;
+	//	pK->noalias() *= negative_double_inv_ell;
 
 	//	return pK;
 	//}
@@ -213,7 +213,7 @@ protected:
 		MatrixPtr pK(*ds_dxj(logHyp, pSqDist, pDelta));
 
 		// d^2s/dell dx'_j = (-2/ell) * ds/dx'_j
-		(*pK).noalias() *= negative_double_inv_ell;
+		pK->noalias() *= negative_double_inv_ell;
 
 		return pK;
 	}
@@ -239,7 +239,7 @@ protected:
 		MatrixPtr pK(*d2s_dxi_dxj(logHyp, pSqDistXd, pDeltaXd_i, pDeltaXd_j, fSameCoords));
 
 		// d^3s / dell dx_i dx'_j = (-2/ell) * d^2s / dx_i dx'_j
-		(*pK).noalias() *= negative_double_inv_ell;
+		pK->noalias() *= negative_double_inv_ell;
 
 		return pK;
 	}

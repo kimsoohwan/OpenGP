@@ -51,13 +51,11 @@ public:
 							 TrainingData<Scalar>			&trainingData, 
 							 TestData<Scalar>					&testData,
 							 const bool							fVarianceVector = true,
-							 const int							perBatch = 5000)
+							 const bool							fBatchProcessing = true)
 	{
 		// number of data
 		const int N = trainingData.N();
-		const int M = testData.M();
-		assert(N > 0 && M > 0);
-		if(N <= 0 || M <= 0) return;
+		const int M  = testData.M();
 
 		// some constants
 		const VectorConstPtr				pInvSqrtD	= invSqrtD(logHyp.lik, trainingData);
@@ -66,38 +64,51 @@ public:
 		//const VectorConstPtr			pAlpha		= alpha(pInvSqrtD, pL, pY_M);
 		const VectorConstPtr				pAlpha		= alpha(logHyp.lik, pL, pY_M);
 
+		// [1] predictive mean
+		// mu = ms + Ks' * inv(Kn) * (y-m)
+		//    = ms + Ks' * alpha
+		testData.pMu().reset(new Vector(M));
+		testData.pMu()->noalias() = *(MeanFunc<Scalar>::ms(logHyp.mean, testData))
+										  + (pKs->transpose()) * (*pAlpha);
+
+		// [2] predictive variance
+
 		// too many test points: batch
-		if(perBatch <= 0)
+		if(fVarianceVector && fBatchProcessing)
 		{
-			predict(logHyp, trainingData, testData, pInvSqrtD, pL, pAlpha, fVarianceVector);
+			const int mPerBatch = 1000;		// max number of test points per batch
+			int mss = 0;					// number of test points per batch
+			const int d = PointMatrixDirection::fRowWisePointsMatrix ? pXs->cols() : pXs->rows();
+			MatrixPtr pXss;					// part of test points
+
+		// Sigma = Kss - Ks' * inv(Kn) * Ks
+		//       = Kss - Ks' * inv(D^(1/2) * (D^(-1/2) * K * D^(-1/2) + I) * D^(1/2)) * Ks
+		//       = Kss - Ks' * inv(D^(1/2) * LL' * D^(1/2)) * Ks
+		//       = Kss - Ks' * D^(-1/2) * inv(L') * inv(L) * D^(-1/2) * Ks
+		//       = Kss - (inv(L) * D^(-1/2) * Ks)' * (inv(L) * D^(-1/2) * Ks)
+		//       = Kss - V' * V
+
+		// Ks, Kss
+		MatrixConstPtr pKs		= CovFunc<Scalar>::Ks (logHyp.cov, trainingData, testData); // N x M
+		MatrixConstPtr pKss		= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
+
+		// V = inv(L) * D^(-1/2) * Ks
+		//    (NNxNN) *  (NNxNN) * (NxM)
+		Matrix V(N, M); // N x M
+		V = pL->matrixL().solve(pInvSqrtD->asDiagonal() * (*pKs));
+		//V = pL->getL().solve(m_pInvSqrtD->asDiagonal() * (*pKs));
+
+		if(fVarianceVector)
+		{
+			// sigma2 = kss - v' * v
+			testData.pSigma().reset(new Matrix(M, 1));					// variance vector (Mx1)
+			testData.pSigma()->noalias() = (*pKss) - V.transpose().array().square().matrix().rowwise().sum();
 		}
 		else
 		{
-			// memory allocation
-			testData.pMu().reset(new Vector(M));
-			if(fVarianceVector)	testData.pSigma().reset(new Matrix(M, 1)); // variance vector (Mx1)
-			else						testData.pSigma().reset(new Matrix(M, M)); // covariance matrix (MxM)
-
-			// batch processing
-			int from	= 0;
-			int to	= -1;
-			while(to < M-1)
-			{
-				// range
-				from	= to + 1;
-				to		= (M-1 < from + perBatch - 1) ? M-1 : from + perBatch - 1;
-				const int MM = to - from + 1;
-
-				// part of test data
-				TestData<Scalar> testDataPart(testData, from, MM);
-
-				// predict
-				predict(logHyp, trainingData, testDataPart, pInvSqrtD, pL, pAlpha, fVarianceVector);
-
-				// copy
-				testData.pMu()->segment(from, MM).noalias()			= (*testDataPart.pMu());
-				testData.pSigma()->middleRows(from, MM).noalias()	= (*testDataPart.pSigma());
-			}
+			// Sigma = Kss - V' *V
+			testData.pSigma().reset(new Matrix(M, M));				// covariance matrix (MxM)
+			testData.pSigma()->noalias() = (*pKss) - V.transpose() * V;
 		}
 	}
 
@@ -115,8 +126,6 @@ public:
 
 		// number of training data
 		const int N = trainingData.N();
-		assert(N > 0);
-		if(N <= 0) return;
 
 		// some constants
 		const VectorConstPtr pInvSqrtD = invSqrtD(logHyp.lik, trainingData);
@@ -211,59 +220,6 @@ public:
 	}
 
 protected:
-	static void predict /* throw (Exception) */
-							 (const Hyp								&logHyp,
-							  TrainingData<Scalar>				&trainingData, 
-							  TestData<Scalar>					&testData,
-							  const VectorConstPtr				pInvSqrtD,
-							  const CholeskyFactorConstPtr	pL, 
-							  const VectorConstPtr				pAlpha,
-							  const bool							fVarianceVector)
-	{
-		// number of data
-		const int N = trainingData.N();
-		const int M = testData.M();
-
-		// Ks, Kss
-		MatrixConstPtr pKs		= CovFunc<Scalar>::Ks (logHyp.cov, trainingData, testData); // N x M
-		MatrixConstPtr pKss		= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
-
-		// [1] predictive mean
-		// mu = ms + Ks' * inv(Kn) * (y-m)
-		//    = ms + Ks' * alpha
-		testData.pMu().reset(new Vector(M));
-		testData.pMu()->noalias() = *(MeanFunc<Scalar>::ms(logHyp.mean, testData))
-										  + (pKs->transpose()) * (*pAlpha);
-
-		// [2] predictive variance
-		// Sigma = Kss - Ks' * inv(Kn) * Ks
-		//       = Kss - Ks' * inv(D^(1/2) * (D^(-1/2) * K * D^(-1/2) + I) * D^(1/2)) * Ks
-		//       = Kss - Ks' * inv(D^(1/2) * LL' * D^(1/2)) * Ks
-		//       = Kss - Ks' * D^(-1/2) * inv(L') * inv(L) * D^(-1/2) * Ks
-		//       = Kss - (inv(L) * D^(-1/2) * Ks)' * (inv(L) * D^(-1/2) * Ks)
-		//       = Kss - V' * V
-
-		// V = inv(L) * D^(-1/2) * Ks
-		//    (NNxNN) *  (NNxNN) * (NxM)
-		Matrix V(N, M); // N x M
-		V = pL->matrixL().solve(pInvSqrtD->asDiagonal() * (*pKs));
-		//V = pL->getL().solve(m_pInvSqrtD->asDiagonal() * (*pKs));
-
-		if(fVarianceVector)
-		{
-			// sigma2 = kss - v' * v
-			testData.pSigma().reset(new Matrix(M, 1)); // variance vector (Mx1)
-			testData.pSigma()->noalias() = (*pKss) - V.transpose().array().square().matrix().rowwise().sum();
-		}
-		else
-		{
-			// Sigma = Kss - V' *V
-			testData.pSigma().reset(new Matrix(M, M)); // covariance matrix (MxM)
-			testData.pSigma()->noalias() = (*pKss) - V.transpose() * V;
-		}
-	}
-
-protected:
 	static VectorPtr invSqrtD(const typename Hyp::Lik	&logHyp,
 									  TrainingData<Scalar>		&trainingData)
 	{
@@ -297,9 +253,8 @@ protected:
 		(*pKn) = pInvSqrtD->asDiagonal() * (*pKn) * pInvSqrtD->asDiagonal() + Matrix::Identity(N, N);
 
 		// cholesky factor
-		//CholeskyFactorPtr pL(new CholeskyFactor());
-		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
-		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
+		CholeskyFactorPtr pL(new CholeskyFactor());
+		pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
 
 		if(pL->info() != Eigen::ComputationInfo::Success)
 		{
@@ -321,8 +276,8 @@ protected:
 					e = "InvalidInput";
 					break;
 				}
+				throw e;
 			}
-			throw e;
 		}
 
 		return pL;

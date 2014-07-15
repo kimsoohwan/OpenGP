@@ -95,13 +95,16 @@
     <ClInclude Include="..\src\data\TestData.hpp" />
     <ClInclude Include="..\src\data\TrainingData.hpp" />
     <ClInclude Include="..\src\data\typetraits.hpp" />
-    <ClInclude Include="..\src\gp\gp.hpp" />
+    <ClInclude Include="..\src\gp\GP.hpp" />
+    <ClInclude Include="..\src\gp\Trainer.hpp" />
+    <ClInclude Include="..\src\inf\Hyp.hpp" />
     <ClInclude Include="..\src\inf\InfExact.hpp" />
+    <ClInclude Include="..\src\inf\InfExactGeneral.hpp" />
     <ClInclude Include="..\src\lik\LikGauss.hpp" />
     <ClInclude Include="..\src\lik\LikGaussDerObs.hpp" />
     <ClInclude Include="..\src\mean\MeanZero.hpp" />
-    <ClInclude Include="..\src\util\Hyp.hpp" />
-    <ClInclude Include="..\src\util\macros.hpp" />
+    <ClInclude Include="..\src\util\Exception.hpp" />
+    <ClInclude Include="..\src\util\macros.h" />
     <ClInclude Include="..\src\util\PairwiseOp.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

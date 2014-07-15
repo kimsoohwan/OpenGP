@@ -1,7 +1,7 @@
 #ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 #define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
 
-#include "../../util/macros.hpp"
+#include "../../util/macros.h"
 #include "../../data/TrainingData.hpp"
 
 namespace GP{
@@ -168,7 +168,7 @@ protected:
 				//				 k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
 				// pd[k]/pd[log(ell)] = sigma_f^2 * exp(-r^2/(2*ell^2)) * (r^2/ell^3) * ell
 				//					       = sigma_f^2 * exp(-r^2/(2*ell^2)) * (r^2/ell^2)
-				(*pK).noalias() = sigma_f2_inv_ell2 * ((neg_half_inv_ell2 * (*pSqDist)).array().exp() * (*pSqDist).array()).matrix();
+				pK->noalias() = sigma_f2_inv_ell2 * ((neg_half_inv_ell2 * (*pSqDist)).array().exp() * (*pSqDist).array()).matrix();
 				break;
 			}
 
@@ -178,7 +178,7 @@ protected:
 				//			        k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
 				// pd[k]/pd[log(sigma_f)] = 2 * sigma_f * exp(-r^2/(2*ell^2)) * sigma_f
 				//								  = 2 * sigma_f^2 * exp(-r^2/(2*ell^2))
-				(*pK).noalias() = twice_sigma_f2 * ((neg_half_inv_ell2 * (*pSqDist)).array().exp()).matrix();
+				pK->noalias() = twice_sigma_f2 * ((neg_half_inv_ell2 * (*pSqDist)).array().exp()).matrix();
 				break;
 			}
 
@@ -186,7 +186,7 @@ protected:
 		default:
 			{
 				// k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
-				(*pK).noalias() = sigma_f2 * (neg_half_inv_ell2 * (*pSqDist)).array().exp().matrix();
+				pK->noalias() = sigma_f2 * (neg_half_inv_ell2 * (*pSqDist)).array().exp().matrix();
 				break;
 			}
 		}

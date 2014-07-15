@@ -1,7 +1,7 @@
 #ifndef _MEAN_FUNCTION_ZERO_HPP_
 #define _MEAN_FUNCTION_ZERO_HPP_
 
-#include "../util/macros.hpp"
+#include "../util/macros.h"
 #include "../data/DerivativeTrainingData.hpp"
 #include "../data/TestData.hpp"
 
@@ -30,8 +30,10 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 	   * @param	[in] generalTrainingData 	The training data or derivative training data
 		* @return	The mean vector.
 		*/
-	template<typename GeneralTrainingData>
-	static VectorPtr m(const Hyp &logHyp, const GeneralTrainingData<Scalar> &generalTrainingData, , const int pdHypIndex = -1)
+	template<template<typename> class GeneralTrainingData>
+	static VectorPtr m(const Hyp									&logHyp, 
+							 const GeneralTrainingData<Scalar>	&generalTrainingData, 
+							 const int									pdHypIndex = -1)
 	{
 		// Zero vector
 		VectorPtr pMu(new Vector(generalTrainingData.NN()));
@@ -46,7 +48,7 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 		* @return	The mean vector.
 		*/
 	//VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
-	static VectorPtr ms(const Hyp &logHyp, const TestData &testData)
+	static VectorPtr ms(const Hyp &logHyp, const TestData<Scalar> &testData)
 	{
 		// Zero vector
 		VectorPtr pMu(new Vector(testData.M()));
@@ -55,7 +57,10 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 	}
 };
 
-using MeanZeroDerObs = MeanZero;
+//using MeanZeroDerObs = MeanZero;
+template<typename Scalar>
+class MeanZeroDerObs : public MeanZero<Scalar> {};
+
 }
 
 #endif

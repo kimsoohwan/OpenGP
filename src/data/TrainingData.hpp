@@ -1,7 +1,7 @@
 #ifndef _TRAINING_DATA_HPP_
 #define _TRAINING_DATA_HPP_
 
-#include "../util/macros.hpp"
+#include "../util/macros.h"
 #include "TestData.hpp"
 
 namespace GP{
@@ -40,7 +40,7 @@ public:
 	inline int N() const
 	{
 		if(!m_pX || !m_pY) return 0;
-		assert(m_pX->rows() == m_pY->size());
+		//assert(m_pX->rows() == m_pY->size());
 		return m_pX->rows();
 	}
 
@@ -81,14 +81,14 @@ public:
 	//	return m_pX;
 	//}
 
-	///**
-	// * @brief	Gets the const pointer to the training outputs.
-	// * @return	A vector const pointer.
-	// */
-	//const VectorConstPtr pY() const
-	//{
-	//	return m_pY;
-	//}
+	/**
+	 * @brief	Gets the const pointer to the training outputs.
+	 * @return	A vector const pointer.
+	 */
+	const VectorConstPtr pY() const
+	{
+		return m_pY;
+	}
 
 	/**
 	 * @brief	Gets the const pointer to the pre-calculated

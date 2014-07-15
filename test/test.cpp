@@ -1,7 +1,9 @@
 #include "TestcasePairwiseop.hpp"
 #include "TestcaseCovSEiso.hpp"
 #include "TestcaseCovSEisoDerObs.hpp"
-//#include "testcasecovseisoslow.hpp"
+#include "TestcaseCholeskyFactorSolver.hpp"
+#include "TestcaseInfExact.hpp"
+#include "TestcaseInfExactDerObs.hpp"
 
 int main(int argc, char** argv) 
 { 

@@ -117,7 +117,7 @@ class Isotropic : public CovBase<Scalar>
 			MatrixPtr pK = f(logHyp, pXs);
 
 			// k(x, x') = sigma_f^2 * f(s)
-			(*pK).noalias() = sigma_f2 * (*pK);
+			pK->noalias() = sigma_f2 * (*pK);
 
 			return pK;
 		}
@@ -163,7 +163,7 @@ protected:
 				MatrixPtr pK = dk_ds(logHyp, pSqDist);
 
 				// dk/dlog(ell) = ell * dk/ds * ds/dell
-				(*pK).noalias() = ell*(pK->cwiseProduct(*ds_dell(logHyp, pSqDist)));
+				pK->noalias() = ell*(pK->cwiseProduct(*ds_dell(logHyp, pSqDist)));
 
 				return pK;	
 			}
@@ -178,7 +178,7 @@ protected:
 				MatrixPtr pK = k(logHyp, pSqDist);
 
 				// dk/dlog(sigma_f) = sigma_f * k(x, x')
-				(*pK).noalias() = static_cast<Scalar>(2.0) * (*pK);
+				pK->noalias() = static_cast<Scalar>(2.0) * (*pK);
 
 				return pK;
 			}
@@ -197,7 +197,7 @@ protected:
 		MatrixPtr pK = f(logHyp, pSqDist);
 
 		// k(x, x') = sigma_f^2 * f(s)
-		(*pK).noalias() = sigma_f2 * (*pK);
+		pK->noalias() = sigma_f2 * (*pK);
 
 		return pK;
 	}

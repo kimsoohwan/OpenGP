@@ -3,5 +3,7 @@ GP
 
 Gaussian Processes in C++
 
-
-Uses [dlib](http://www.dlib.net) for optimization
+Required Libraries
+- Boost for shared pointers
+- Eigen for linear algebra
+- Intel MKL for fast linear algebra (optional)

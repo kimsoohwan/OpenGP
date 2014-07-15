@@ -1,16 +1,16 @@
-#ifndef LIKELIHOOD_FUNCTION_GAUSSIAN_WITH_DERIVATIVE_OBSERVATIONS_HPP
-#define LIKELIHOOD_FUNCTION_GAUSSIAN_WITH_DERIVATIVE_OBSERVATIONS_HPP
+#ifndef _LIKELIHOOD_FUNCTION_GAUSSIAN_WITH_DERIVATIVE_OBSERVATIONS_HPP_
+#define _LIKELIHOOD_FUNCTION_GAUSSIAN_WITH_DERIVATIVE_OBSERVATIONS_HPP_
 
 #include <cmath>
 
-#include "../../util/macros.hpp"
-#include "../../data/DerivativeTrainingData.hpp"
-#include "../../data/TestData.hpp"
+#include "../util/macros.h"
+#include "../data/DerivativeTrainingData.hpp"
+#include "../data/TestData.hpp"
 
-namespace GPOM{
+namespace GP{
 
-template<Scalar>
-class LikGauss
+template<typename Scalar>
+class LikGaussDerObs
 {
 // define matrix types
 protected:	TYPE_DEFINE_VECTOR(Scalar);
@@ -19,7 +19,9 @@ protected:	TYPE_DEFINE_VECTOR(Scalar);
 public:		TYPE_DEFINE_HYP(Scalar, 2); // sigma_nf, sigma_nd
 
 	// diagonal vector
-	static VectorPtr lik(const Hyp &logHyp, const DerivativeTrainingData<Scalar> derivativeTrainingData, const int pdHypIndex = -1)
+	static VectorPtr lik(const Hyp &logHyp, 
+								const DerivativeTrainingData<Scalar> &derivativeTrainingData, 
+								const int pdHypIndex = -1)
 	{
 		assert(pdHypIndex < logHyp.size());
 
@@ -67,7 +69,7 @@ public:		TYPE_DEFINE_HYP(Scalar, 2); // sigma_nf, sigma_nd
 	}
 
 	//// diagonal matrix
-	//MatrixPtr operator()(MatrixConstPtr pX, const Hyp &logHyp, const int pdIndex = -1) const
+	//MatrixPtr operator()(MatrixConstPtr pX, const Hyp &logHyp, const int pdHypIndex = -1) const
 	//{
 	//	// number of training data
 	//	const int N = getN();
@@ -75,7 +77,7 @@ public:		TYPE_DEFINE_HYP(Scalar, 2); // sigma_nf, sigma_nd
 	//	pD->setZero();
 
 	//	// derivatives w.r.t sn
-	//	if(pdIndex == 0)			pD->diagonal().fill(((Scalar) 2.f) * exp((Scalar) 2.f * logHyp(0)));
+	//	if(pdHypIndex == 0)			pD->diagonal().fill(((Scalar) 2.f) * exp((Scalar) 2.f * logHyp(0)));
 
 	//	// likelihood
 	//	else								pD->diagonal().fill(exp((Scalar) 2.f * logHyp(0)));
