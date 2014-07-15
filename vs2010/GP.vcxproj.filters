@@ -49,9 +49,6 @@
     <ClInclude Include="..\src\data\typetraits.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\gp\GP.hpp">
-      <Filter>src\gp</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\gp\Trainer.hpp">
       <Filter>src\gp</Filter>
     </ClInclude>
@@ -81,6 +78,9 @@
     </ClInclude>
     <ClInclude Include="..\src\util\PairwiseOp.hpp">
       <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gp\GaussianProcess.hpp">
+      <Filter>src\gp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -114,5 +114,8 @@
     <Filter Include="src\util">
       <UniqueIdentifier>{1fee1f35-31d8-4db4-8fa1-eaab5a1ef7e1}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
   </ItemGroup>
 </Project>

@@ -90,17 +90,28 @@ public:
 
 	/**
 	 * @brief	Resets the training inputs.
-	 * @param	[in] pXd		The training inputs.
-	 * @param	[in] pYd		The training outputs.
+	 * @param	[in] pX		The function training inputs.
+	 * @param	[in] pXd		The derivative training inputs.
+	 * @param	[in] pYYd	The function/derivative training outputs.
 	 */
-	void set(MatrixPtr pX, MatrixPtr pXd, VectorPtr pY)
+	void set(MatrixPtr pX, MatrixPtr pXd, VectorPtr pYYd)
 	{
-		TrainingData<Scalar>::set(pX, pY);
+		TrainingData<Scalar>::set(pX, pYYd);
 		m_pXd = pXd;
 		m_fSqDistXdXd		= false;
 		m_fSqDistXXd		= false;
 		m_fDeltaXdXdList	= false;
 		m_fDeltaXXdList	= false;
+	}
+
+	/**
+	 * @brief	Resets the training inputs.
+	 * @param	[in] pXXd	The function/derivative training inputs.
+	 * @param	[in] pYYd	The function/derivative training outputs.
+	 */
+	void set(MatrixPtr pXXd, VectorPtr pYYd)
+	{
+		set(pXXd, pXXd, pYYd);
 	}
 
 	/**
@@ -215,10 +226,10 @@ public:
 	}
 
 protected:
-	/** @brief Training inputs */
+	/** @brief Training derivative inputs */
 	MatrixPtr m_pXd;	// NdxD matrix
 
-	///** @brief Training outputs */
+	///** @brief Training function/derivative outputs */
 	//VectorPtr m_pYd;	// Ndx1 vector
 
 	///** @brief Derivative training outputs with respect to each dimension */

@@ -44,24 +44,26 @@ TEST_F(TestCaseCholeskyFactorSolver, InverseTest)
 	CholeskyFactor L(*pK);
 	if(L.info() != Eigen::ComputationInfo::Success)
 	{
+		Exception e;
 		switch(L.info())
 		{
 			case Eigen::ComputationInfo::NumericalIssue :
 			{
-				std::cerr << "NumericalIssue" << std::endl;
+				e = "NumericalIssue";
 				break;
 			}
 			case Eigen::ComputationInfo::NoConvergence :
 			{
-				std::cerr << "NoConvergence" << std::endl;
+				e = "NoConvergence";
 				break;
 			}
 			case Eigen::ComputationInfo::InvalidInput :
 			{
-				std::cerr << "InvalidInput" << std::endl;
+				e = "InvalidInput";
 				break;
 			}
 		}
+		throw e;
 	}
 
 	Matrix I2 = L.solve(Matrix::Identity(N, N)) * (*pK);

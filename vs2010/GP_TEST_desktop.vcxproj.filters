@@ -31,6 +31,18 @@
     <ClInclude Include="..\test\TestcaseInfExactDerObs.hpp">
       <Filter>03 inf</Filter>
     </ClInclude>
+    <ClInclude Include="..\test\TestFunctionDataSetting2.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestDerivativeDataSetting2.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseGPDerObs.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseGaussianProcess.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\TODO.txt" />
@@ -47,6 +59,9 @@
     </Filter>
     <Filter Include="03 inf">
       <UniqueIdentifier>{4b7646c9-c596-4f2e-be5c-7f07cc8adbf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 gp">
+      <UniqueIdentifier>{17be4bf2-6ccb-4836-a9a7-db8466580f0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

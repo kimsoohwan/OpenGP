@@ -4,6 +4,7 @@
 #include "TestcaseCholeskyFactorSolver.hpp"
 #include "TestcaseInfExact.hpp"
 #include "TestcaseInfExactDerObs.hpp"
+#include "TestcaseGaussianProcess.hpp"
 
 int main(int argc, char** argv) 
 { 

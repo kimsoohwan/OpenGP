@@ -14,7 +14,7 @@
 #include "../src/data/TestData.hpp"
 
 // GP
-#include "../src/gp/GP.hpp"
+#include "../src/gp/GaussianProcess.hpp"
 
 // Mean Functions
 #include "../src/mean/MeanZero.hpp"

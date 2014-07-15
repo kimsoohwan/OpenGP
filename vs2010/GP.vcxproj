@@ -95,7 +95,7 @@
     <ClInclude Include="..\src\data\TestData.hpp" />
     <ClInclude Include="..\src\data\TrainingData.hpp" />
     <ClInclude Include="..\src\data\typetraits.hpp" />
-    <ClInclude Include="..\src\gp\GP.hpp" />
+    <ClInclude Include="..\src\gp\GaussianProcess.hpp" />
     <ClInclude Include="..\src\gp\Trainer.hpp" />
     <ClInclude Include="..\src\inf\Hyp.hpp" />
     <ClInclude Include="..\src\inf\InfExact.hpp" />
@@ -106,6 +106,9 @@
     <ClInclude Include="..\src\util\Exception.hpp" />
     <ClInclude Include="..\src\util\macros.h" />
     <ClInclude Include="..\src\util\PairwiseOp.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

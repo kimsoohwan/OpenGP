@@ -12,13 +12,13 @@ template<typename Scalar,
 						 template<typename> class,
 						 template<typename> class,
 						 template<typename> class> class InfMethod>
-class GP : public InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>
+class GaussianProcess : public InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>
 {
 public:
 	// train hyperparameters
 	template<class SearchStrategy, class StoppingStrategy, template<typename> class GeneralTrainingData>
 	static void train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	&logHyp,
-							const GeneralTrainingData<Scalar>	&generalTrainingData,
+							GeneralTrainingData<Scalar>	&generalTrainingData,
 							const int									maxIter = 0,
 							const double								minValue = 1e-7)
 	{
@@ -27,6 +27,8 @@ public:
 
 		Trainer<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod, GeneralTrainingData> trainer(generalTrainingData);
 		trainer.train<SearchStrategy, StoppingStrategy>(logHyp, maxIter, minValue);
+		//Trainer::train<SearchStrategy, StoppingStrategy>(logHyp, generalTrainingData, maxIter, minValue);
+		//Trainer::train<SearchStrategy, StoppingStrategy, Scalar, GeneralTrainingData>(logHyp, generalTrainingData, maxIter, minValue);
 	}
 };
 
