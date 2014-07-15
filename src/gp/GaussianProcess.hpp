@@ -4,6 +4,15 @@
 #include "Trainer.hpp"
 
 namespace GP{
+
+/**
+	* @class		GaussianProcess
+	* @brief		A Gaussian process
+	* 				It inherits from InfMethod
+	* 				to call predict and negativeLogMarginalLikelihood.
+	* @author	Soohwan Kim
+	* @date		15/07/2014
+	*/
 template<typename Scalar, 
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 

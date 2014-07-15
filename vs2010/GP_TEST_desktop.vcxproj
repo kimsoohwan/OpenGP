@@ -87,7 +87,7 @@
     <ClInclude Include="..\test\TestcaseCovSEiso.hpp" />
     <ClInclude Include="..\test\TestcaseCovSEisoDerObs.hpp" />
     <ClInclude Include="..\test\TestcaseGaussianProcess.hpp" />
-    <ClInclude Include="..\test\TestcaseGPDerObs.hpp" />
+    <ClInclude Include="..\test\TestcaseGaussianProcessDerObs.hpp" />
     <ClInclude Include="..\test\TestcaseInfExact.hpp" />
     <ClInclude Include="..\test\TestcaseInfExactDerObs.hpp" />
     <ClInclude Include="..\test\TestcasePairwiseOp.hpp" />

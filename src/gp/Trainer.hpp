@@ -8,17 +8,6 @@
 
 namespace GP{
 
-//// Gaussian Process
-//template<typename Scalar, 
-//			template<typename> class MeanFunc, 
-//			template<typename> class CovFunc, 
-//			template<typename> class LikFunc,
-//			template <typename, 
-//						 template<typename> class,
-//						 template<typename> class,
-//						 template<typename> class> class InfMethod>
-//class _GP;
-
 // Search Strategy
 class CG		{	public:		typedef dlib::cg_search_strategy			Type; };
 class BFGS	{	public:		typedef dlib::bfgs_search_strategy		Type; };
@@ -28,7 +17,7 @@ class LBFGS	: public dlib::lbfgs_search_strategy
 public:		typedef LBFGS		Type;
 public:
 	LBFGS()
-		: dlib::lbfgs_search_strategy(10)
+		: dlib::lbfgs_search_strategy(10)	// The 10 here is basically a measure of how much memory L-BFGS will use.
 	{
 	}
 };
@@ -55,8 +44,6 @@ protected:	TYPE_DEFINE_VECTOR(Scalar);
 
 // typedef
 protected:
-	//typedef	typename _GP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>		GPType;
-	//typedef	typename GPType::Hyp															Hyp;
 	typedef	typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>		InfType;
 	typedef	typename InfType::Hyp															Hyp;
 
@@ -155,46 +142,70 @@ public:
 	template<class SearchStrategy, class StoppingStrategy>
 	void train(Hyp					&hypEigen,
 				  const int			maxIter,
-				  const double		minValue)
+				  const double		minValue,
+				  const bool		fUseApproxDer = true)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
 		// [0, -]:		max iteration criteria off
 
-		// set training data
-		NlZ							nlZ(m_generalTrainingData);
-		DnlZ							dnlZ(m_generalTrainingData);
-
 		// hyperparameters
 		DlibVector hypDlib;
 		hypDlib.set_size(hypEigen.size());
-		//std::cout << "number of hyperparameters" << std::endl;
-		//std::cout << "mean: " << pMeanLogHyp->size() << std::endl;
-		//std::cout << "cov: " << pCovLogHyp->size() << std::endl;
-		//std::cout << "lik: " << pLikCovLogHyp->size() << std::endl;
-		//std::cout << "total number of hyperparameters: " << pMeanLogHyp->size() + pCovLogHyp->size() + pLikCovLogHyp->size() << std::endl;
 
 		// initialization
 		Eigen2Dlib(hypEigen, hypDlib);
 
-		// find minimum
-		if(maxIter <= 0)
+		// Training
+		if(fUseApproxDer)
 		{
-			dlib::find_min(SearchStrategy::Type(),
-								StoppingStrategy::Type(minValue).be_verbose(),
-								nlZ, 
-								dnlZ,
-								hypDlib,
-								-std::numeric_limits<DlibScalar>::infinity());
+			// set training data
+			NlZ							nlZ(m_generalTrainingData);
+
+			// find minimum
+			if(maxIter <= 0)
+			{
+				dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
+																			StoppingStrategy::Type(minValue).be_verbose(),
+																			nlZ,
+																			hypDlib,
+																			-std::numeric_limits<DlibScalar>::infinity());
+			}
+			else
+			{
+				dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
+																			StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+																			nlZ, 
+																			hypDlib,
+																			-std::numeric_limits<DlibScalar>::infinity());
+			}
 		}
 		else
 		{
-			dlib::find_min(SearchStrategy::Type(),
-								StoppingStrategy::Type(minValue, maxIter).be_verbose(),
-								nlZ, 
-								dnlZ,
-								hypDlib,
-								-std::numeric_limits<DlibScalar>::infinity());
+			// set training data
+			NlZ							nlZ(m_generalTrainingData);
+			DnlZ							dnlZ(m_generalTrainingData);
+
+
+			// find minimum
+			if(maxIter <= 0)
+			{
+				dlib::find_min(SearchStrategy::Type(),
+									StoppingStrategy::Type(minValue).be_verbose(),
+									nlZ, 
+									dnlZ,
+									hypDlib,
+									-std::numeric_limits<DlibScalar>::infinity());
+			}
+			else
+			{
+				dlib::find_min(SearchStrategy::Type(),
+									StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+									nlZ, 
+									dnlZ,
+									hypDlib,
+									-std::numeric_limits<DlibScalar>::infinity());
+			}
 		}
 
 		// conversion  from Dlib to Eigen vectors

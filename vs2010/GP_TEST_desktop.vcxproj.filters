@@ -37,10 +37,10 @@
     <ClInclude Include="..\test\TestDerivativeDataSetting2.hpp">
       <Filter>04 gp</Filter>
     </ClInclude>
-    <ClInclude Include="..\test\TestcaseGPDerObs.hpp">
+    <ClInclude Include="..\test\TestcaseGaussianProcess.hpp">
       <Filter>04 gp</Filter>
     </ClInclude>
-    <ClInclude Include="..\test\TestcaseGaussianProcess.hpp">
+    <ClInclude Include="..\test\TestcaseGaussianProcessDerObs.hpp">
       <Filter>04 gp</Filter>
     </ClInclude>
   </ItemGroup>

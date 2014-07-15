@@ -5,6 +5,7 @@
 #include "TestcaseInfExact.hpp"
 #include "TestcaseInfExactDerObs.hpp"
 #include "TestcaseGaussianProcess.hpp"
+#include "TestcaseGaussianProcessDerObs.hpp"
 
 int main(int argc, char** argv) 
 { 
