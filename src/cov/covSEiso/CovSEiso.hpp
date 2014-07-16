@@ -14,6 +14,7 @@ namespace GP{
  * @author		Soohwan Kim
  * @date			26/03/2014
  */
+//					\f$k(\mathbf{x}, \mathbf{x}^\text{T}) = \sigma_f^2 * \exp(-\frac{r^2}{2l^2}), r = |x-x'|
 template<typename Scalar>
 class CovSEiso
 {
