@@ -170,7 +170,7 @@ public:
 			// nlZ = (1/2) * (y-m)' * inv(Kn) * (y-m) + (1/2) * log |Kn|
 			// nlZ_j = (-1/2) * (y-m)' * inv(Kn) * K_j * inv(Kn) * (y-m)	+ (1/2) * tr[inv(Kn) * K_j]
 			//          = (-1/2) * alpha' * K_j * alpha							+ (1/2) * tr[inv(Kn) * K_j]
-			//          = (-1/2) * tr[(alpha' * alpha) * K_j]					+ (1/2) * tr[inv(Kn) * K_j]
+			//          = (-1/2) * tr[(alpha*alpha') * K_j]						+ (1/2) * tr[inv(Kn) * K_j]
 			//          = (1/2) tr[(inv(Kn) - alpha*alpha') * K_j]
 			//          = (1/2) tr[Q * K_j]
 			//

@@ -15,7 +15,14 @@ namespace GP{
 	* @author	Soohwan Kim
 	* @date		26/03/2014
 	*/
-template<typename Scalar>
+template<typename Scalar, 
+			template<typename> class MeanFunc, 
+			template<typename> class CovFunc, 
+			template<typename> class LikFunc,
+			template <typename, 
+						 template<typename> class,
+						 template<typename> class,
+						 template<typename> class> class InfMethod>
 class MeanGP
 {
 // define matrix types

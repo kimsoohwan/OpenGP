@@ -22,8 +22,8 @@ protected:
 
 public:
 	TestCaseGP()
-		: EPS_SOLVER(static_cast<TestType>(1e-4f)),
-		  EPS_SOLVER_SOLVER(static_cast<TestType>(1e-3f)) {}
+		: EPS_SEARCH(static_cast<TestType>(1e-3f))
+	{}
 
 protected:
 	/** @brief	Overloading the test fixture set up. */
@@ -40,13 +40,28 @@ protected:
 
 protected:
 	/** @brief Epsilon for the Eigen solver */
-	const TestType EPS_SOLVER;
-	const TestType EPS_SOLVER_SOLVER;
+	const TestType EPS_SEARCH;
 
 	/** @brief Log hyperparameters: log([ell, sigma_f, sigma_n]). */
 	GPType::Hyp logHyp;
 };
 
+/** @brief	Training test: BOBOYA */  
+TEST_F(TestCaseGP, Training_BOBOYA_MaxFuncEval_Test)
+{
+	// Expected value
+	const TestType ell(0.178039338440386f);
+	const TestType sigma_f(1.99551833536411f);
+	const TestType sigma_n(0.550806723661735f);
+
+	// Actual value
+	GPType::train<BOBOYA, MaxFuncEval>(logHyp, trainingData);
+
+	// Test
+	TEST_MACRO::COMPARE(ell,		exp(logHyp.cov(0)), __FILE__, __LINE__, EPS_SEARCH);
+	TEST_MACRO::COMPARE(sigma_f,	exp(logHyp.cov(1)), __FILE__, __LINE__, EPS_SEARCH);
+	TEST_MACRO::COMPARE(sigma_n,	exp(logHyp.lik(0)), __FILE__, __LINE__, EPS_SEARCH);
+}
 
 /** @brief	Training test: CG, DeltaFunc */  
 TEST_F(TestCaseGP, Training_CG_DeltaFunc_Test)

@@ -26,10 +26,10 @@ class GaussianProcess : public InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>
 public:
 	// train hyperparameters
 	template<class SearchStrategy, class StoppingStrategy, template<typename> class GeneralTrainingData>
-	static void train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	&logHyp,
-							GeneralTrainingData<Scalar>	&generalTrainingData,
-							const int									maxIter = 0,
-							const double								minValue = 1e-7)
+	static void train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp		&logHyp,
+							GeneralTrainingData<Scalar>												&generalTrainingData,
+							const int																		maxIter = 0,
+							const double																	minValue = 1e-15)
 	{
 		assert(generalTrainingData.N() > 0);
 		if(generalTrainingData.N() <= 0) return;

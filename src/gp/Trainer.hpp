@@ -9,22 +9,58 @@
 namespace GP{
 
 // Search Strategy
-class CG		{	public:		typedef dlib::cg_search_strategy			Type; };
-class BFGS	{	public:		typedef dlib::bfgs_search_strategy		Type; };
-//class LBFGS	{	public:		typedef dlib::lbfgs_search_strategy		Type; };
-class LBFGS	: public dlib::lbfgs_search_strategy
+typedef enum SearchStrategyType
 {
-public:		typedef LBFGS		Type;
+	NEWTONS_METHOD_TYPE,
+//	TRUST_REGION_TYPE, // requires Hessian
+	BOBOYA_TYPE
+} SearchStrategyType;
+
+// Newton Method
+class	NEWTON_METHOD
+{
 public:
-	LBFGS()
-		: dlib::lbfgs_search_strategy(10)	// The 10 here is basically a measure of how much memory L-BFGS will use.
-	{
-	}
+	static const SearchStrategyType TYPE = SearchStrategyType::NEWTONS_METHOD_TYPE;
 };
 
+class CG		: public NEWTON_METHOD	{	public:		typedef dlib::cg_search_strategy			Type; };
+class BFGS	: public NEWTON_METHOD	{	public:		typedef dlib::bfgs_search_strategy		Type; };
+//class LBFGS	{	public:		typedef dlib::lbfgs_search_strategy		Type; };
+
+//class CG		: public NEWTON_METHOD, public dlib::cg_search_strategy		{};
+//class BFGS	: public NEWTON_METHOD, public dlib::bfgs_search_strategy	{};
+class LBFGS	: public NEWTON_METHOD, public dlib::lbfgs_search_strategy
+{
+public:
+	typedef LBFGS			Type;
+	LBFGS()
+		: dlib::lbfgs_search_strategy(10)	// The 10 here is basically a measure of how much memory L-BFGS will use.
+	{}
+};
+
+//// Trust Region
+//class TRUST_REGION
+//{
+//public:
+//	static const SearchStrategyType TYPE = SearchStrategyType::TRUST_REGION_TYPE;
+//};
+
+// Boboya
+class BOBOYA
+{
+public:
+	typedef LBFGS			Type;
+	static const SearchStrategyType TYPE = SearchStrategyType::BOBOYA_TYPE;
+};
+
+// BOBOYA
+
 // Stopping Strategy
-class DeltaFunc		{	public:		typedef dlib::objective_delta_stop_strategy		Type; };
-class GradientNorm	{	public:		typedef dlib::gradient_norm_stop_strategy			Type; };
+//class DeltaFunc : public dlib::objective_delta_stop_strategy {};
+//class GradientNorm : public dlib::gradient_norm_stop_strategy {};
+class DeltaFunc		{	public:		typedef dlib::objective_delta_stop_strategy	Type; };
+class GradientNorm	{	public:		typedef dlib::gradient_norm_stop_strategy		Type; };
+class MaxFuncEval : public DeltaFunc {};
 
 // Trainer
 // refer to http://dlib.net/optimization_ex.cpp.html
@@ -39,6 +75,20 @@ template<typename Scalar,
 			template<typename> class GeneralTrainingData>
 class Trainer
 {
+// define OptimizationMode
+public:
+	enum OptimizationMethod
+	{
+		NORMAL,
+		TRUST_REGION
+	};
+
+	enum DerivativeType
+	{
+		EXACT_DERIVATIVES,
+		APPROXIMATE_DERIVATIVES
+	};
+
 // define vector types
 protected:	TYPE_DEFINE_VECTOR(Scalar);
 
@@ -141,9 +191,9 @@ public:
 	// train hyperparameters
 	template<class SearchStrategy, class StoppingStrategy>
 	void train(Hyp					&hypEigen,
-				  const int			maxIter,
+				  int					maxIter,
 				  const double		minValue,
-				  const bool		fUseApproxDer = true)
+				  const bool		fExactDerivatives = true)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
@@ -157,54 +207,93 @@ public:
 		Eigen2Dlib(hypEigen, hypDlib);
 
 		// Training
-		if(fUseApproxDer)
+		switch(SearchStrategy::TYPE)
 		{
-			// set training data
-			NlZ							nlZ(m_generalTrainingData);
-
-			// find minimum
-			if(maxIter <= 0)
+			// NEWTONS_METHOD_TYPE
+			case NEWTONS_METHOD_TYPE:
 			{
-				dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
-																			StoppingStrategy::Type(minValue).be_verbose(),
-																			nlZ,
-																			hypDlib,
-																			-std::numeric_limits<DlibScalar>::infinity());
+				if(fExactDerivatives)
+				{
+					// find minimum
+					if(maxIter <= 0) // max_iter can't be 0
+					{
+						dlib::find_min(SearchStrategy::Type(),
+											StoppingStrategy::Type(minValue).be_verbose(),
+											NlZ(m_generalTrainingData), 
+											DnlZ(m_generalTrainingData),
+											hypDlib,
+											-std::numeric_limits<DlibScalar>::infinity());
+					}
+					else
+					{
+						dlib::find_min(SearchStrategy::Type(),
+											StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+											NlZ(m_generalTrainingData), 
+											DnlZ(m_generalTrainingData),
+											hypDlib,
+											-std::numeric_limits<DlibScalar>::infinity());
+					}
+				}
+				else
+				{
+					// find minimum
+					if(maxIter <= 0) // max_iter can't be 0
+					{
+						dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
+																					StoppingStrategy::Type(minValue).be_verbose(),
+																					NlZ(m_generalTrainingData), 
+																					hypDlib,
+																					-std::numeric_limits<DlibScalar>::infinity());
+					}
+					else
+					{
+						dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
+																					StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+																					NlZ(m_generalTrainingData), 
+																					hypDlib,
+																					-std::numeric_limits<DlibScalar>::infinity());
+					}
+				}
+				break;
 			}
-			else
-			{
-				dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
-																			StoppingStrategy::Type(minValue, maxIter).be_verbose(),
-																			nlZ, 
-																			hypDlib,
-																			-std::numeric_limits<DlibScalar>::infinity());
-			}
-		}
-		else
-		{
-			// set training data
-			NlZ							nlZ(m_generalTrainingData);
-			DnlZ							dnlZ(m_generalTrainingData);
 
+			//// TRUST_REGION_TYPE
+			//case TRUST_REGION_TYPE:
+			//{
+			//	// set training data
+			//	NlZ							nlZ(m_generalTrainingData);
 
-			// find minimum
-			if(maxIter <= 0)
+			//	// find minimum
+			//	dlib::find_min_trust_region(StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+			//										 nlZ, 
+			//										 hypDlib,
+			//										 10); \\ trust region radius
+			//	break;
+			//}
+
+			// BOBOYA_TYPE
+			case BOBOYA_TYPE:
 			{
-				dlib::find_min(SearchStrategy::Type(),
-									StoppingStrategy::Type(minValue).be_verbose(),
-									nlZ, 
-									dnlZ,
-									hypDlib,
-									-std::numeric_limits<DlibScalar>::infinity());
-			}
-			else
-			{
-				dlib::find_min(SearchStrategy::Type(),
-									StoppingStrategy::Type(minValue, maxIter).be_verbose(),
-									nlZ, 
-									dnlZ,
-									hypDlib,
-									-std::numeric_limits<DlibScalar>::infinity());
+				if(maxIter <= 0) maxIter = 1000;
+
+				// find minimum
+				try
+				{
+					dlib::find_min_bobyqa(NlZ(m_generalTrainingData), 
+												 hypDlib, 
+												 9,    // number of interpolation points
+												 dlib::uniform_matrix<double>(hypDlib.nr(), 1, -1e100),  // lower bound constraint
+												 dlib::uniform_matrix<double>(hypDlib.nr(), 1,  1e100),  // upper bound constraint
+												 1,    // initial trust region radius: 10
+												 1e-15,  // stopping trust region radius: 1e-6
+												 maxIter    // max number of objective function evaluations
+												 );
+				}
+				catch(const std::exception& e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+				break;
 			}
 		}
 
