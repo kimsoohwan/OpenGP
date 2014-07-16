@@ -12,10 +12,17 @@
 namespace GP{
 
 /** @brief	Define matrix and its shared pointer types */
-#define TYPE_DEFINE_MATRIX(Scalar)		typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>	Matrix;\
-													typedef boost::shared_ptr<Matrix>										MatrixPtr;\
-													typedef boost::shared_ptr<const Matrix>								MatrixConstPtr;
+//#define TYPE_DEFINE_MATRIX(Scalar)		typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>	Matrix;\
+//													typedef boost::shared_ptr<Matrix>										MatrixPtr;\
+//													typedef boost::shared_ptr<const Matrix>								MatrixConstPtr;
 
+#define TYPE_DEFINE_MATRIX(Scalar)																\
+	/** @brief Matrix type */																		\
+	typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>	Matrix;			\
+	/** @brief Matrix shared pointer type */													\
+	typedef boost::shared_ptr<Matrix>										MatrixPtr;		\
+	/** @brief Matrix const shared pointer type */											\
+	typedef boost::shared_ptr<const Matrix>								MatrixConstPtr;
 
 /** @brief	Define vector and its shared pointer types */
 #define TYPE_DEFINE_VECTOR(Scalar)		typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1>					Vector;\
@@ -28,14 +35,13 @@ namespace GP{
 													typedef boost::shared_ptr<RowVector>									RowVectorPtr;\
 													typedef boost::shared_ptr<const RowVector>							RowVectorConstPtr;
 
+#define TYPE_DEFINE_HYP(Scalar, N)					\
+	/** @brief	Hyperparameter type */				\
+	typedef Eigen::Matrix<Scalar, N, 1>		Hyp;
 
-/** @brief	Define a hyperparameter type */
-#define TYPE_DEFINE_HYP(Scalar, N)		typedef Eigen::Matrix<Scalar, N, 1>										Hyp;
-
-
-/** @brief	Define the all hyperparameter type */
-#define TYPE_DEFINE_ALL_HYP(Scalar, MeanFunc, CovFunc, LikFunc)		typedef Hyp<Scalar, MeanFunc, CovFunc, LikFunc>	Hyp;
-
+#define TYPE_DEFINE_ALL_HYP(Scalar, MeanFunc, CovFunc, LikFunc)	\
+	/** @brief	All hyperparameter type */									\
+	typedef Hyp<Scalar, MeanFunc, CovFunc, LikFunc>		Hyp;
 
 /** @brief	Define cholesky factor type and its shared pointer types */
 #define TYPE_DEFINE_CHOLESKYFACTOR(Scalar)		typedef Eigen::LLT<Matrix>											CholeskyFactor;\

@@ -9,27 +9,32 @@ namespace GP{
 /**
  * @class		CovSEiso
  * @brief		Squared Exponential Covariance Function
- *					@f$K(x, x)@f$
+ *					\f[
+ *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), r = |\mathbf{x}-\mathbf{z}|
+ *					\f]
  * @ingroup		Cov
+ * @tparam		Scalar	Datatype such as float and double
  * @author		Soohwan Kim
  * @date			26/03/2014
  */
-//					\f$k(\mathbf{x}, \mathbf{x}^\text{T}) = \sigma_f^2 * \exp(-\frac{r^2}{2l^2}), r = |x-x'|
 template<typename Scalar>
 class CovSEiso
 {
-/** @brief Define matrix types */
+// define types
 protected:	TYPE_DEFINE_MATRIX(Scalar);
 
-/** @brief Define hyperparameters */
-public:		TYPE_DEFINE_HYP(Scalar, 2); // log(ell), log(sigma_f)
+/**@detailed
+  * - Hyp(0) = \f$\log(l)\f$
+  * - Hyp(1) = \f$\log(\sigma_f)\f$					.
+  */
+public:		TYPE_DEFINE_HYP(Scalar, 2);
 
 // public static member functions
 public:
 
 	/**
-	 * @brief	Self covariance matrix between the training data: \f$K(x, x)\f$
-	 *				or its partial derivative with respective to a hyperparameter: dK(x, x)/dtheta_i
+	 * @brief	\f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$: Self covariance matrix between the training data or\n
+	 *				\f$\frac{\partial \mathbf{K}}{\partial \theta_i}\f$: Partial derivative with respective to the i-th hyperparameter\n
 	 *				Only K(x, x) has its partial derivatives since they are used for
 	 *				for learning hyperparameters with training data
 	 * @note		The public member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
