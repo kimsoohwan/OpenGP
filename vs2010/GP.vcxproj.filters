@@ -13,9 +13,6 @@
     <ClInclude Include="..\src\cov\covSEiso\CovSEiso.hpp">
       <Filter>src\cov\covSEiso</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObs.hpp">
-      <Filter>src\cov\covSEiso</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\cov\CovDerObs.hpp">
       <Filter>src\cov</Filter>
     </ClInclude>
@@ -84,6 +81,9 @@
     </ClInclude>
     <ClInclude Include="..\src\mean\MeanGP.hpp">
       <Filter>src\mean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp">
+      <Filter>src\cov\covSEiso</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

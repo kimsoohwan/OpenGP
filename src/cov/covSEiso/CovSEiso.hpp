@@ -8,12 +8,16 @@ namespace GP{
 
 /**
  * @class		CovSEiso
- * @brief		Isotropic squared exponential covariance function.
- * 				It inherits from TrainingDataSetter
- * 				to be able to set a training data.
+ * @brief		Isotropic squared exponential covariance function
  * 				k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
- * @author	Soohwan Kim
- * @date		26/03/2014
+ * @note			All covariance classes should have K(x, x), Ks(x, x*), and Kss(x*, x*)
+ *					as public static member functions. Also, no covariance class
+ *					contains any data. Instead, data are stored in data classes
+ *					such as TrainingData, DerivativeTrainingData and TestData. 
+ *					Assertions are checked only in those public static member functions
+ *					which can be accessed outside.
+ * @author		Soohwan Kim
+ * @date			26/03/2014
  */
 template<typename Scalar>
 class CovSEiso
@@ -24,75 +28,68 @@ protected:	TYPE_DEFINE_MATRIX(Scalar);
 // define hyperparameters
 public:		TYPE_DEFINE_HYP(Scalar, 2); // log(ell), log(sigma_f)
 
+// public static member functions
 public:
 
 	/**
-	 * @brief	K: Self covariance matrix between the training data.
-	 * 			[(K), K* ]: covariance matrix of the marginal Gaussian distribution 
-	 * 			[K*T, K**]
-	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f]).
-	 * @param	[in] trainingData 	The training data.
-	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index.
-	 * 										It returns the partial derivatives of the covariance matrix
-	 * 										with respect to this hyperparameter. 
-	 * 										The partial derivatives are required for learning hyperparameters.
-	 * 										(Example) pdHypIndex = 0: pd[K]/pd[log(ell)], pdHypIndex = 1: pd[K]/pd[log(sigma_f)]
-	 * 										(Default = -1) K
-	 * @return	An NxN matrix pointer.
-	 * 			N: The number of training data.
+	 * @brief	Self covariance matrix between the training data: K(x, x)
+	 *				or its partial derivative with respective to a hyperparameter: dK(x, x)/dtheta_i
+	 *				Only K(x, x) has its partial derivatives since they are used for
+	 *				for learning hyperparameters with training data
+	 * @note		The public member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
+	 *				a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
+	 *				which only depends on pair-wise squared distances.
+	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f])
+	 * @param	[in] trainingData 	The training data
+	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
+	 * 										pdHypIndex = -1: K(x, x),  (default)
+	 *											pdHypIndex =  0: pd[K]/pd[log(ell)],
+	 *											pdHypIndex =  1: pd[K]/pd[log(sigma_f)]
+	 * @return	An NxN matrix pointer
+	 * 			N: The number of training data
 	 */
-	static MatrixPtr K(const Hyp &logHyp, 
-							 TrainingData<Scalar> &trainingData, 
-							 const int pdHypIndex = -1) 
+	static MatrixPtr K(const Hyp					&logHyp, 
+							 TrainingData<Scalar>	&trainingData, 
+							 const int					pdHypIndex = -1) 
 	{
+		// the hyparparameter index should be less than the number of hyperparameters
 		assert(pdHypIndex < logHyp.size());
 
-		// The pairwise squared distances between the trainig inputs
-		// is already calculated in m_pSqDist when the training data was set.
+		// K(r)
 		return K(logHyp, trainingData.pSqDistXX(), pdHypIndex);
 	}
 
 	/**
-	 * @brief	K*: Cross covariance matrix between the training data and test data.
-	 * 			[K,    (K*)]: covariance matrix of the marginal Gaussian distribution 
-	 * 			[(K*T), K**]
-	 * 			Note that no pdHypIndex parameter is passed,
-	 * 			because the partial derivatives of the covariance matrix
-	 * 			is only required for learning hyperparameters.
-	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f]).
-	 * @param	[in] trainingData 	The training data.
-	 * @param	[in] pXs 				The test inputs.
-	 * @return	An NxM matrix pointer.
-	 * 			N: The number of training data.
-	 * 			M: The number of test data.
+	 * @brief	Cross covariance matrix between the training data and test data, Ks(x, x*)
+	 * @note		The public member functions, K(x, x), Ks(x, x*) and Kss(x*, x*) call 
+	 *				a protected general member function, K(r) which only depends on r.
+	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f])
+	 * @param	[in] trainingData 	The training data
+	 * @param	[in] testData 			The test data
+	 * @return	An NxM matrix pointer
+	 * 			N: The number of training data
+	 * 			M: The number of test data
 	 */
-	static MatrixPtr Ks(const Hyp &logHyp, 
-							  const TrainingData<Scalar> &trainingData, 
-							  const TestData<Scalar> &testData)
+	static MatrixPtr Ks(const Hyp								&logHyp, 
+							  const TrainingData<Scalar>		&trainingData, 
+							  const TestData<Scalar>			&testData)
 	{
-		// Calculate the cross covariance matrix
-		// given the pairwise squared distances
-		// between the training inputs and test inputs.
+		// K(r)
 		return K(logHyp, trainingData.pSqDistXXs(testData));
 	}
 
 	/**
-	 * @brief	K**: Self [co]variance matrix between the test data.
-	 * 			[K,    K*  ]: covariance matrix of the marginal Gaussian distribution 
-	 * 			[K*T, (K**)]
-	 * 			Note that no pdHypIndex parameter is passed,
-	 * 			because the partial derivatives of the covariance matrix
-	 * 			is only required for learning hyperparameters.
-	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f]).
-	 * @param	[in] pXs 				The test inputs.
-	 * @param	[in] fVarianceVector	Flag for the return value.
-	 * @return	fVarianceVector == true : An Mx1 matrix pointer.
-	 * 			fVarianceVector == false: An MxM matrix pointer.
+	 * @brief	Self [co]variance matrix between the test data, Kss(x*, x*)
+	 * @param	[in] logHyp 				The log hyperparameters, log([ell, sigma_f])
+	 * @param	[in] testData 				The test data
+	 * @param	[in] fVarianceVector		Flag for the return value
+	 * @return	An Mx1 matrix pointer (fVarianceVector == true)
+	 * 			An MxM matrix pointer (fVarianceVector == false)
 	 * 			M: The number of test data.
 	 */
-	static MatrixPtr Kss(const Hyp &logHyp, 
-								const TestData<Scalar> &testData, 
-								const bool fVarianceVector = true)
+	static MatrixPtr Kss(const Hyp						&logHyp, 
+								const TestData<Scalar>		&testData, 
+								const bool						fVarianceVector = true)
 	{
 		// The number of test data.
 		const int M = testData.M();
@@ -110,16 +107,12 @@ public:
 			pKss.reset(new Matrix(M, 1));
 			pKss->fill(sigma_f2);
 		}
+
 		// K: self-covariance matrix (MxM).
 		else					
 		{
-			// Calculate the pairwise squared distances
-			// between the test inputs.
-			MatrixPtr pSqDistXXs = PairwiseOp<Scalar>::sqDist(testData.pXs());
-
-			// Calculate the covariance matrix
-			// given the pairwise squared distances.
-			pKss = K(logHyp, pSqDistXXs);
+			// K(r)
+			pKss = K(logHyp, PairwiseOp<Scalar>::sqDist(testData.pXs()));
 		}
 
 		return pKss;
@@ -127,29 +120,26 @@ public:
 
 protected:
 	/**
-	 * @brief	This is the core function of this class.
-	 * 			Calculates the covariance matrix, given the pairwise squared distances.
-	 * 			Designed to be used for calculating any covariance matrix, K, K*, K**.
-	 * @param	[in] logHyp 	The log hyperparameters, log([ell, sigma_f])
-	 * @param	[in] pSqDist 	The pairwise squared distances.
-	 * @param	[in] pdHypIndex	(Optional) Hyperparameter index.
-	 * 									It returns the partial derivatives of the covariance matrix
-	 * 									with respect to this hyperparameter. 
-	 * 									The partial derivatives are required for learning hyperparameters.
-	 * 									(Example) pdHypIndex = 0: pd[K]/pd[log(ell)], pdHypIndex = 1: pd[K]/pd[log(sigma_f)]
-	 * 									(Default = -1) K
-	 * @return	An matrix pointer of the same size of the pairwise squared distance matrix.
+	 * @brief	Covariance matrix given pair-wise squared distances
+	 * @note		This is the core function of this class which is called from
+	 *				other public static member functions, K(x, x), Ks(x, x*) and Kss(x*, x*).
+	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f])
+	 * @param	[in] pSqDist 			The pairwise squared distances
+	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
+	 * 										pdHypIndex = -1: K(x, x),  (default)
+	 *											pdHypIndex =  0: pd[K]/pd[log(ell)],
+	 *											pdHypIndex =  1: pd[K]/pd[log(sigma_f)]
+	 * @return	An matrix pointer of the same size of the pairwise squared distance matrix
 	 */
-	static MatrixPtr K(const Hyp &logHyp, 
-							 const MatrixConstPtr pSqDist, 
-							 const int pdHypIndex = -1)
+	static MatrixPtr K(const Hyp						&logHyp, 
+							 const MatrixConstPtr		pSqDist, 
+							 const int						pdHypIndex = -1)
 	{
-		// pdHypIndex should be greater than the number of hyperparameters
-		assert(pdHypIndex < logHyp.size());
-
-		// Output.
+		// Output
 		// K: of the same size as the pairwise squared distance matrix
-		// NxN for K, NxM for Ks
+		// K(x, x):     NxN
+		// Ks(x, x*):   NxM
+		// Kss(x*, x*): MxM
 		MatrixPtr pK(new Matrix(pSqDist->rows(), pSqDist->cols()));
 
 		// some constant values
@@ -159,7 +149,7 @@ protected:
 		const Scalar sigma_f2_inv_ell2		= sigma_f2 * inv_ell2;									// sigma_f^2/ell^2
 		const Scalar twice_sigma_f2			= static_cast<Scalar>(2.f) * sigma_f2;				// 2*sigma_f^2
 
-		// mode
+		// hyperparameter index for partial derivatives
 		switch(pdHypIndex)
 		{
 		// pd[k]/pd[log(ell)]: partial derivative of covariance function w.r.t log(ell).

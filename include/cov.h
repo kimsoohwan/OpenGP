@@ -8,25 +8,25 @@
 
 // Squared Exponential
 #include "../src/cov/covSEiso/CovSEiso.hpp"
-#include "../src/cov/covSEiso/CovSEisoDerObs.hpp"
+#include "../src/cov/covSEiso/CovSEisoDerObsBase.hpp"
 //#include "../src/cov/covseisobase.hpp"
 //#include "../src/cov/covseisoderbase.hpp"
 
 namespace GP {
 //typedef Isotropic<float, CovSEIsoBase>											CovSEIsoSlow;
 //typedef template<typename Scalar> DealingWithDerivativeObservations<Scalar, CovSEIsoDerBase>		CovSEIsoDerSlow;
-//typedef CovDerObs<float, _CovSEisoDerObs> CovSEisoDerObsf;
+//typedef CovDerObs<float, CovSEisoDerObsBase> CovSEisoDerObsf;
 
 //template <typename Scalar>
-//using CovSEisoDerObs = CovDerObs<Scalar, _CovSEisoDerObs>;
+//using CovSEisoDerObs = CovDerObs<Scalar, CovSEisoDerObsBase>;
 
 template<typename Scalar>
-class CovSEisoDerObs : public CovDerObs<Scalar, _CovSEisoDerObs> {};
+class CovSEisoDerObs : public CovDerObs<Scalar, CovSEisoDerObsBase> {};
 
 //template<typename Scalar> 
 //struct _CovDerObs
 //{
-//   typedef CovDerObs<Scalar, _CovSEisoDerObs> __CovSEisoDerObs;
+//   typedef CovDerObs<Scalar, CovSEisoDerObsBase> __CovSEisoDerObs;
 //};
 //template<typename Scalar> using CovSEisoDerObs = typename _CovDerObs::__CovSEisoDerObs;
 }

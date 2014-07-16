@@ -181,8 +181,5 @@ protected:
 	bool m_fDeltaXXList;
 };
 
-typedef boost::shared_ptr<Matrix>										MatrixPtr;\
-typedef boost::shared_ptr<const Matrix>								MatrixConstPtr;
-
 }
 #endif

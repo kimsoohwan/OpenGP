@@ -6,8 +6,8 @@
 namespace GP{
 
 /**
- * @class		_CovSEisoDerObs
- * @brief		Base class for CovDerObs
+ * @class		CovSEisoDerObsBase
+ * @brief		A base class for CovSEisoDerObs
  *					of isotropic squared exponential covariance function
  *					with derivative observations.
  * 				It inherits from CovSEiso and will be parameterized into CovDerObs.
@@ -15,7 +15,7 @@ namespace GP{
  * @date		30/06/2014
  */
 template<typename Scalar>
-class _CovSEisoDerObs : public CovSEiso<Scalar>
+class CovSEisoDerObsBase : public CovSEiso<Scalar>
 {
 protected:
 	typedef CovSEiso<Scalar> CovParent;

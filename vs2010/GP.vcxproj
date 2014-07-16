@@ -87,7 +87,7 @@
     <ClInclude Include="..\src\cov\covseisodiffbase.hpp" />
     <ClInclude Include="..\src\cov\covseisobase.hpp" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEiso.hpp" />
-    <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObs.hpp" />
+    <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp" />
     <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp" />
     <ClInclude Include="..\src\cov\isotropic.hpp" />
