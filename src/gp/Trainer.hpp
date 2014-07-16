@@ -68,10 +68,10 @@ template<typename Scalar,
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 
 			template<typename> class LikFunc,
-			template <typename, 
-						 template<typename> class,
-						 template<typename> class,
-						 template<typename> class> class InfMethod,
+			template<typename, 
+						template<typename> class,
+						template<typename> class,
+						template<typename> class> class InfMethod,
 			template<typename> class GeneralTrainingData>
 class Trainer
 {
@@ -95,11 +95,11 @@ protected:	TYPE_DEFINE_VECTOR(Scalar);
 // typedef
 protected:
 	typedef	typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>		InfType;
-	typedef	typename InfType::Hyp															Hyp;
+	typedef	typename InfType::Hyp													Hyp;
 
-	//typedef	Scalar																		DlibScalar;
-	typedef	double																			DlibScalar;
-	typedef	dlib::matrix<DlibScalar, 0, 1>											DlibVector;	
+	//typedef	Scalar																	DlibScalar;
+	typedef	double																		DlibScalar;
+	typedef	dlib::matrix<DlibScalar, 0, 1>										DlibVector;	
 
 public:
 	template<template<typename> class GeneralTrainingData>
@@ -284,8 +284,8 @@ public:
 												 9,    // number of interpolation points
 												 dlib::uniform_matrix<double>(hypDlib.nr(), 1, -1e100),  // lower bound constraint
 												 dlib::uniform_matrix<double>(hypDlib.nr(), 1,  1e100),  // upper bound constraint
-												 1,    // initial trust region radius: 10
-												 1e-15,  // stopping trust region radius: 1e-6
+												 1,			// initial trust region radius: 10
+												 1e-15,		// stopping trust region radius: 1e-6
 												 maxIter    // max number of objective function evaluations
 												 );
 				}

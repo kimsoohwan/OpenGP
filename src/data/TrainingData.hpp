@@ -64,7 +64,7 @@ public:
 	 * @param	[in] pX	The training inputs.
 	 * @param	[in] pY	The training outputs.
 	 */
-	void set(MatrixPtr pX, VectorPtr pY)
+	void set(const MatrixConstPtr pX, const VectorConstPtr pY)
 	{
 		m_pX = pX;
 		m_pY = pY;
@@ -72,14 +72,14 @@ public:
 		m_fDeltaXXList = false;
 	}
 
-	///**
-	// * @brief	Gets the const pointer to the training inputs.
-	// * @return	A matrix const pointer.
-	// */
-	//const MatrixConstPtr pX() const
-	//{
-	//	return m_pX;
-	//}
+	/**
+	 * @brief	Gets the const pointer to the training inputs.
+	 * @return	A matrix const pointer.
+	 */
+	const MatrixConstPtr pX() const
+	{
+		return m_pX;
+	}
 
 	/**
 	 * @brief	Gets the const pointer to the training outputs.
@@ -161,10 +161,10 @@ public:
 
 protected:
 	/** @brief training inputs */
-	MatrixPtr m_pX;	// NxD matrix
+	MatrixConstPtr m_pX;	// NxD matrix
 
 	/** @brief training outputs */
-	VectorPtr m_pY;	// Nx1 vector
+	VectorConstPtr m_pY;	// Nx1 vector
 
 
 	/** @brief	Pre-calculated self squared distances between the training inputs. */
@@ -180,6 +180,9 @@ protected:
 	/** @brief	Flag for the pre-calculated self differences between the training inputs. */
 	bool m_fDeltaXXList;
 };
+
+typedef boost::shared_ptr<Matrix>										MatrixPtr;\
+typedef boost::shared_ptr<const Matrix>								MatrixConstPtr;
 
 }
 #endif

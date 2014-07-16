@@ -64,7 +64,7 @@ public:
 	 * @brief	Resets the test data.
 	 * @param	[in] pXs	The test inputs.
 	 */
-	void set(MatrixPtr pXs)
+	void set(const MatrixConstPtr pXs)
 	{
 		m_pXs = pXs;
 	}
@@ -108,10 +108,10 @@ public:
 
 protected:
 	/** @brief function test inputs */
-	MatrixPtr m_pXs;	// MxD matrix
+	MatrixConstPtr m_pXs;	// MxD matrix
 
 	/** @brief derivative test inputs */
-	MatrixPtr m_pXds;	// MdxD matrix
+	MatrixConstPtr m_pXds;	// MdxD matrix
 
 	/** @brief test outputs */
 	VectorPtr m_pMu;		// Mx1 vector

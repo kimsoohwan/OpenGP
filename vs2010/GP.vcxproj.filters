@@ -82,6 +82,9 @@
     <ClInclude Include="..\src\gp\GaussianProcess.hpp">
       <Filter>src\gp</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\mean\MeanGP.hpp">
+      <Filter>src\mean</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

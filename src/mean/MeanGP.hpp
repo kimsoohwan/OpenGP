@@ -19,34 +19,53 @@ template<typename Scalar,
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 
 			template<typename> class LikFunc,
-			template <typename, 
-						 template<typename> class,
-						 template<typename> class,
-						 template<typename> class> class InfMethod>
+			template<typename, 
+						template<typename> class,
+						template<typename> class,
+						template<typename> class> class InfMethod,
+			template<template<typename> class GlobalTrainingData>
 class MeanGP
 {
 // define matrix types
 protected:	TYPE_DEFINE_VECTOR(Scalar);
+	typedef	typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>		InfType;
 
 // define hyperparameters
-public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
+public:		TYPE_DEFINE_HYP(Scalar, 0);			// No local hyperparameter
+				typedef InfType::Hyp		GlobalHyp;	// global hyperparameters
 
-	/**
-		* @brief	The mean vector at the training positions. f(X)
-	   * @param	[in] logHyp 					The log hyperparameters, nothing for MeanGP.
-	   * @param	[in] generalTrainingData 	The training data or derivative training data
-		* @return	The mean vector.
-		*/
-	template<template<typename> class GeneralTrainingData>
-	static VectorPtr m(const Hyp									&logHyp, 
-							 const GeneralTrainingData<Scalar>	&generalTrainingData, 
-							 const int									pdHypIndex = -1)
+// define shared pointers
+protected:
+	typedef boost::shared_ptr<GlobalTrainingData<Scalar> >					GlobalTrainingDataPtr;
+	typedef boost::shared_ptr<const GlobalTrainingData<Scalar> >			GlobalTrainingDataConstPtr;
+	typedef boost::shared_ptr<GlobalHyp>											GlobalHypPtr;
+	typedef boost::shared_ptr<const GlobalHyp>									GlobalHypConstPtr;
+
+public:
+	MeanGP(const GlobalTrainingDataPtr pGlobalTrainingData, const GlobalHypConstPtr pGlobalHyp)
+		: m_pGlobalTrainingData(pGlobalTrainingData),
+		  m_pGlobalHyp(pGlobalHyp)
+	{}
+
+	template<template<typename> class GeneralLocalTrainingData>
+	static VectorPtr m(const Hyp											&logHyp, 
+							 const GeneralLocalTrainingData<Scalar>	&generalLocalTrainingData, 
+							 const int											pdHypIndex = -1)
 	{
-		// Zero vector
-		VectorPtr pMu(new Vector(generalTrainingData.NN()));
-		pMu->setZero();
-		return pMu;
+		// set the global test inputs with the local taining inputs
+		TestData<Scalar> globalTestData;
+		globalTestData.set(generalLocalTrainingData.pX());
+
+		// predict
+		InfType::predict /* throw (Exception) */
+							 (*m_pGlobalHyp, 
+							  *m_pGlobalTrainingData, 
+							  globalTestData);
+
+		// return the global mean
+		return globalTestData.pMu();
 	}
+
 
 	/**
 		* @brief	The mean vector at the test positions. f(X*)
@@ -55,13 +74,25 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 		* @return	The mean vector.
 		*/
 	//VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
-	static VectorPtr ms(const Hyp &logHyp, const TestData<Scalar> &testData)
+	static VectorPtr ms(const Hyp &logHyp, const TestData<Scalar> &localTestData)
 	{
-		// Zero vector
-		VectorPtr pMu(new Vector(testData.M()));
-		pMu->setZero();
-		return pMu;
+		// set the global test inputs with the local taining inputs
+		TestData<Scalar> globalTestData;
+		globalTestData.set(localTestData.pXs());
+
+		// predict
+		InfType::predict /* throw (Exception) */
+							 (*m_pGlobalHyp, 
+							  *m_pGlobalTrainingData, 
+							  globalTestData);
+
+		// return the global mean
+		return globalTestData.pMu();
 	}
+
+protected:
+	static GlobalTrainingData	m_pGlobalTrainingData;
+	static GlobalHyp				m_pGlobalHyp;
 };
 
 //using MeanZeroDerObs = MeanGP;

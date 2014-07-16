@@ -7,6 +7,7 @@ GPMap Test
 
 MeanGP
 1. template<Scalar> MeanGP_MeanZeroCovSEiso : template<Scalar, MeanZero, CovSEisoDerPred, InfExact> _MeanGP {};
+TrainingData = TestData
 
 2. predict at derivative test inputs, df(z)/dzj
 2.1 template<Scalar>
@@ -37,3 +38,8 @@ protected:
 	bool							m_fSqDist;
 	bool							m_fDelta;
 };
+
+3. DerObs - mean, cov, lik, inf, data
+
+4. Learn global GP and local GP together
+dm/dthetai
