@@ -13,6 +13,25 @@
 //#include "../src/cov/covseisoderbase.hpp"
 
 namespace GP {
+
+/**
+ * @defgroup	Cov
+ * @brief		Covariance Functions\n
+ *					All covariance classes should have public static member functions.
+ *					-# CovSEiso::K
+ *					-# CovSEiso::Ks
+ *					-# CovSEiso::Kss
+ *					.
+ *					Also, no covariance class contains any data.
+ *					Instead, data are stored in data classes such as
+ *					-# TrainingData
+ *					-# DerivativeTrainingData
+ *					-# TestData
+ *					.
+ *					Assertions are checked only in those public static member functions
+ *					which can be accessed outside.
+ */
+
 //typedef Isotropic<float, CovSEIsoBase>											CovSEIsoSlow;
 //typedef template<typename Scalar> DealingWithDerivativeObservations<Scalar, CovSEIsoDerBase>		CovSEIsoDerSlow;
 //typedef CovDerObs<float, CovSEisoDerObsBase> CovSEisoDerObsf;

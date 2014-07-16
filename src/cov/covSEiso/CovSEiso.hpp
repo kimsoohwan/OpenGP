@@ -8,31 +8,26 @@ namespace GP{
 
 /**
  * @class		CovSEiso
- * @brief		Isotropic squared exponential covariance function
- * 				k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
- * @note			All covariance classes should have K(x, x), Ks(x, x*), and Kss(x*, x*)
- *					as public static member functions. Also, no covariance class
- *					contains any data. Instead, data are stored in data classes
- *					such as TrainingData, DerivativeTrainingData and TestData. 
- *					Assertions are checked only in those public static member functions
- *					which can be accessed outside.
+ * @brief		Squared Exponential Covariance Function
+ *					@f$K(x, x)@f$
+ * @ingroup		Cov
  * @author		Soohwan Kim
  * @date			26/03/2014
  */
 template<typename Scalar>
 class CovSEiso
 {
-// define matrix types
+/** @brief Define matrix types */
 protected:	TYPE_DEFINE_MATRIX(Scalar);
 
-// define hyperparameters
+/** @brief Define hyperparameters */
 public:		TYPE_DEFINE_HYP(Scalar, 2); // log(ell), log(sigma_f)
 
 // public static member functions
 public:
 
 	/**
-	 * @brief	Self covariance matrix between the training data: K(x, x)
+	 * @brief	Self covariance matrix between the training data: \f$K(x, x)\f$
 	 *				or its partial derivative with respective to a hyperparameter: dK(x, x)/dtheta_i
 	 *				Only K(x, x) has its partial derivatives since they are used for
 	 *				for learning hyperparameters with training data
