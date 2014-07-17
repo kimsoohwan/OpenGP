@@ -12,6 +12,35 @@ namespace GP{
  *					\f[
  *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), r = |\mathbf{x}-\mathbf{z}|
  *					\f]
+ *					All covariance classes should have public static member functions.
+ *					<CENTER>
+ *					Public Static Member Functions | Corresponding Mathematical Equations
+ *					-------------------------------|-------------------------------------
+ *					CovSEiso::K							 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X})\f$
+ *					CovSEiso::Ks						 | \f$\mathbf{k}_* = \mathbf{K}(\mathbf{X}, \mathbf{x}_*)\f$ or \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
+ *					CovSEiso::Kss						 | \f$k_{**} = \mathbf{k}(\mathbf{x}_*, \mathbf{x}_*)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
+ *					</CENTER>
+ *					for \f[
+ *					\mathbf{K} = 
+ *					\begin{bmatrix}
+ *					\mathbf{K} & \mathbf{k}_*\\ 
+ *					\mathbf{k}_*^\text{T} & k_{**}
+ *					\end{bmatrix}
+ *					\text{, or }
+ *					\mathbf{K} = 
+ *					\begin{bmatrix}
+ *					\mathbf{K} & \mathbf{K}_*\\ 
+ *					\mathbf{K}_*^\text{T} & \mathbf{K}_{**}
+ *					\end{bmatrix}
+ *					\f]
+ *					Also, no covariance class contains any data.
+ *					Instead, data are stored in data classes such as
+ *					-# TrainingData
+ *					-# DerivativeTrainingData
+ *					-# TestData
+ *					.
+ *					Assertions are checked only in those public static member functions
+ *					which can be accessed outside.
  * @ingroup		Cov
  * @tparam		Scalar	Datatype such as float and double
  * @author		Soohwan Kim
@@ -33,27 +62,28 @@ public:		TYPE_DEFINE_HYP(Scalar, 2);
 public:
 
 	/**
-	 * @brief	\f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$: Self covariance matrix between the training data or\n
-	 *				\f$\frac{\partial \mathbf{K}}{\partial \theta_i}\f$: Partial derivative with respective to the i-th hyperparameter\n
-	 *				Only K(x, x) has its partial derivatives since they are used for
-	 *				for learning hyperparameters with training data
+	 * @brief	Self covariance matrix between the training data or
+	 *				its partial derivative with respective to the i-th hyperparameter\n
+	 *				Only this function returns partial derivatives
+	 *				since they are used for learning hyperparameters with training data.
 	 * @note		The public member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
 	 *				a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
 	 *				which only depends on pair-wise squared distances.
-	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f])
+	 * @param	[in] logHyp 			The log hyperparameters, \f$\log([l, \sigma_f])\f$
 	 * @param	[in] trainingData 	The training data
-	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
-	 * 										pdHypIndex = -1: K(x, x),  (default)
-	 *											pdHypIndex =  0: pd[K]/pd[log(ell)],
-	 *											pdHypIndex =  1: pd[K]/pd[log(sigma_f)]
-	 * @return	An NxN matrix pointer
+	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index\n
+	 * 										- pdHypIndex = -1 (default): return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
+	 *											- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
+	 *											- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$
+	 * @return	An NxN matrix pointer\n
 	 * 			N: The number of training data
 	 */
 	static MatrixPtr K(const Hyp					&logHyp, 
 							 TrainingData<Scalar>	&trainingData, 
 							 const int					pdHypIndex = -1) 
 	{
-		// the hyparparameter index should be less than the number of hyperparameters
+		// Assertions only in the begining of the public static member functions which can be accessed outside.
+		// The hyparparameter index should be less than the number of hyperparameters
 		assert(pdHypIndex < logHyp.size());
 
 		// K(r)
@@ -62,13 +92,14 @@ public:
 
 	/**
 	 * @brief	Cross covariance matrix between the training data and test data, Ks(x, x*)
-	 * @note		The public member functions, K(x, x), Ks(x, x*) and Kss(x*, x*) call 
-	 *				a protected general member function, K(r) which only depends on r.
-	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f])
+	 * @note		The public member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
+	 *				a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
+	 *				which only depends on pair-wise squared distances.
+	 * @param	[in] logHyp 			The log hyperparameters, \f$\log([l, \sigma_f])\f$
 	 * @param	[in] trainingData 	The training data
 	 * @param	[in] testData 			The test data
-	 * @return	An NxM matrix pointer
-	 * 			N: The number of training data
+	 * @return	An NxM matrix pointer, \f$\mathbf{k}_* = \mathbf{K}(\mathbf{X}, \mathbf{x}_*)\f$ or \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$\n
+	 * 			N: The number of training data\n
 	 * 			M: The number of test data
 	 */
 	static MatrixPtr Ks(const Hyp								&logHyp, 

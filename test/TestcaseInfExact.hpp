@@ -42,13 +42,14 @@ protected:
 		N					= trainingData.N();
 
 		pInvSqrtD		= invSqrtD(logHyp.lik, trainingData);
-		pL					= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
+		pL1				= choleskyFactor(logHyp, trainingData);
+		pL2				= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
 		pY_M				= y_m(logHyp.mean, trainingData);
 
-		pAlpha1			= alpha(pInvSqrtD, pL, pY_M);
-		pAlpha2			= alpha(logHyp.lik, pL, pY_M);
-		pQ1				= q(pInvSqrtD, pL, pAlpha1);
-		pQ2				= q(logHyp.lik, pL, pAlpha2);
+		pAlpha1			= alpha(pInvSqrtD, pL1, pY_M);
+		pAlpha2			= alpha(logHyp.lik, pL1, pY_M);
+		pQ1				= q(pInvSqrtD, pL1, pAlpha1);
+		pQ2				= q(logHyp.lik, pL1, pAlpha2);
 		dnlZWRTLikHyp1 = dnlZWRTLikHyp(logHyp.lik, trainingData, pQ1);
 		dnlZWRTLikHyp2 = dnlZWRTLikHyp(logHyp.lik, pQ2);
 	}
@@ -64,7 +65,8 @@ protected:
 	/** @brief Some constants */
 	int N;
 	VectorConstPtr				pInvSqrtD;
-	CholeskyFactorConstPtr	pL;
+	CholeskyFactorConstPtr	pL1;
+	CholeskyFactorConstPtr	pL2;
 	VectorConstPtr				pY_M;
 	VectorConstPtr				pAlpha1, pAlpha2;
 	MatrixConstPtr				pQ1, pQ2;
@@ -102,10 +104,13 @@ TEST_F(TestCaseInfExact, CholeskyFactorTest)
 		   4.036549175942017f, 5.820105434875480f, 7.317399015148106f, 10.967975771600516f, 1.411319454917352f;
 
 	// Actual value
-	const Matrix L2(pL->matrixL());
+	const Matrix L21(pL1->matrixL());
+	const Matrix L22(pL1->matrixL());
 
 	// Test
-	TEST_MACRO::COMPARE(L1, L2, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(L21, L22, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(L1,  L21, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(L1,  L22, __FILE__, __LINE__);
 }
 
 /** @brief	y-m test */  
@@ -188,7 +193,7 @@ TEST_F(TestCaseInfExact, NlZTest)
 
 	// Actual value
 	const TestType factor12 = static_cast<TestType>(0.5f) * (*pY_M).dot(*pAlpha1);
-	const TestType factor22 = pL->matrixL().nestedExpression().diagonal().array().log().sum();
+	const TestType factor22 = pL1->matrixL().nestedExpression().diagonal().array().log().sum();
 	const TestType factor32 = - pInvSqrtD->array().log().sum();
 	const TestType factor42 = static_cast<TestType>(N) * 0.918938533204673f;
 
@@ -221,8 +226,8 @@ TEST_F(TestCaseInfExact, QTest)
 			        -0.233476969822487f, 
 			         9.969938572168159f, 
 			        -9.583958155557667f;
-	MatrixPtr pQ3 = q(pInvSqrtD, pL, pAlpha0);
-	MatrixPtr pQ4 = q(logHyp.lik, pL, pAlpha0);
+	MatrixPtr pQ3 = q(pInvSqrtD, pL1, pAlpha0);
+	MatrixPtr pQ4 = q(logHyp.lik, pL1, pAlpha0);
 
 	// Test
 	TEST_MACRO::COMPARE(*pQ1, *pQ2, __FILE__, __LINE__);

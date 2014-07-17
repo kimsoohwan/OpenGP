@@ -350,57 +350,6 @@ protected:
 		return pL;
 	}
 
-	static CholeskyFactorPtr choleskyFactor /* throw (Exception) */
-														(const Hyp						&logHyp,
-														 TrainingData<Scalar>		&trainingData)
-	{
-		// number of training data
-		const int N = trainingData.N();
-
-		// K
-		MatrixPtr pKn = CovFunc<Scalar>::K(logHyp.cov, trainingData);
-
-		// Kn = K + sn^2*I
-		//    = sn^2 * (K/sn^2 + I)
-		//    = sn^2 * (L*L')
-		//
-		// instead of						LL' = K + D
-		// for numerical stability,	LL' = K/sn2 + I 
-		const Scalar sn2 = exp(static_cast<Scalar>(2.f) * logHyp.lik(0));	// sn^2
-		(*pKn) = (*pKn)/sn2 + Matrix::Identity(N, N);
-
-		// cholesky factor
-		//CholeskyFactorPtr pL(new CholeskyFactor());
-		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
-		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
-
-		if(pL->info() != Eigen::ComputationInfo::Success)
-		{
-			Exception e;
-			switch(pL->info())
-			{
-				case Eigen::ComputationInfo::NumericalIssue :
-				{
-					e = "NumericalIssue";
-					break;
-				}
-				case Eigen::ComputationInfo::NoConvergence :
-				{
-					e = "NoConvergence";
-					break;
-				}
-				case Eigen::ComputationInfo::InvalidInput :
-				{
-					e = "InvalidInput";
-					break;
-				}
-			}
-			throw e;
-		}
-
-		return pL;
-	}
-
 	static VectorPtr y_m(const typename Hyp::Mean	&logHyp,
 								TrainingData<Scalar>			&trainingData)
 	{

@@ -18,9 +18,9 @@ namespace GP {
  * @defgroup	Cov
  * @brief		Covariance Functions\n
  *					All covariance classes should have public static member functions.
- *					-# CovSEiso::K
- *					-# CovSEiso::Ks
- *					-# CovSEiso::Kss
+ *					-# K: \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
+ *					-# Ks: \f$\mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
+ *					-# Kss: \f$\mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
  *					.
  *					Also, no covariance class contains any data.
  *					Instead, data are stored in data classes such as

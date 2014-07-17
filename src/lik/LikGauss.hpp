@@ -19,9 +19,9 @@ protected:	TYPE_DEFINE_VECTOR(Scalar);
 public:		TYPE_DEFINE_HYP(Scalar, 1); // sigma_n
 
 	// diagonal vector
-	static VectorPtr lik(const Hyp						&logHyp, 
-								const TrainingData<Scalar> &trainingData, 
-								const int pdHypIndex = -1)
+	static VectorPtr lik(const Hyp							&logHyp, 
+								const TrainingData<Scalar>		&trainingData, 
+								const int							pdHypIndex = -1)
 	{
 		assert(pdHypIndex < logHyp.size());
 
