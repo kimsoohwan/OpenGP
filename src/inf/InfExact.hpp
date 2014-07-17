@@ -60,10 +60,13 @@ public:
 		if(N <= 0 || M <= 0) return;
 
 		// some constants
+		//const VectorConstPtr				pInvSqrtD	= invSqrtD(logHyp.lik, trainingData);
+		//const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
+		//const VectorConstPtr				pY_M			= y_m(logHyp.mean, trainingData);
+		//const VectorConstPtr				pAlpha		= alpha(pInvSqrtD, pL, pY_M);
 		const VectorConstPtr				pInvSqrtD	= invSqrtD(logHyp.lik, trainingData);
-		const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
+		const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, logHyp.lik, trainingData);
 		const VectorConstPtr				pY_M			= y_m(logHyp.mean, trainingData);
-		//const VectorConstPtr			pAlpha		= alpha(pInvSqrtD, pL, pY_M);
 		const VectorConstPtr				pAlpha		= alpha(logHyp.lik, pL, pY_M);
 
 		// too many test points: batch
@@ -119,7 +122,118 @@ public:
 		if(N <= 0) return;
 
 		// some constants
+		const Scalar sn = exp(logHyp.lik(0));	// sn
+
+		CholeskyFactorConstPtr	pL;
+		try
+		{
+			//pL = choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
+			pL	= choleskyFactor(logHyp.cov, logHyp.lik, trainingData);
+		}
+		catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
+		{
+			std::cerr << e.what() << std::endl;
+			nlZ = std::numeric_limits<Scalar>::infinity();
+			pDnlZ.reset(new Vector(logHyp.size()));
+			pDnlZ->setZero();
+			return;
+		}
+		const VectorConstPtr		pY_M		= y_m(logHyp.mean, trainingData);
+		const VectorConstPtr		pAlpha	= alpha(logHyp.lik, pL, pY_M);
+
+		// marginal likelihood
+		// p(y) = N(m, Kn) = (2pi)^(-n/2) * |Kn|^(-1/2) * exp[(-1/2) * (y-m)' * inv(Kn) * (y-m)]
+		// nlZ  = (1/2) * (y-m)' * inv(Kn) * (y-m)	+ (1/2) * log |Kn|									+ (n/2) * log(2pi)
+		//      = (1/2) * (y-m)' * alpha					+ (1/2) * log |D^(1/2)*L*L'*D^(1/2)|			+ (n/2) * log(2pi)
+		//      = (1/2) * (y-m)' * alpha					+ (1/2) * log |D^(1/2)|*|L|*|L'|*|D^(1/2)|	+ (n/2) * log(2pi)
+		//      = (1/2) * (y-m)' * alpha					+ log |L|      + log |D^(1/2)|					+ (n/2) * log(2pi)
+		//      = (1/2) * (y-m)' * alpha					+ log |L|      - log |D^(-1/2)|					+ (n/2) * log(2pi)
+		//      = (1/2) * (y-m)' * alpha					+ tr[log (L)]	- tr[log(D^(-1/2))]				+ (n/2) * log(2pi)
+		if(calculationMode >= 0)
+		{
+			nlZ = static_cast<Scalar>(0.5f) * (*pY_M).dot(*pAlpha)
+					//+ L.diagonal().array().log().sum()
+					+ pL->matrixL().nestedExpression().diagonal().array().log().sum()
+					+ static_cast<Scalar>(N) * log(sn)
+					+ static_cast<Scalar>(N) * static_cast<Scalar>(0.918938533204673f); // log(2pi)/2 = 0.918938533204673
+		}
+
+		// partial derivatives w.r.t hyperparameters
+		if(calculationMode <= 0)
+		{
+			// derivatives (f_j = partial f / partial x_j)
+			int j = 0; // partial derivative index
+			pDnlZ.reset(new Vector(logHyp.size()));
+
+			// (1) w.r.t the mean parameters
+			// nlZ = (1/2) * (y-m)' * inv(Kn) * (y-m)
+			//       = - m' * inv(Kn) * y + (1/2) m' * inv(Kn) * m
+			// nlZ_i = - m_i' * inv(Kn) * y + m_i' * inv(Kn) * m
+			//       = - m_i' * inv(Kn) (y - m)
+			//       = - m_i' * alpha
+			for(int i = 0; i < logHyp.mean.size(); i++)
+			{
+				(*pDnlZ)(j++) = - MeanFunc<Scalar>::m(logHyp.mean, trainingData, i)->dot(*pAlpha);
+			}
+
+			// (2) w.r.t the cov parameters
+			// nlZ = (1/2) * (y-m)' * inv(Kn) * (y-m) + (1/2) * log |Kn|
+			// nlZ_j = (-1/2) * (y-m)' * inv(Kn) * K_j * inv(Kn) * (y-m)	+ (1/2) * tr[inv(Kn) * K_j]
+			//          = (-1/2) * alpha' * K_j * alpha							+ (1/2) * tr[inv(Kn) * K_j]
+			//          = (-1/2) * tr[(alpha*alpha') * K_j]						+ (1/2) * tr[inv(Kn) * K_j]
+			//          = (1/2) tr[(inv(Kn) - alpha*alpha') * K_j]
+			//          = (1/2) tr[Q * K_j]
+			//
+			// Q = inv(Kn) - alpha*alpha'
+			//
+			// Kn * inv(Kn) = I
+			// => D^(1/2) * LL' * D^(1/2) * inv(Kn) = I
+			// => LL' * D^(1/2) * inv(Kn) = D^(-1/2)
+			// => D^(1/2) * inv(Kn) = L.solve(D^(-1/2))
+			// => inv(Kn) = D^(-1/2) * L.solve(D^(-1/2))
+
+			MatrixPtr pQ = q(logHyp.lik, pL, pAlpha);
+
+			for(int i = 0; i < logHyp.cov.size(); i++)
+			{
+				(*pDnlZ)(j++) = static_cast<Scalar>(0.5f) * pQ->cwiseProduct(*(CovFunc<Scalar>::K(logHyp.cov, trainingData, i))).sum();
+			}
+
+			// (3) w.r.t the lik parameters
+			// nlZ = (1/2) * (y-m)' * inv(K + D) * (y-m) + (1/2) * log |K + D|
+			// nlZ_j = (-1/2) * (y-m)' * inv(Kn) * D_j * inv(Kn) * (y-m)	+ (1/2) * tr[inv(Kn) * D_j]
+			//          = (-1/2) * alpha' * D_j * alpha							+ (1/2) * tr[inv(Kn) * D_j]
+			//          = (-1/2) * tr[(alpha' * alpha) * D_j]					+ (1/2) * tr[inv(Kn) * D_j]
+			//          = (1/2) tr[(inv(Kn) - alpha*alpha') * D_j]
+			//          = (1/2) tr[Q * D_j]
+
+			//(*pDnlZ)(j++) = dnlZWRTLikHyp(logHyp.lik, trainingData, pQ);
+			(*pDnlZ)(j++) = dnlZWRTLikHyp(logHyp.lik, pQ);
+
+		}
+	}
+
+	// nlZ, dnlZ
+	static void negativeLogMarginalLikelihood2(const Hyp					&logHyp,
+															 TrainingData<Scalar>		&trainingData, 
+															 Scalar						&nlZ, 
+															 VectorPtr					&pDnlZ,
+															 const int					calculationMode = 0)
+	{
+		// calculationMode
+		// [0]: calculate both nlZ and pDnlZ
+		// [+]: calculate nlZ only
+		// [-]: calculate pDnlZ only
+
+		// number of training data
+		const int N = trainingData.N();
+		assert(N > 0);
+		if(N <= 0) return;
+
+		// some constants
 		const VectorConstPtr pInvSqrtD = invSqrtD(logHyp.lik, trainingData);
+		const Scalar sn = exp(logHyp.lik(0));	// sn
+
 		CholeskyFactorConstPtr	pL;
 		try
 		{
@@ -134,8 +248,7 @@ public:
 			return;
 		}
 		const VectorConstPtr		pY_M		= y_m(logHyp.mean, trainingData);
-		//const VectorConstPtr	pAlpha	= alpha(pInvSqrtD, pL, pY_M);
-		const VectorConstPtr		pAlpha	= alpha(logHyp.lik, pL, pY_M);
+		const VectorConstPtr		pAlpha	= alpha(pInvSqrtD, pL, pY_M);
 
 		// marginal likelihood
 		// p(y) = N(m, Kn) = (2pi)^(-n/2) * |Kn|^(-1/2) * exp[(-1/2) * (y-m)' * inv(Kn) * (y-m)]
@@ -188,8 +301,7 @@ public:
 			// => D^(1/2) * inv(Kn) = L.solve(D^(-1/2))
 			// => inv(Kn) = D^(-1/2) * L.solve(D^(-1/2))
 
-			//MatrixPtr pQ = q(pInvSqrtD, pL, pAlpha);
-			MatrixPtr pQ = q(logHyp.lik, pL, pAlpha);
+			MatrixPtr pQ = q(pInvSqrtD, pL, pAlpha);
 
 			for(int i = 0; i < logHyp.cov.size(); i++)
 			{
@@ -268,8 +380,9 @@ protected:
 		// V = inv(L) * D^(-1/2) * Ks
 		// NxN   NxN      NxN     NxM
 		Matrix V(N, M); // N x M
-		V = pL->matrixL().solve(pInvSqrtD->asDiagonal() * (*pKs));
-		//V = pL->getL().solve(m_pInvSqrtD->asDiagonal() * (*pKs));
+		V.noalias() = pL->matrixL().solve(pInvSqrtD->replicate(1, M).cwiseProduct(*pKs));
+		//V.noalias() = pL->matrixL().solve(pInvSqrtD->asDiagonal() * (*pKs));
+		//V.noalias() = pL->getL().solve(m_pInvSqrtD->asDiagonal() * (*pKs));
 
 		if(fVarianceVector)
 		{
@@ -351,14 +464,18 @@ protected:
 	}
 
 	static CholeskyFactorPtr choleskyFactor /* throw (Exception) */
-														(const Hyp						&logHyp,
+														(const typename Hyp::Cov	&covLogHyp,
+														 const typename Hyp::Lik	&likLogHyp,
 														 TrainingData<Scalar>		&trainingData)
 	{
 		// number of training data
 		const int N = trainingData.N();
 
+		// constants
+		const Scalar sn2 = exp(static_cast<Scalar>(2.f) * likLogHyp(0));	// sn^2
+
 		// K
-		MatrixPtr pKn = CovFunc<Scalar>::K(logHyp.cov, trainingData);
+		MatrixPtr pKn = CovFunc<Scalar>::K(covLogHyp, trainingData);
 
 		// Kn = K + sn^2*I
 		//    = sn^2 * (K/sn^2 + I)
@@ -366,7 +483,6 @@ protected:
 		//
 		// instead of						LL' = K + D
 		// for numerical stability,	LL' = K/sn2 + I 
-		const Scalar sn2 = exp(static_cast<Scalar>(2.f) * logHyp.lik(0));	// sn^2
 		(*pKn) = (*pKn)/sn2 + Matrix::Identity(N, N);
 
 		// cholesky factor

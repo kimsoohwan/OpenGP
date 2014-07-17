@@ -50,7 +50,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\dlib-18.3;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\dlib-18.3;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\OpenGP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -66,7 +66,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\dlib-18.3;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;E:\Documents\dlib-18.3;E:\Documents\gtest-1.7.0\include;E:\Documents\GitHub\OpenGP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>-DEIGEN_NO_DEBUG %(AdditionalOptions)</AdditionalOptions>

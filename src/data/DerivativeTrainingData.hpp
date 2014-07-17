@@ -32,7 +32,7 @@ class DerivativeTrainingData : public TrainingData<Scalar>
 public:
 	/**	
 	 * @brief	Default constructor.
-	 * 			Initialize calculation flags to be zero
+	 * 			Initialize calculation flags to be false
 	 */
 	DerivativeTrainingData() :
 		m_fSqDistXdXd(false),

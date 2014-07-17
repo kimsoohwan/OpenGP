@@ -50,7 +50,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\eigen-3.2.1;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\dlib-18.3;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\swan\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\eigen-3.2.1;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\dlib-18.3;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\swan\OpenGP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -66,7 +66,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\eigen-3.2.1;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\dlib-18.3;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\swan\GP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\PCL\PCL-1.6.0\PCL 1.6.0\3rdParty\Boost\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\eigen-3.2.1;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\dlib-18.3;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\gtest-1.7.0\include;C:\Soohwan Kim\[01] My Castle - Research\[07] My Knights - Development\C, C++\swan\OpenGP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>-DEIGEN_NO_DEBUG %(AdditionalOptions)</AdditionalOptions>

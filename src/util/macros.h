@@ -6,7 +6,8 @@
 
 // Eigen
 #define EIGEN_NO_DEBUG		// to speed up
-#define EIGEN_USE_MKL_ALL	// to use Intel Math Kernel Library
+//#define EIGEN_USE_MKL_ALL	// to use Intel Math Kernel Library
+// TODO: check if Intel is correctly intalled and running.
 #include <Eigen/Dense>
 
 namespace GP{

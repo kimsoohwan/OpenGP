@@ -42,7 +42,7 @@ protected:
 		N					= trainingData.N();
 
 		pInvSqrtD		= invSqrtD(logHyp.lik, trainingData);
-		pL1				= choleskyFactor(logHyp, trainingData);
+		pL1				= choleskyFactor(logHyp.cov, logHyp.lik, trainingData);
 		pL2				= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
 		pY_M				= y_m(logHyp.mean, trainingData);
 
@@ -105,7 +105,7 @@ TEST_F(TestCaseInfExact, CholeskyFactorTest)
 
 	// Actual value
 	const Matrix L21(pL1->matrixL());
-	const Matrix L22(pL1->matrixL());
+	const Matrix L22(pL2->matrixL());
 
 	// Test
 	TEST_MACRO::COMPARE(L21, L22, __FILE__, __LINE__);
@@ -194,18 +194,24 @@ TEST_F(TestCaseInfExact, NlZTest)
 	// Actual value
 	const TestType factor12 = static_cast<TestType>(0.5f) * (*pY_M).dot(*pAlpha1);
 	const TestType factor22 = pL1->matrixL().nestedExpression().diagonal().array().log().sum();
-	const TestType factor32 = - pInvSqrtD->array().log().sum();
+	const TestType factor321 = static_cast<TestType>(N) * log(sigma_n);
+	const TestType factor322 = - pInvSqrtD->array().log().sum();
 	const TestType factor42 = static_cast<TestType>(N) * 0.918938533204673f;
 
-	TestType nlZ2;
-	negativeLogMarginalLikelihood(logHyp, trainingData, nlZ2, VectorPtr(), 1);
+	TestType nlZ21, nlZ22;
+	negativeLogMarginalLikelihood (logHyp, trainingData, nlZ21, VectorPtr(), 1);
+	negativeLogMarginalLikelihood2(logHyp, trainingData, nlZ22, VectorPtr(), 1);
 
 	// Test
-	TEST_MACRO::COMPARE(factor11, factor12, __FILE__, __LINE__, EPS_SOLVER); // maxAbsDiff = 1.382e-5
-	TEST_MACRO::COMPARE(factor21, factor22, __FILE__, __LINE__);
-	TEST_MACRO::COMPARE(factor31, factor32, __FILE__, __LINE__);
-	TEST_MACRO::COMPARE(factor41, factor42, __FILE__, __LINE__);
-	TEST_MACRO::COMPARE(nlZ1, nlZ2, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(factor11,  factor12,  __FILE__, __LINE__, EPS_SOLVER); // maxAbsDiff = 1.382e-5
+	TEST_MACRO::COMPARE(factor21,  factor22,  __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(factor321, factor322, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(factor31,  factor321, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(factor31,  factor322, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(factor41,  factor42,  __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(nlZ21, nlZ22, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(nlZ1,  nlZ21, __FILE__, __LINE__); // 4.8300757
+	TEST_MACRO::COMPARE(nlZ1,  nlZ22, __FILE__, __LINE__); // 4.8300714
 }
 
 /** @brief	Derivatives of negative log marginalLikelihood test test */  
@@ -270,11 +276,15 @@ TEST_F(TestCaseInfExact, DnlZTest)
 
 	// Actual value
 	TestType nlZ;
-	VectorPtr pDnlZ2(new Vector(3));
-	negativeLogMarginalLikelihood(logHyp, trainingData, nlZ, pDnlZ2, -1);
+	VectorPtr pDnlZ21(new Vector(3));
+	VectorPtr pDnlZ22(new Vector(3));
+	negativeLogMarginalLikelihood (logHyp, trainingData, nlZ, pDnlZ21, -1);
+	negativeLogMarginalLikelihood2(logHyp, trainingData, nlZ, pDnlZ22, -1);
 
 	// Test
-	TEST_MACRO::COMPARE(DnlZ1, *pDnlZ2, __FILE__, __LINE__, EPS_SOLVER);	// maxAbsDiff: 4.202e-5
+	TEST_MACRO::COMPARE(*pDnlZ21, *pDnlZ22, __FILE__, __LINE__);
+	TEST_MACRO::COMPARE(DnlZ1, *pDnlZ21, __FILE__, __LINE__, EPS_SOLVER);	// maxAbsDiff: 4.202e-5
+	TEST_MACRO::COMPARE(DnlZ1, *pDnlZ22, __FILE__, __LINE__, EPS_SOLVER);	// maxAbsDiff: 4.202e-5
 }
 
 #endif

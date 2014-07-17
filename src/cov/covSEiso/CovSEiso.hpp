@@ -17,8 +17,8 @@ namespace GP{
  *					Public Static Member Functions | Corresponding Mathematical Equations
  *					-------------------------------|-------------------------------------
  *					CovSEiso::K							 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X})\f$
- *					CovSEiso::Ks						 | \f$\mathbf{k}_* = \mathbf{K}(\mathbf{X}, \mathbf{x}_*)\f$ or \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
- *					CovSEiso::Kss						 | \f$k_{**} = \mathbf{k}(\mathbf{x}_*, \mathbf{x}_*)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
+ *					CovSEiso::Ks						 | \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
+ *					CovSEiso::Kss						 | \f$[\mathbf{k}_{**}]_i = k([\mathbf{X}_*]_i, \mathbf{X}_*]_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
  *					</CENTER>
  *					for \f[
  *					\mathbf{K} = 
