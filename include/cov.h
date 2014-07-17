@@ -28,10 +28,23 @@ namespace GP {
  *					-# DerivativeTrainingData
  *					-# TestData
  *					.
- *					Assertions are checked only in those public static member functions
- *					which can be accessed outside.
  */
 
+/**
+ * @defgroup	CovDerObs
+ * @brief		Covariance Functions Dealing with Derivative Observations\n
+ *					All covariance classes should have public static member functions.
+ *					-# K: \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
+ *					-# Ks: \f$\mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
+ *					-# Kss: \f$\mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
+ *					.
+ *					Also, no covariance class contains any data.
+ *					Instead, data are stored in data classes such as
+ *					-# TrainingData
+ *					-# DerivativeTrainingData
+ *					-# TestData
+ *					.
+ */
 //typedef Isotropic<float, CovSEIsoBase>											CovSEIsoSlow;
 //typedef template<typename Scalar> DealingWithDerivativeObservations<Scalar, CovSEIsoDerBase>		CovSEIsoDerSlow;
 //typedef CovDerObs<float, CovSEisoDerObsBase> CovSEisoDerObsf;

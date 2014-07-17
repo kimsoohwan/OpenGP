@@ -8,9 +8,22 @@ namespace GP{
 /**
  * @class		CovSEisoDerObsBase
  * @brief		A base class for CovSEisoDerObs
- *					of isotropic squared exponential covariance function
- *					with derivative observations.
- * 				It inherits from CovSEiso and will be parameterized into CovDerObs.
+ *					which is the squared exponential covariance function with isotropic distances
+ *					and deals with derivative observations.\n\n
+ *					It provides protected static member functions which will be called
+ *					in CovDerObs as follows
+ *					<CENTER>
+ *					Protected Static Member Functions | Corresponding Mathematical Equations
+ *					----------------------------------|-------------------------------------
+ *					CovSEisoDerObsBase::K_FD			 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
+ *					CovSEisoDerObsBase::K_DD			 | \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
+ *					CovSEisoDerObsBase::K_DD			 | \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
+ *					CovSEisoDerObsBase::Ks_DF			 | \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
+ *					</CENTER>
+ *					
+ *					Thus, CovSEisoDerObs is a combination of CovDerObs and CovSEisoDerObsBase.
+ * @note			It inherits from CovSEiso to use CovSEiso::K.
+ * @ingroup		CovDerObs
  * @author	Soohwan Kim
  * @date		30/06/2014
  */

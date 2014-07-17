@@ -8,39 +8,42 @@ namespace GP{
 
 /**
  * @class		CovSEiso
- * @brief		Squared Exponential Covariance Function
+ * @brief		Squared exponential covariance function with isotropic distances
  *					\f[
- *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), r = |\mathbf{x}-\mathbf{z}|
+ *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), \quad r = |\mathbf{x}-\mathbf{z}|
  *					\f]
- *					All covariance classes should have public static member functions.
+ *					It has public static member functions as follows
  *					<CENTER>
  *					Public Static Member Functions | Corresponding Mathematical Equations
  *					-------------------------------|-------------------------------------
- *					CovSEiso::K							 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X})\f$
- *					CovSEiso::Ks						 | \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
- *					CovSEiso::Kss						 | \f$[\mathbf{k}_{**}]_i = k([\mathbf{X}_*]_i, \mathbf{X}_*]_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
+ *					CovSEiso::K							 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
+ *					CovSEiso::Ks						 | \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
+ *					CovSEiso::Kss						 | \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
  *					</CENTER>
- *					for \f[
- *					\mathbf{K} = 
+ *					where \f$N\f$: the number of training data and \f$M\f$: the number of test data given
+ *					\f[
+ *					\mathbf{\Sigma} = 
  *					\begin{bmatrix}
  *					\mathbf{K} & \mathbf{k}_*\\ 
  *					\mathbf{k}_*^\text{T} & k_{**}
  *					\end{bmatrix}
- *					\text{, or }
- *					\mathbf{K} = 
+ *					\text{,   or   }
+ *					\mathbf{\Sigma} = 
  *					\begin{bmatrix}
  *					\mathbf{K} & \mathbf{K}_*\\ 
  *					\mathbf{K}_*^\text{T} & \mathbf{K}_{**}
  *					\end{bmatrix}
  *					\f]
- *					Also, no covariance class contains any data.
+ * @note			The public static member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
+ *					a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
+ *					which only depends on pair-wise squared distances.\n\n
+ *
+ * 				In addition, no covariance class contains any data.
  *					Instead, data are stored in data classes such as
  *					-# TrainingData
  *					-# DerivativeTrainingData
  *					-# TestData
  *					.
- *					Assertions are checked only in those public static member functions
- *					which can be accessed outside.
  * @ingroup		Cov
  * @tparam		Scalar	Datatype such as float and double
  * @author		Soohwan Kim
@@ -54,7 +57,7 @@ protected:	TYPE_DEFINE_MATRIX(Scalar);
 
 /**@detailed
   * - Hyp(0) = \f$\log(l)\f$
-  * - Hyp(1) = \f$\log(\sigma_f)\f$					.
+  * - Hyp(1) = \f$\log(\sigma_f)\f$
   */
 public:		TYPE_DEFINE_HYP(Scalar, 2);
 
@@ -62,17 +65,18 @@ public:		TYPE_DEFINE_HYP(Scalar, 2);
 public:
 
 	/**
-	 * @brief	Self covariance matrix between the training data or
-	 *				its partial derivative with respective to the i-th hyperparameter\n
+	 * @brief	Self covariance matrix between the training data, K(X, X) or its partial derivative
+	 * @note		It calls the protected general member function, 
+	 *				CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
+	 *				which only depends on pair-wise squared distances.\n\n
 	 *				Only this function returns partial derivatives
 	 *				since they are used for learning hyperparameters with training data.
-	 * @note		The public member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
-	 *				a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
-	 *				which only depends on pair-wise squared distances.
-	 * @param	[in] logHyp 			The log hyperparameters, \f$\log([l, \sigma_f])\f$
+	 * @param	[in] logHyp 			The log hyperparameters
+	 *											- logHyp(0) = \f$\log(l)\f$
+	 *											- logHyp(1) = \f$\log(\sigma_f)\f$
 	 * @param	[in] trainingData 	The training data
-	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index\n
-	 * 										- pdHypIndex = -1 (default): return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
+	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
+	 * 										- pdHypIndex = -1: return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$ (default)
 	 *											- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
 	 *											- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$
 	 * @return	An NxN matrix pointer\n
@@ -91,14 +95,16 @@ public:
 	}
 
 	/**
-	 * @brief	Cross covariance matrix between the training data and test data, Ks(x, x*)
-	 * @note		The public member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
-	 *				a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
+	 * @brief	Cross covariance matrix between the training and test data, Ks(X, Z)
+	 * @note		It calls the protected general member function, 
+	 *				CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
 	 *				which only depends on pair-wise squared distances.
-	 * @param	[in] logHyp 			The log hyperparameters, \f$\log([l, \sigma_f])\f$
-	 * @param	[in] trainingData 	The training data
-	 * @param	[in] testData 			The test data
-	 * @return	An NxM matrix pointer, \f$\mathbf{k}_* = \mathbf{K}(\mathbf{X}, \mathbf{x}_*)\f$ or \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$\n
+	 * @param	[in] logHyp 				The log hyperparameters
+	 *												- logHyp(0) = \f$\log(l)\f$
+	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] trainingData 		The training data
+	 * @param	[in] testData 				The test data
+	 * @return	An NxM matrix pointer, \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z})\f$\n
 	 * 			N: The number of training data\n
 	 * 			M: The number of test data
 	 */
@@ -111,12 +117,18 @@ public:
 	}
 
 	/**
-	 * @brief	Self [co]variance matrix between the test data, Kss(x*, x*)
-	 * @param	[in] logHyp 				The log hyperparameters, log([ell, sigma_f])
+	 * @brief	Self [co]variance matrix between the test data, Kss(Z, Z)
+	 * @param	[in] logHyp 				The log hyperparameters
+	 *												- logHyp(0) = \f$\log(l)\f$
+	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
 	 * @param	[in] testData 				The test data
 	 * @param	[in] fVarianceVector		Flag for the return value
-	 * @return	An Mx1 matrix pointer (fVarianceVector == true)
-	 * 			An MxM matrix pointer (fVarianceVector == false)
+	 * 											- fVarianceVector = true : return \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ (default)
+	 *												- fVarianceVector = false: return \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$,\n
+    *																					which can be used for Bayesian Committee Machines.
+	 * @return	A matrix pointer\n
+	 *				- Mx1 (fVarianceVector == true)
+	 * 			- MxM (fVarianceVector == false)\n
 	 * 			M: The number of test data.
 	 */
 	static MatrixPtr Kss(const Hyp						&logHyp, 
@@ -135,7 +147,7 @@ public:
 		// K: self-variance vector (Mx1).
 		if(fVarianceVector)
 		{
-			// k(x, x') = sigma_f^2
+			// k(z, z) = sigma_f^2
 			pKss.reset(new Matrix(M, 1));
 			pKss->fill(sigma_f2);
 		}
@@ -152,16 +164,18 @@ public:
 
 protected:
 	/**
-	 * @brief	Covariance matrix given pair-wise squared distances
+	 * @brief	Covariance matrix given pair-wise squared distances, K(R.^2)
 	 * @note		This is the core function of this class which is called from
-	 *				other public static member functions, K(x, x), Ks(x, x*) and Kss(x*, x*).
-	 * @param	[in] logHyp 			The log hyperparameters, log([ell, sigma_f])
-	 * @param	[in] pSqDist 			The pairwise squared distances
+	 *				other public static member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss.
+	 * @param	[in] logHyp 			The log hyperparameters
+	 *											- logHyp(0) = \f$\log(l)\f$
+	 *											- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] pSqDist 			The shared pointer to the pairwise squared distance matrix
 	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
-	 * 										pdHypIndex = -1: K(x, x),  (default)
-	 *											pdHypIndex =  0: pd[K]/pd[log(ell)],
-	 *											pdHypIndex =  1: pd[K]/pd[log(sigma_f)]
-	 * @return	An matrix pointer of the same size of the pairwise squared distance matrix
+	 * 										- pdHypIndex = -1: return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$ (default)
+	 *											- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
+	 *											- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$
+	 * @return	A matrix pointer of the same size of the pairwise squared distance matrix
 	 */
 	static MatrixPtr K(const Hyp						&logHyp, 
 							 const MatrixConstPtr		pSqDist, 
@@ -169,9 +183,9 @@ protected:
 	{
 		// Output
 		// K: of the same size as the pairwise squared distance matrix
-		// K(x, x):     NxN
-		// Ks(x, x*):   NxM
-		// Kss(x*, x*): MxM
+		// 1. K(X, X):    NxN
+		// 2. Ks(X, X):   NxM
+		// 3. Kss(Z, Z):	MxM
 		MatrixPtr pK(new Matrix(pSqDist->rows(), pSqDist->cols()));
 
 		// some constant values
@@ -181,10 +195,10 @@ protected:
 		const Scalar sigma_f2_inv_ell2		= sigma_f2 * inv_ell2;									// sigma_f^2/ell^2
 		const Scalar twice_sigma_f2			= static_cast<Scalar>(2.f) * sigma_f2;				// 2*sigma_f^2
 
-		// hyperparameter index for partial derivatives
+		// hyperparameter index for the partial derivatives
 		switch(pdHypIndex)
 		{
-		// pd[k]/pd[log(ell)]: partial derivative of covariance function w.r.t log(ell).
+		// pd[k]/pd[log(ell)]: partial derivative of covariance function w.r.t log(ell)
 		case 0:
 			{
 				//				 k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
@@ -194,7 +208,7 @@ protected:
 				break;
 			}
 
-		// pd[k]/pd[log(sigma_f)]: partial derivative of covariance function w.r.t log(sigma_f).
+		// pd[k]/pd[log(sigma_f)]: partial derivative of covariance function w.r.t log(sigma_f)
 		case 1:
 			{
 				//			        k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
@@ -204,7 +218,7 @@ protected:
 				break;
 			}
 
-		// k: covariance function.
+		// k: covariance function
 		default:
 			{
 				// k(x, x') = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-x'|
