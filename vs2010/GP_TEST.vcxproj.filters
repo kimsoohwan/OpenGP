@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\test\test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\test\TestMacros.hpp">
+      <Filter>00 setting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestDerivativeDataSetting.hpp">
+      <Filter>00 setting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestFunctionDataSetting.hpp">
+      <Filter>00 setting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcasePairwiseOp.hpp">
+      <Filter>01 pairwise-op</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovSEiso.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovSEisoDerObs.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCholeskyFactorSolver.hpp">
+      <Filter>03 inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseInfExact.hpp">
+      <Filter>03 inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseInfExactDerObs.hpp">
+      <Filter>03 inf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseGaussianProcess.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseGaussianProcessDerObs.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestDerivativeDataSetting2.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestFunctionDataSetting2.hpp">
+      <Filter>04 gp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="00 setting">
+      <UniqueIdentifier>{3a25a647-f4b2-4e62-92b9-879b1e3ddbe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 pairwise-op">
+      <UniqueIdentifier>{ee153744-2c03-4306-b3b7-e612b273eb09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 cov">
+      <UniqueIdentifier>{0ce6cd98-1987-4806-bb11-f255b25bc236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 inf">
+      <UniqueIdentifier>{e18b2844-2b25-46c1-b5bf-75650ec7c4c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04 gp">
+      <UniqueIdentifier>{055b1299-f76a-48c6-9945-87dbd04e2787}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

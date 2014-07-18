@@ -86,11 +86,15 @@
     <ClInclude Include="..\test\TestcaseCholeskyFactorSolver.hpp" />
     <ClInclude Include="..\test\TestcaseCovSEiso.hpp" />
     <ClInclude Include="..\test\TestcaseCovSEisoDerObs.hpp" />
+    <ClInclude Include="..\test\TestcaseGaussianProcess.hpp" />
+    <ClInclude Include="..\test\TestcaseGaussianProcessDerObs.hpp" />
     <ClInclude Include="..\test\TestcaseInfExact.hpp" />
     <ClInclude Include="..\test\TestcaseInfExactDerObs.hpp" />
     <ClInclude Include="..\test\TestcasePairwiseOp.hpp" />
     <ClInclude Include="..\test\TestDerivativeDataSetting.hpp" />
+    <ClInclude Include="..\test\TestDerivativeDataSetting2.hpp" />
     <ClInclude Include="..\test\TestFunctionDataSetting.hpp" />
+    <ClInclude Include="..\test\TestFunctionDataSetting2.hpp" />
     <ClInclude Include="..\test\TestMacros.hpp" />
   </ItemGroup>
   <ItemGroup>

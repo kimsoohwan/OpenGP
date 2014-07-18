@@ -46,8 +46,8 @@ protected:
 	GPType::Hyp logHyp;
 };
 
-/** @brief	Training test: BOBOYA */  
-TEST_F(TestCaseGP, Training_BOBOYA_MaxFuncEval_Test)
+/** @brief	Training test: BOBYQA */  
+TEST_F(TestCaseGP, Training_BOBYQA_MaxFuncEval_Test)
 {
 	// Expected value
 	const TestType ell(0.178039338440386f);
@@ -55,7 +55,7 @@ TEST_F(TestCaseGP, Training_BOBOYA_MaxFuncEval_Test)
 	const TestType sigma_n(0.550806723661735f);
 
 	// Actual value
-	GPType::train<BOBOYA, MaxFuncEval>(logHyp, trainingData);
+	GPType::train<BOBYQA, NoStopping>(logHyp, trainingData);
 
 	// Test
 	TEST_MACRO::COMPARE(ell,		exp(logHyp.cov(0)), __FILE__, __LINE__, EPS_SEARCH);
