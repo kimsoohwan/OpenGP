@@ -1,28 +1,45 @@
 #ifndef _COVARIANCE_FUNCTION_H_
 #define _COVARIANCE_FUNCTION_H_
 
-// Isotropic and dealing with derivative observations
-//#include "../src/cov/isotropic.hpp"
-//#include "../src/cov/dealingwithderivativeobservations.hpp"
+// Derivative observations
 #include "../src/cov/CovDerObs.hpp"
 
 // Squared Exponential
 #include "../src/cov/covSEiso/CovSEiso.hpp"
 #include "../src/cov/covSEiso/CovSEisoDerObsBase.hpp"
-//#include "../src/cov/covseisobase.hpp"
-//#include "../src/cov/covseisoderbase.hpp"
 
 namespace GP {
 
 /**
- * @defgroup	Cov
- * @brief		Covariance Functions\n
- *					All covariance classes should have public static member functions.
- *					-# K: \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
- *					-# Ks: \f$\mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
- *					-# Kss: \f$\mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
- *					.
- *					Also, no covariance class contains any data.
+ * @defgroup	-Cov
+ * @brief		All covariance classes should have public static member functions as follows.
+ *					<CENTER>
+ *					Public Static Member Functions | Corresponding Covariance Functions
+ *					-------------------------------|-------------------------------------
+ *					+K				| \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
+ *					+Ks			| \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
+ *					+Kss			| \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
+ *					</CENTER>
+ *					where \f$N\f$: the number of training data and \f$M\f$: the number of test data given
+ *					\f[
+ *					\mathbf{\Sigma} = 
+ *					\begin{bmatrix}
+ *					\mathbf{K} & \mathbf{k}_*\\ 
+ *					\mathbf{k}_*^\text{T} & k_{**}
+ *					\end{bmatrix}
+ *					\text{,   or   }
+ *					\mathbf{\Sigma} = 
+ *					\begin{bmatrix}
+ *					\mathbf{K} & \mathbf{K}_*\\ 
+ *					\mathbf{K}_*^\text{T} & \mathbf{K}_{**}
+ *					\end{bmatrix}
+ *					\f]
+ *
+ *					The public static member functions, K, Ks and Kss call 
+ *					a protected general member function, K(const Hyp, const MatrixConstPtr, const int)
+ *					which only depends on pair-wise squared distances.\n\n
+ *
+ * 				In addition, no covariance class contains any data.
  *					Instead, data are stored in data classes such as
  *					-# TrainingData
  *					-# DerivativeTrainingData
@@ -31,29 +48,29 @@ namespace GP {
  */
 
 /**
- * @defgroup	CovDerObs
- * @brief		Covariance Functions Dealing with Derivative Observations\n
- *					All covariance classes should have public static member functions.
- *					-# K: \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
- *					-# Ks: \f$\mathbf{K}(\mathbf{X}, \mathbf{X}_*)\f$
- *					-# Kss: \f$\mathbf{K}(\mathbf{X}_*, \mathbf{X}_*)\f$
- *					.
- *					Also, no covariance class contains any data.
- *					Instead, data are stored in data classes such as
- *					-# TrainingData
- *					-# DerivativeTrainingData
- *					-# TestData
- *					.
+ * @defgroup	-SEiso
+ * @brief		Squared Exponential Covariance Functions\n
+ *					\f[
+ *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), \quad r = |\mathbf{x}-\mathbf{z}|
+ *					\f]
+ * @ingroup		-Cov
+ */ 
+
+/**
+ * @class		CovSEisoDerObs
+ * @brief		Squared exponential covariance function dealing with derivative observations.\n
+ *					It inherits from CovDerObs which takes CovSEisoDerObsBase as a template parameter.\n
+ *					Thus, CovSEisoDerObs is a combination of CovDerObs and CovSEisoDerObsBase.
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-SEiso
+ * @author		Soohwan Kim
+ * @date			30/06/2014
  */
-//typedef Isotropic<float, CovSEIsoBase>											CovSEIsoSlow;
-//typedef template<typename Scalar> DealingWithDerivativeObservations<Scalar, CovSEIsoDerBase>		CovSEIsoDerSlow;
-//typedef CovDerObs<float, CovSEisoDerObsBase> CovSEisoDerObsf;
+template<typename Scalar>
+class CovSEisoDerObs : public CovDerObs<Scalar, CovSEisoDerObsBase> {};
 
 //template <typename Scalar>
 //using CovSEisoDerObs = CovDerObs<Scalar, CovSEisoDerObsBase>;
-
-template<typename Scalar>
-class CovSEisoDerObs : public CovDerObs<Scalar, CovSEisoDerObsBase> {};
 
 //template<typename Scalar> 
 //struct _CovDerObs

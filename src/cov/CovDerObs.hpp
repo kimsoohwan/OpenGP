@@ -6,23 +6,55 @@
 
 namespace GP{
 
-template<typename Scalar, template<typename> class Cov>
-class CovDerObs : public Cov<Scalar>
+/**
+ * @class		CovDerObs
+ * @brief		Host class for covariance functions dealing with derivative observations
+ *					It is the host class which accept and interit a base class
+ *					for each covariance function as a template parameter
+ *					and use their public and protected static member functions as follows.
+ *					<CENTER>
+ *					Public Static Member Functions | Corresponding Covariance Functions
+ *					-------------------------------|-------------------------------------
+ *					+CovBase::K					| \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$
+ *					+CovBase::Ks				| \f$\mathbf{K}(\mathbf{X}, \mathbf{Z})\f$
+ *					#CovBase::K_FD				| \f$\frac{\partial \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{Z}_j}\f$
+ *					#CovBase::K_DD				| \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$
+ *					#CovBase::K_DF				| \f$\frac{\partial \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{X}_i}\f$
+ *					</CENTER>
+ * @tparam		Scalar	Datatype such as float and double
+ * @tparam		CovBase	Base class for each covariance function
+ * @ingroup		-Cov
+ * @author		Soohwan Kim
+ * @date			30/06/2014
+ */
+template<typename Scalar, template<typename> class CovBase>
+class CovDerObs : public CovBase<Scalar>
 {
 // define matrix types
 protected:	TYPE_DEFINE_MATRIX(Scalar);
 
 public:
-	static MatrixPtr K(const typename Cov<Scalar>::Hyp &logHyp, 
-							 DerivativeTrainingData<Scalar> &derivativeTrainingData, 
-							 const int pdHypIndex = -1)
+
+	/**
+	 * @brief	Self covariance matrix between the derivative training data, K(X, X) or its partial derivative
+	 * @note		Only this function returns partial derivatives
+	 *				since they are used for learning hyperparameters with training data.
+	 * @param	[in] logHyp 							The log hyperparameters
+	 * @param	[in] derivativeTrainingData 		The functional and derivative training data
+	 * @param	[in] pdHypIndex						(Optional) Hyperparameter index for partial derivatives
+	 * 														- pdHypIndex = -1: return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$ (default)
+	 *															- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
+	 *															- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$
+	 * @return	An NNxNN matrix pointer\n
+	 * 			NN: The number of functional and derivative training data
+	 */
+	static MatrixPtr K(const typename CovBase<Scalar>::Hyp	&logHyp, 
+							 DerivativeTrainingData<Scalar>			&derivativeTrainingData, 
+							 const int										pdHypIndex = -1)
 	{
-		// input
-		// pSqDist (nxn): squared distances
-		// deltaList: list of delta (nxn)
+		// N: number of functional training data only
+		// NN: number of functional and derivative training data
 		// D: dimension of training inputs
-		// pLogHyp: log hyperparameters
-		// pdHypIndex: partial derivatives with respect to this parameter index
 
 		// output
 		// K: NN by NN, NN = N + Nd*D
@@ -88,10 +120,27 @@ public:
 		return pK;
 	}
 
-	static MatrixPtr Ks(const typename Cov<Scalar>::Hyp &logHyp, 
-							  DerivativeTrainingData<Scalar> &derivativeTrainingData, 
-							  const TestData<Scalar> &testData)
+	/**
+	 * @brief	Cross covariance matrix between the training and test data, Ks(X, Z)
+	 * @param	[in] logHyp 				The log hyperparameters
+	 * @param	[in] trainingData 		The training data
+	 * @param	[in] testData 				The test data
+	 * @return	An NNxM matrix pointer, \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z})\f$\n
+	 * 			NN: The number of functional and derivative training data\n
+	 * 			M: The number of test data
+	 * @todo		DerivativeTestData to predict surface normals\n
+	 *				Then it returns K: NN x MM,
+	 *				where NN = N + Nd*D and MM = M + Md*D.\n
+	 *				In that case, Kss should be overloaded for DerivativeTestData.
+	 */
+	static MatrixPtr Ks(const typename CovBase<Scalar>::Hyp		&logHyp, 
+							  DerivativeTrainingData<Scalar>				&derivativeTrainingData, 
+							  const TestData<Scalar>						&testData)
 	{
+		// N: number of functional training data only
+		// NN: number of functional and derivative training data
+		// D: dimension of training inputs
+
 		// output
 		// K: NN x M, NN  = N  + Nd*D
 		// 

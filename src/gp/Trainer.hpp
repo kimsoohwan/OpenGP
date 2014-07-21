@@ -8,15 +8,41 @@
 
 namespace GP{
 
-// Search Strategy
+/*****************************************************************/
+/*                      Search Strategy                          */
+/*****************************************************************/
 
-// Newton Method
+/**
+ * @defgroup	-SearchStrategy
+ * @brief		Search strategies for the hyperparameter trainer
+ * @ingroup		-Trainer
+ */ 
+
+/**
+ * @defgroup	-NewtonsMethod
+ * @brief		Newton's method for search strategies
+ * @ingroup		-SearchStrategy
+ */ 
+
+/**
+ * @class		CG
+ * @brief		Conjugate Gradient
+ * @ingroup		-NewtonsMethod
+ */
 class CG		{	public:		typedef dlib::cg_search_strategy			Type; };
-class BFGS	{	public:		typedef dlib::bfgs_search_strategy		Type; };
-//class LBFGS	{	public:		typedef dlib::lbfgs_search_strategy		Type; };
-
 //class CG		: public dlib::cg_search_strategy		{};
+
+/**
+ * @class		BFGS
+ * @ingroup		-NewtonsMethod
+ */
+class BFGS	{	public:		typedef dlib::bfgs_search_strategy		Type; };
 //class BFGS	: public dlib::bfgs_search_strategy		{};
+
+/**
+ * @class		LBFGS
+ * @ingroup		-NewtonsMethod
+ */
 class LBFGS	:public dlib::lbfgs_search_strategy
 {
 public:
@@ -25,22 +51,67 @@ public:
 		: dlib::lbfgs_search_strategy(10)	// The 10 here is basically a measure of how much memory L-BFGS will use.
 	{}
 };
+//class LBFGS	{	public:		typedef dlib::lbfgs_search_strategy		Type; };
 
-// Trust Region: requires Hessian
-// dlib::find_min_trust_region
 
-// BOBYQA 
+/**
+ * @defgroup	-TrustRegion
+ * @brief		Trust region method for search strategies\n
+ *					which is currently not implemented
+ *					because it requires Hessian
+ *					for dlib::find_min_trust_region.
+ * @ingroup		-SearchStrategy
+ */ 
+
+/**
+ * @defgroup	-BOBYQA
+ * @brief		Bound Optimization BY Quadratic Approximation
+ * @ingroup		-SearchStrategy
+ */ 
+
+/**
+ * @class		BOBYQA
+ * @ingroup		-BOBYQA
+ */
 class BOBYQA {};
 
-// Stopping Strategy
-//class DeltaFunc : public dlib::objective_delta_stop_strategy {};
-//class GradientNorm : public dlib::gradient_norm_stop_strategy {};
-class DeltaFunc		{	public:		typedef dlib::objective_delta_stop_strategy	Type; };
-class GradientNorm	{	public:		typedef dlib::gradient_norm_stop_strategy		Type; };
+
+/*****************************************************************/
+/*                      Stopping Strategy                        */
+/*****************************************************************/
+
+/**
+ * @defgroup	-StoppingStrategy
+ * @brief		Stopping strategies for the hyperparameter trainer
+ * @ingroup		-Trainer
+ */ 
+
+/**
+ * @class		NoStopping
+ * @ingroup		-StoppingStrategy
+ */
 class NoStopping		{};
 
-// Trainer
-// refer to http://dlib.net/optimization_ex.cpp.html
+/**
+ * @class		DeltaFunc
+ * @ingroup		-StoppingStrategy
+ */
+class DeltaFunc		{	public:		typedef dlib::objective_delta_stop_strategy	Type; };
+//class DeltaFunc : public dlib::objective_delta_stop_strategy {};
+
+/**
+ * @class		GradientNorm
+ * @ingroup		-StoppingStrategy
+ */
+class GradientNorm	{	public:		typedef dlib::gradient_norm_stop_strategy		Type; };
+//class GradientNorm : public dlib::gradient_norm_stop_strategy {};
+
+
+/**
+ * @class		Trainer
+ * @note			refer to http://dlib.net/optimization_ex.cpp.html
+ * @ingroup		-Trainer
+ */
 template<typename Scalar, 
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 

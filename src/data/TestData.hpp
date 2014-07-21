@@ -11,8 +11,10 @@ namespace GP{
  * 			M: number of test data
  * 			D: number of dimensions
  * 			{X_i}_i=1^M, X \in R^D
+ * @ingroup		-Data
  * @author	Soohwan Kim
  * @date		26/06/2014
+ * @todo		DerivativeTestData to predict surface normals
  */
 template<typename Scalar>
 class TestData

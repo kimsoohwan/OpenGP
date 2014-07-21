@@ -12,30 +12,31 @@ namespace GP{
  *					\f[
  *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), \quad r = |\mathbf{x}-\mathbf{z}|
  *					\f]
- *					It has public static member functions as follows
+ *					All covariance classes should have public static member functions as follows.
  *					<CENTER>
- *					Public Static Member Functions | Corresponding Mathematical Equations
+ *					Public Static Member Functions | Corresponding Covariance Functions
  *					-------------------------------|-------------------------------------
- *					CovSEiso::K							 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
- *					CovSEiso::Ks						 | \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
- *					CovSEiso::Kss						 | \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
+ *					+CovSEiso::K			| \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
+ *					+CovSEiso::Ks			| \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
+ *					+CovSEiso::Kss			| \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
  *					</CENTER>
  *					where \f$N\f$: the number of training data and \f$M\f$: the number of test data given
  *					\f[
- *					\mathbf{\Sigma} = 
- *					\begin{bmatrix}
- *					\mathbf{K} & \mathbf{k}_*\\ 
- *					\mathbf{k}_*^\text{T} & k_{**}
- *					\end{bmatrix}
- *					\text{,   or   }
- *					\mathbf{\Sigma} = 
- *					\begin{bmatrix}
- *					\mathbf{K} & \mathbf{K}_*\\ 
- *					\mathbf{K}_*^\text{T} & \mathbf{K}_{**}
- *					\end{bmatrix}
+ *						\mathbf{\Sigma} = 
+ *						\begin{bmatrix}
+ *						\mathbf{K} & \mathbf{k}_*\\ 
+ *						\mathbf{k}_*^\text{T} & k_{**}
+ *						\end{bmatrix}
+ *						\text{,   or   }
+ *						\mathbf{\Sigma} = 
+ *						\begin{bmatrix}
+ *						\mathbf{K} & \mathbf{K}_*\\ 
+ *						\mathbf{K}_*^\text{T} & \mathbf{K}_{**}
+ *						\end{bmatrix}
  *					\f]
- * @note			The public static member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss call 
- *					a protected general member function, CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
+ *
+ *					The public static member functions, K, Ks and Kss call 
+ *					a protected general member function, K(const Hyp, const MatrixConstPtr, const int)
  *					which only depends on pair-wise squared distances.\n\n
  *
  * 				In addition, no covariance class contains any data.
@@ -44,8 +45,8 @@ namespace GP{
  *					-# DerivativeTrainingData
  *					-# TestData
  *					.
- * @ingroup		Cov
  * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-SEiso
  * @author		Soohwan Kim
  * @date			26/03/2014
  */
@@ -75,7 +76,7 @@ public:
 	 *											- logHyp(0) = \f$\log(l)\f$
 	 *											- logHyp(1) = \f$\log(\sigma_f)\f$
 	 * @param	[in] trainingData 	The training data
-	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
+	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index for partial derivatives
 	 * 										- pdHypIndex = -1: return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$ (default)
 	 *											- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
 	 *											- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$

@@ -1,34 +1,66 @@
 #ifndef _Gaussian_Processes_H_
 #define _Gaussian_Processes_H_
 
-//// Type Traits
-//#include "../src/data/typetraits.hpp"
+/**
+ * @defgroup	-Cov
+ * @brief		Covariance functions for Gaussian processes
+ */ 
+#include "cov.h"
 
-// Util
-#include "../src/util/macros.h"
-#include "../src/util/PairwiseOp.hpp"
 
-// Data
+/**
+ * @defgroup	-Mean
+ * @brief		Mean functions for Gaussian processes
+ */ 
+#include "../src/mean/MeanZero.hpp"
+
+
+/**
+ * @defgroup	-Lik
+ * @brief		Likelihood functions for Gaussian processes
+ */ 
+#include "../src/lik/LikGauss.hpp"
+#include "../src/lik/LikGaussDerObs.hpp"
+
+
+/**
+ * @defgroup	-Inf
+ * @brief		Inference methods for Gaussian processes
+ */ 
+#include "../src/inf/Hyp.hpp"
+#include "../src/inf/InfExact.hpp"
+#include "../src/inf/InfExactGeneral.hpp"
+
+
+/**
+ * @defgroup	-Data
+ * @brief		Training and test data set for Gaussain processes
+ */ 
 #include "../src/data/TrainingData.hpp"
 #include "../src/data/DerivativeTrainingData.hpp"
 #include "../src/data/TestData.hpp"
 
-// GP
+
+/**
+ * @defgroup	-GP
+ * @brief		Gaussian processes
+ */ 
 #include "../src/gp/GaussianProcess.hpp"
 
-// Mean Functions
-#include "../src/mean/MeanZero.hpp"
 
-// Covariance Functions
-#include "cov.h"
+/**
+ * @defgroup	-Trainer
+ * @brief		Trainer for hyperparameters
+ */ 
+#include "../src/gp/Trainer.hpp"
 
-// Likelihood Function
-#include "../src/lik/LikGauss.hpp"
-#include "../src/lik/LikGaussDerObs.hpp"
 
-// Inference Methods
-#include "../src/inf/Hyp.hpp"
-#include "../src/inf/InfExact.hpp"
-#include "../src/inf/InfExactGeneral.hpp"
+/**
+ * @defgroup	-Util
+ * @brief		Utilities
+ */ 
+#include "../src/util/macros.h"
+#include "../src/util/PairwiseOp.hpp"
+
 
 #endif

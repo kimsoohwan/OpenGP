@@ -16,24 +16,6 @@
     <ClInclude Include="..\src\cov\CovDerObs.hpp">
       <Filter>src\cov</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cov\covseisobase.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisoder.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisodiffbase.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\isotropic.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp">
-      <Filter>src\cov</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\data\DerivativeTrainingData.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
@@ -41,9 +23,6 @@
       <Filter>src\data</Filter>
     </ClInclude>
     <ClInclude Include="..\src\data\TrainingData.hpp">
-      <Filter>src\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\typetraits.hpp">
       <Filter>src\data</Filter>
     </ClInclude>
     <ClInclude Include="..\src\gp\Trainer.hpp">
@@ -84,6 +63,27 @@
     </ClInclude>
     <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp">
       <Filter>src\cov\covSEiso</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisobase.hpp.old">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisoder.hpp.old">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covseisodiffbase.hpp.old">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp.old">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\isotropic.hpp.old">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp.old">
+      <Filter>src\cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\data\typetraits.hpp.old">
+      <Filter>src\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

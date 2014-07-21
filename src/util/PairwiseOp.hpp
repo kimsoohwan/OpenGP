@@ -7,10 +7,11 @@
 namespace GP{
 
 /**
- * @class	PairwiseOp
- * @brief	Pairwise operations.
- * @author	Soohwankim
- * @date	27/03/2014
+ * @class		PairwiseOp
+ * @brief		Pairwise operations.
+ * @ingroup		-Util
+ * @author		Soohwankim
+ * @date			27/03/2014
  */
 template<typename Scalar>
 class PairwiseOp

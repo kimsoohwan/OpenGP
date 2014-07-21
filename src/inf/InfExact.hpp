@@ -13,11 +13,12 @@
 namespace GP{
 
 /**
-	* @class	InfExact
-	* @brief	Exact inference
-	* @author	Soohwan Kim
-	* @date	02/07/2014
-	*/
+  * @class		InfExact
+  * @brief		Exact inference
+  * @ingroup	-Inf
+  * @author		Soohwan Kim
+  * @date		02/07/2014
+  */
 template<typename Scalar, 
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 

@@ -6,6 +6,13 @@
 
 namespace GP {
 
+/**
+  * @class		Exception
+  * @brief		Customized exception
+  * @ingroup	-Util
+  * @author		Soohwan Kim
+  * @date		15/07/2014
+  */
 class Exception : public std::exception
 {
 public:

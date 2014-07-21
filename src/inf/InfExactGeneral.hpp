@@ -13,11 +13,12 @@
 namespace GP{
 
 /**
-	* @class	InfExactGeneral
-	* @brief	Exact inference with TrainingData or DerivativeTrainingData
-	* @author	Soohwan Kim
-	* @date	02/07/2014
-	*/
+  * @class	InfExactGeneral
+  * @brief	Exact inference with TrainingData or DerivativeTrainingData
+  * @ingroup	-Inf
+  * @author		Soohwan Kim
+  * @date		02/07/2014
+  */
 template<typename Scalar, 
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 

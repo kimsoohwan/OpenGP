@@ -7,23 +7,12 @@ namespace GP{
 
 /**
  * @class		CovSEisoDerObsBase
- * @brief		A base class for CovSEisoDerObs
- *					which is the squared exponential covariance function with isotropic distances
- *					and deals with derivative observations.\n\n
- *					It provides protected static member functions which will be called
- *					in CovDerObs as follows
- *					<CENTER>
- *					Protected Static Member Functions | Corresponding Mathematical Equations
- *					----------------------------------|-------------------------------------
- *					CovSEisoDerObsBase::K_FD			 | \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
- *					CovSEisoDerObsBase::K_DD			 | \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
- *					CovSEisoDerObsBase::K_DD			 | \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
- *					CovSEisoDerObsBase::Ks_DF			 | \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
- *					</CENTER>
- *					
+ * @brief		A base class for CovSEisoDerObs which will be passed to CovDerObs
+ *					as a template parameter.
  *					Thus, CovSEisoDerObs is a combination of CovDerObs and CovSEisoDerObsBase.
  * @note			It inherits from CovSEiso to use CovSEiso::K.
- * @ingroup		CovDerObs
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-SEiso
  * @author	Soohwan Kim
  * @date		30/06/2014
  */
@@ -31,13 +20,33 @@ template<typename Scalar>
 class CovSEisoDerObsBase : public CovSEiso<Scalar>
 {
 protected:
+	/// define itself as a parent class to CovSEisoDerObs
 	typedef CovSEiso<Scalar> CovParent;
 
 // for CovDerObs or CovNormalPoints
 protected:
-	static MatrixPtr K_FD(const Hyp &logHyp, 
-								 DerivativeTrainingData<Scalar> &derivativeTrainingData, 
-								 const int coord_j, const int pdHypIndex)
+	/**
+	 * @brief	Covariance matrix between the functional and derivative training data
+	 *				or its partial derivative
+	 * @note		It calls the protected general member function, 
+	 *				CovSEisoDerObsBase::K_FD(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta, const int pdHypIndex = -1)
+	 *				which only depends on pair-wise squared distances and differences.
+	 * @param	[in] logHyp 							The log hyperparameters
+	 *															- logHyp(0) = \f$\log(l)\f$
+	 *															- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] derivativeTrainingData 		The functional and derivative training data
+	 * @param	[in] coord_j 							The partial derivative coordinate of Z
+	 * @param	[in] pdHypIndex						(Optional) Hyperparameter index for partial derivatives
+	 * 														- pdHypIndex = -1: return \f$\frac{\partial \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{Z}_j}\f$ (default)
+	 *															- pdHypIndex =  0: return \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(l) \partial \mathbf{Z}_j}\f$
+	 *															- pdHypIndex =  1: return \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(\sigma_f) \partial \mathbf{Z}_j}\f$
+	 * @return	An NNxNN matrix pointer\n
+	 * 			NN: The number of functional and derivative training data
+	 */
+	static MatrixPtr K_FD(const Hyp									&logHyp, 
+								 DerivativeTrainingData<Scalar>		&derivativeTrainingData, 
+								 const int									coord_j, 
+								 const int									pdHypIndex)
 	{
 		return K_FD(logHyp, 
 						derivativeTrainingData.pSqDistXXd(), 
@@ -45,9 +54,30 @@ protected:
 						pdHypIndex);
 	}
 
-	static MatrixPtr K_DD(const Hyp &logHyp, 
-								 DerivativeTrainingData<Scalar> &derivativeTrainingData, 
-								 const int coord_i, const int coord_j, const int pdHypIndex)
+	/**
+	 * @brief	Covariance matrix between the derivative training data
+	 *				or its partial derivative
+	 * @note		It calls the protected general member function, 
+	 *				CovSEisoDerObsBase::K_DD(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta_i, const MatrixConstPtr pDelta_j, const bool fSameCoord, const int pdHypIndex = -1)
+	 *				which only depends on pair-wise squared distances and differences.
+	 * @param	[in] logHyp 							The log hyperparameters
+	 *															- logHyp(0) = \f$\log(l)\f$
+	 *															- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] derivativeTrainingData 		The functional and derivative training data
+	 * @param	[in] coord_i 							The partial derivative coordinate of X
+	 * @param	[in] coord_j 							The partial derivative coordinate of Z
+	 * @param	[in] pdHypIndex						(Optional) Hyperparameter index for partial derivatives
+	 * 														- pdHypIndex = -1: return \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$ (default)
+	 *															- pdHypIndex =  0: return \f$\frac{\partial^3 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(l) \partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$
+	 *															- pdHypIndex =  1: return \f$\frac{\partial^3 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(\sigma_f) \partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$
+	 * @return	An NNxNN matrix pointer\n
+	 * 			NN: The number of functional and derivative training data
+	 */
+	static MatrixPtr K_DD(const Hyp									&logHyp, 
+								 DerivativeTrainingData<Scalar>		&derivativeTrainingData, 
+								 const int									coord_i, 
+								 const int									coord_j, 
+								 const int									pdHypIndex)
 	{
 		return K_DD(logHyp, 
 						derivativeTrainingData.pSqDistXdXd(), 
@@ -57,10 +87,23 @@ protected:
 						pdHypIndex);
 	}
 
-	static MatrixPtr Ks_DF(const Hyp &logHyp, 
-								  DerivativeTrainingData<Scalar> &derivativeTrainingData, 
-								  const TestData<Scalar> &testData, 
-								  const int coord_i)
+	/**
+	 * @brief	Cross covariance matrix between the derivative and functional training data
+	 * @note		It calls the protected static member function, CovSEisoDerObsBase::K_FD
+	 *				to utilize the symmetry property.
+	 * @param	[in] logHyp 							The log hyperparameters
+	 *															- logHyp(0) = \f$\log(l)\f$
+	 *															- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] derivativeTrainingData 		The functional and derivative training data
+	 * @param	[in] testData 							The test data
+	 * @param	[in] coord_i 							The partial derivative coordinate of X
+	 * @return	An NNxNN matrix pointer, \f$\frac{\partial \mathbf{K}_*(\mathbf{X}, \mathbf{X}_*)}{\partial \mathbf{X}_i} = \mathbf{K}(\mathbf{X}, \mathbf{Z})\f$\n
+	 * 			NN: The number of functional and derivative training data
+	 */
+	static MatrixPtr Ks_DF(const Hyp									&logHyp, 
+								  DerivativeTrainingData<Scalar>		&derivativeTrainingData, 
+								  const TestData<Scalar>				&testData, 
+								  const int									coord_i)
 	{
 		// squared distance: FD
 		MatrixPtr pSqDistXsXd = derivativeTrainingData.pSqDistXdXs(testData);
@@ -79,21 +122,28 @@ protected:
 	}
 
 protected:
-	static MatrixPtr K_FD(const Hyp &logHyp, 
-								 const MatrixConstPtr pSqDist, 
-								 const MatrixConstPtr pDelta, 
-								 const int pdHypIndex = -1)
+	/**
+	 * @brief	Covariance matrix between the functional and derivative training data
+	 *				or its partial derivative
+	 *				given pair-wise squared distances and differences
+	 * @param	[in] logHyp 				The log hyperparameters
+	 *												- logHyp(0) = \f$\log(l)\f$
+	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] MatrixConstPtr 		The pair-wise squared distances between the functional and derivative training data
+	 * @param	[in] pDelta 				The pair-wise differences between the functional and derivative training data
+	 * @param	[in] pdHypIndex			(Optional) Hyperparameter index for partial derivatives
+	 * 											- pdHypIndex = -1: return \f$\frac{\partial \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{Z}_j}\f$ (default)
+	 *												- pdHypIndex =  0: return \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(l) \partial \mathbf{Z}_j}\f$
+	 *												- pdHypIndex =  1: return \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(\sigma_f) \partial \mathbf{Z}_j}\f$
+	 * @return	An NNxNN matrix pointer\n
+	 * 			NN: The number of functional and derivative training data
+	 */
+	static MatrixPtr K_FD(const Hyp						&logHyp, 
+								 const MatrixConstPtr		pSqDist, 
+								 const MatrixConstPtr		pDelta, 
+								 const int						pdHypIndex = -1)
 	{
-		// input
-		// pSqDist (nxm): squared distances = r^2
-		// pDelta (nxm): delta = x_i - x_i'
-		// pLogHyp: log hyperparameters
-		// pdHypIndex: partial derivatives with respect to this parameter index
-
-		// output
-		// K: nxm matrix
-		// if pdHypIndex == -1:		K_FF
-		// else							partial K_FF / partial theta_i
+		// K: same size with the squared distances
 		MatrixPtr pK = K(logHyp, pSqDist);
 
 		// hyperparameters
@@ -140,6 +190,22 @@ protected:
 		return pK;
 	}
 
+	/**
+	 * @brief	Covariance matrix between the derivative training data
+	 *				or its partial derivative
+	 *				given pair-wise squared distances and differences
+	 * @param	[in] logHyp 				The log hyperparameters
+	 *												- logHyp(0) = \f$\log(l)\f$
+	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] MatrixConstPtr 		The pair-wise squared distances between the functional and derivative training data
+	 * @param	[in] pDelta 				The pair-wise differences between the functional and derivative training data
+	 * @param	[in] pdHypIndex			(Optional) Hyperparameter index for partial derivatives
+	 * 											- pdHypIndex = -1: return \f$\frac{\partial^2 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$ (default)
+	 *												- pdHypIndex =  0: return \f$\frac{\partial^3 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(l) \partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$
+	 *												- pdHypIndex =  1: return \f$\frac{\partial^3 \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \log(\sigma_f) \partial \mathbf{X}_i \partial \mathbf{Z}_j}\f$
+	 * @return	An NNxNN matrix pointer\n
+	 * 			NN: The number of functional and derivative training data
+	 */
 	static MatrixPtr K_DD(const Hyp &logHyp, 
 								 const MatrixConstPtr pSqDist, 
 								 const MatrixConstPtr pDelta_i, 
@@ -147,19 +213,7 @@ protected:
 								 const bool fSameCoord,
 								 const int pdHypIndex = -1)
 	{
-		// input
-		// pSqDist (nxm): squared distances = r^2
-		// pDelta1 (nxm): delta = x_i - x_i'
-		// i: index for delta1
-		// pDelta2 (nxm): delta = x_j - x_j'
-		// j: index for delta2
-		// pLogHyp: log hyperparameters
-		// pdHypIndex: partial derivatives with respect to this parameter index
-
-		// output
-		// K: nxm matrix
-		// if pdHypIndex == -1:		K_FF
-		// else							partial K_FF / partial theta_i
+		// K: same size with the squared distances
 		MatrixPtr pK = K(logHyp, pSqDist, pdHypIndex);
 
 		// hyperparameters

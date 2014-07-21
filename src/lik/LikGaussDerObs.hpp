@@ -9,6 +9,13 @@
 
 namespace GP{
 
+/**
+  * @class		LikGaussDerObs
+  * @brief		Likelihood function dealing with derivative observations
+  * @ingroup	-Lik
+  * @author		Soohwan Kim
+  * @date		02/07/2014
+  */
 template<typename Scalar>
 class LikGaussDerObs
 {

@@ -8,13 +8,14 @@
 namespace GP{
 
 /**
-	* @class		MeanZero
-	* @brief		A zero mean function.
-	* 				It inherits from TrainingDataSetter
-	* 				to be able to set a training data.
-	* @author	Soohwan Kim
-	* @date		26/03/2014
-	*/
+  * @class		MeanZero
+  * @brief		A zero mean function.
+  * 				It inherits from TrainingDataSetter
+  * 				to be able to set a training data.
+  * @ingroup	-Mean
+  * @author		Soohwan Kim
+  * @date		26/03/2014
+  */
 template<typename Scalar>
 class MeanZero
 {

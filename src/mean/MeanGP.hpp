@@ -8,13 +8,14 @@
 namespace GP{
 
 /**
-	* @class		MeanGP
-	* @brief		A Gaussian process mean function.
-	* 				It inherits from TrainingDataSetter
-	* 				to be able to set a training data.
-	* @author	Soohwan Kim
-	* @date		26/03/2014
-	*/
+  * @class		MeanGP
+  * @brief		A Gaussian process mean function.
+  * 				It inherits from TrainingDataSetter
+  * 				to be able to set a training data.
+  * @ingroup	-Mean
+  * @author		Soohwan Kim
+  * @date		26/03/2014
+  */
 template<typename Scalar, 
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 

@@ -9,6 +9,13 @@
 
 namespace GP{
 
+/**
+  * @class		LikGauss
+  * @brief		Likelihood function
+  * @ingroup	-Lik
+  * @author		Soohwan Kim
+  * @date		02/07/2014
+  */
 template<typename Scalar>
 class LikGauss
 {

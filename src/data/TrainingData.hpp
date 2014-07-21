@@ -7,13 +7,19 @@
 namespace GP{
 
 /**
- * @class	TrainingData
- * @brief	A training data.
- * 			N: number of training data
- * 			D: number of dimensions
- * 			{(X, y)_i}_i=1^N, X \in R^D, y \in R
- * @author	Soohwan Kim
- * @date		26/03/2014
+ * @class		TrainingData
+ * @brief		A training input and output data
+ *					\f[
+ * 				\{(\mathbf{X}, \mathbf{y}_i)\}_{i=1}^N, \quad \mathbf{X} \in \mathbb{R}^D, \; \mathbf{y} \in \mathbb{R}
+ *					\f]
+ * 				where \f$N\f$: number of training data, 
+ * 						\f$D\f$: number of dimensions.\n\n
+ *					It also holds the pair-wise squared distances and differences between the training inputs
+ *					which will be repeatedly used in covariance functioins.					
+ * @tparam		Scalar	Datatype such as float and double
+ * @author		Soohwan Kim
+ * @ingroup		-Data
+ * @date			26/03/2014
  */
 template<typename Scalar>
 class TrainingData
@@ -24,8 +30,8 @@ protected:	TYPE_DEFINE_MATRIX(Scalar);
 
 public:
 	/**	
-	 * @brief	Default constructor.
-	 * 			Initialize calculation flags to be zero
+	 * @brief		Default constructor
+	 * @details		Initialize calculation flags to be zero
 	 */
 	TrainingData() :
 		m_fSqDistXX(false),
@@ -34,8 +40,8 @@ public:
 	}
 
 	/**	
-	 * @brief	Gets the number of training data, N.
-	 * @return	the number of training data.
+	 * @brief	Gets the number of functional observations
+	 * @return	The number of functional observations
 	 */
 	inline int N() const
 	{
@@ -44,14 +50,19 @@ public:
 		return m_pX->rows();
 	}
 
+	/**	
+	 * @brief	Gets the number of training data for the size of covariance matrix
+	 * @note		Required to be consistent with DerivativeTrainingData
+	 * @return	The number of training data
+	 */
 	inline int NN() const
 	{
 		return N();
 	}
 
 	/**
-	 * @brief	Gets the number of dimensions, D.
-	 * @return	the number of dimensions.
+	 * @brief	Gets the number of dimensions
+	 * @return	The number of dimensions
 	 */
 	inline int D() const
 	{
@@ -60,9 +71,9 @@ public:
 	}
 
 	/**
-	 * @brief	Resets the training data.
-	 * @param	[in] pX	The training inputs.
-	 * @param	[in] pY	The training outputs.
+	 * @brief	Resets the training data
+	 * @param	[in] pX	The training inputs, \f$\mathbf{X} \in \mathbb{R}^{N \times D}\f$
+	 * @param	[in] pY	The training outputs, \f$\mathbf{y} \in \mathbb{R}^{N}\f$
 	 */
 	void set(const MatrixConstPtr pX, const VectorConstPtr pY)
 	{
@@ -73,8 +84,8 @@ public:
 	}
 
 	/**
-	 * @brief	Gets the const pointer to the training inputs.
-	 * @return	A matrix const pointer.
+	 * @brief	Gets the training inputs
+	 * @return	A const matrix const pointer
 	 */
 	const MatrixConstPtr pX() const
 	{
@@ -82,8 +93,8 @@ public:
 	}
 
 	/**
-	 * @brief	Gets the const pointer to the training outputs.
-	 * @return	A vector const pointer.
+	 * @brief	Gets the training outputs
+	 * @return	A const vector const pointer
 	 */
 	const VectorConstPtr pY() const
 	{
@@ -91,9 +102,12 @@ public:
 	}
 
 	/**
-	 * @brief	Gets the const pointer to the pre-calculated
-	 * 			self squared distances between the training inputs.
-	 * @return	An NxN matrix const pointer.
+	 * @brief	Gets the self squared distances between the training inputs
+	 * @return	A const matrix const pointer
+	 *				\f[
+	 *				\mathbf{R^2} \in \mathbb{R}^{N \times N}, \quad
+	 *				\mathbf{R^2}_{ij} = (\mathbf{x}_i - \mathbf{x}_j)^\text{T}(\mathbf{x}_i - \mathbf{x}_j)
+	 *				\f]
 	 */
 	const MatrixConstPtr pSqDistXX()
 	{
@@ -110,10 +124,13 @@ public:
 	}
 
 	/**
-	 * @brief	Gets the const pointer to the pre-calculated
-	 * 			self differences between the training inputs.
-	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xi_coord - Xj_coord
-	 * @return	An NxN matrix const pointer.
+	 * @brief	Gets the self differences between the training inputs
+	 * @param	[in] coord	Corresponding coordinate
+	 * @return	An const matrix const pointer
+	 *				\f[
+	 *				\mathbf{D} \in \mathbb{R}^{N \times N}, \quad
+	 *				\mathbf{D}_{ij} = \mathbf{x}_i^c - \mathbf{x}_j^c
+	 *				\f]
 	 */
 	const MatrixConstPtr pDeltaXX(const int coord)
 	{
@@ -133,10 +150,14 @@ public:
 	}
 
 	/**
-	 * @brief	Gets the pointer to the cross squared distances
-	 * 			between the training inputs and test inputs.
-	 * @param	[in] pXs		The test inputs. A MxD matrix.
-	 * @return	An NxM matrix const pointer.
+	 * @brief	Gets the cross squared distances between the training and test inputs
+	 * @param	[in] pXs		The M test inputs
+	 * @return	An matrix pointer
+	 *				\f[
+	 *				\mathbf{R^2} \in \mathbb{R}^{N \times M}, \quad
+	 *				\mathbf{R^2}_{ij} = (\mathbf{x}_i - \mathbf{z}_j)^\text{T}(\mathbf{x}_i - \mathbf{z}_j)
+	 *				\f]
+	 * @todo		Include this matrix as a member variable like m_pSqDistXX
 	 */
 	MatrixPtr pSqDistXXs(const TestData<Scalar> &testData) const
 	{
@@ -146,11 +167,15 @@ public:
 	}
 
 	/**
-	 * @brief	Gets the pointer to the cross differences
-	 * 			between the training inputs and test inputs.
-	 * @param	[in] pXs		The test inputs. A MxD matrix.
-	 * @param	[in] coord	Corresponding coordinate. [result]_ij = Xi_coord - Xsj_coord
-	 * @return	An NxM matrix const pointer.
+	 * @brief	Gets the cross differences between the training and test inputs.
+	 * @param	[in] pXs		The M test inputs
+	 * @param	[in] coord	Corresponding coordinate
+	 * @return	An matrix pointer
+	 *				\f[
+	 *				\mathbf{D} \in \mathbb{R}^{N \times M}, \quad
+	 *				\mathbf{D}_{ij} = \mathbf{x}_i^c - \mathbf{z}_j^c
+	 *				\f]
+	 * @todo		Include this matrix as a member variable like m_pDeltaXXList
 	 */
 	MatrixPtr pDeltaXXs(const TestData<Scalar> &testData, const int coord) const
 	{
@@ -160,24 +185,24 @@ public:
 	}
 
 protected:
-	/** @brief training inputs */
-	MatrixConstPtr m_pX;	// NxD matrix
+	/** @brief Training inputs: NxD matrix */
+	MatrixConstPtr m_pX;
 
-	/** @brief training outputs */
-	VectorConstPtr m_pY;	// Nx1 vector
-
-
-	/** @brief	Pre-calculated self squared distances between the training inputs. */
-	MatrixConstPtr m_pSqDistXX;	// NxN matrix
-
-	/** @brief	Pre-calculated self differences between the training inputs. */
-	std::vector<MatrixConstPtr> m_pDeltaXXList;	// NxN matrix per each dimension
+	/** @brief Training outputs: Nx1 vector */
+	VectorConstPtr m_pY;
 
 
-	/** @brief	Flag for the pre-calculated self squared distances between the training inputs. */
+	/** @brief	Pre-calculated self squared distances between the training inputs:  NxN matrix */
+	MatrixConstPtr m_pSqDistXX;
+
+	/** @brief	Pre-calculated self differences between the training inputs: NxN matrices per each dimension*/
+	std::vector<MatrixConstPtr> m_pDeltaXXList;
+
+
+	/** @brief	Flag for the pre-calculated self squared distances between the training inputs */
 	bool m_fSqDistXX;
 
-	/** @brief	Flag for the pre-calculated self differences between the training inputs. */
+	/** @brief	Flag for the pre-calculated self differences between the training inputs */
 	bool m_fDeltaXXList;
 };
 

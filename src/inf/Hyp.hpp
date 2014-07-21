@@ -8,8 +8,9 @@ namespace GP {
  *
  * @brief	Logarithm of Hyperparameters.
  *
- * @author	Soohwankim
- * @date	26/03/2014
+ * @ingroup		-Inf
+ * @author		Soohwankim
+ * @date			26/03/2014
  */
 template<typename Scalar, 
 			template<typename> class MeanFunc, 

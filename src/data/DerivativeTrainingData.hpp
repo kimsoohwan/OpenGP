@@ -8,31 +8,60 @@
 namespace GP{
 
 /**
- * @class	DerivativeTrainingData
- * @brief	A training data which have two kinds of traing outputs,
- * 			function values and function derivatives w.r.t each dimension
- * 			at the same training inputs
- * 			as well as the training data from TrainingData.
- * 			N: number of function value training data.
- * 			Nd: number of derivative value training data.
- * 			D: number of dimensions.
- * 			{(X, y, dy/dx1, ..., dy/dxD)_j}_i=1^Nd, X \in R^D, y \in R.
- * 			{(X, y)_i}_i=1^N, X \in R^D, y \in R from TrainingData.
- * @note		For example, suppose that you have a set of points and
- * 			some part of them have surface normals. Then, you can divide them
- * 			into a set of points which have function values (0) and surface normals
- * 			and another set of points which have function values (0) only.
- * 			This is why DerivativeTrainingData inherits from TrainingData.
- * @author	Soohwan Kim
- * @date		01/04/2014
+ * @class		DerivativeTrainingData
+ * @brief		Functional and derivative training data.\n\n
+ *					Note that it has two kinds of training inputs
+ *					and single training outputs as follows.
+ *					<CENTER>
+ *					Training Data | Description
+ *					--------------|-------------
+ *					\f$\mathbf{X}   \in \mathbb{R}^{N \times D}\f$				| Training inputs of functional observations
+ *					\f$\mathbf{X}_d \in \mathbb{R}^{N_d \times D}}\f$		| Training inputs of derivative observations
+ *					\f$\mathbf{yy}_d   \in \mathbb{R}^{N + N_d \times D}\f$	| Training outputs of both functional and derivative observations
+ *					</CENTER>
+ *					or
+ *					\f[
+ *						\{\mathbf{X}, \mathbf{X}_d, \mathbf{yy}_d\} =
+ * 					\{(\mathbf{X}, \mathbf{y})_i\}_{i=1}^N
+ *						\cup
+ *						\left\{\left(\mathbf{X}_d, \frac{dy}{d\mathbf{x}_1}, ..., \frac{dy}{d\mathbf{x}_D}\right)_i\right\}_{i=1}^{N_d},
+ *					\f]
+ * 				where\n
+ *					\f$N\f$: number of function observations\n
+ * 				\f$N_d\f$: number of derivative observations\n
+ * 				\f$D\f$: number of dimensions\n\n
+ *					This is for making it simple to retrieve the training outputs;
+ *					if functional and derivative outputs are stored in separate variables,
+ *					they need to be concatenated when retrieved from mean functions.\n\n
+ *					Note that the order of training outputs is 
+ *					\f{bmatrix}{
+ *						\mathbf{y}\\
+ *						\frac{dy}{d\mathbf{x}_1}\\
+ *						\vdots\\
+ *						\frac{dy}{d\mathbf{x}_D}\\
+ *					\f}
+ *					For example, suppose that you have a set of points, and
+ * 				some part of them have surface normals. Then, the training inputs are
+ *					devided into two parts, functional and derivative observations,
+ *					while the traing outputs are combined into one.
+ * 				This is why DerivativeTrainingData inherits from TrainingData
+ *					but has its own derivative inputs.\n\n
+ *					Also note that the functional inputs and derivative inputs can be the same.
+ * @tparam		Scalar	Datatype such as float and double
+ * @todo			Instead of having m_pXd, 
+ *					how about a mask for the derivative inputs
+ *					among the functional inputs
+ * @ingroup		-Data
+ * @author		Soohwan Kim
+ * @date			01/04/2014
  */
 template<typename Scalar>
 class DerivativeTrainingData : public TrainingData<Scalar>
 {
 public:
 	/**	
-	 * @brief	Default constructor.
-	 * 			Initialize calculation flags to be false
+	 * @brief		Default constructor
+	 * @details		Initialize calculation flags to be false
 	 */
 	DerivativeTrainingData() :
 		m_fSqDistXdXd(false),
@@ -43,8 +72,8 @@ public:
 	}
 
 	/**	
-	 * @brief	Gets the number of derivative training data, Nd.
-	 * @return	The number of derivative training data.
+	 * @brief	Gets the number of derivative obervations
+	 * @return	The number of derivative observations
 	 */
 	inline int Nd() const
 	{
@@ -54,10 +83,23 @@ public:
 		return m_pXd->rows();
 	}
 
+
+	/**	
+	 * @brief	Gets the number of training data for the size of covariance matrix
+	 * @note		The number of training data, NN
+	 *				is not the same as the number of functional observations, N.
+	 * @return	The number of training data
+	 */
+	inline int NN() const
+	{
+		return N() + Nd()*D();
+	}
+
+
 	/**
-	 * @brief	Gets the number of dimensions, D.
-	 * @note		Overloading the function D().
-	 * @return	The number of dimensions.
+	 * @brief	Gets the number of dimensions, D
+	 * @note		Overloading TrainingData<Scalar>::D()
+	 * @return	The number of dimensions
 	 */
 	inline int D() const
 	{
@@ -67,10 +109,6 @@ public:
 		else			return m_pXd->cols();
 	}
 
-	inline int NN() const
-	{
-		return N() + Nd()*D();
-	}
 
 	///**
 	// * @brief	Resets the training inputs.
@@ -89,10 +127,10 @@ public:
 	//}
 
 	/**
-	 * @brief	Resets the training inputs.
-	 * @param	[in] pX		The function training inputs.
-	 * @param	[in] pXd		The derivative training inputs.
-	 * @param	[in] pYYd	The function/derivative training outputs.
+	 * @brief	Resets the training data
+	 * @param	[in] pX		The functional inputs, \f$\mathbf{X}   \in \mathbb{R}^{N \times D}\f$
+	 * @param	[in] pXd		The derivative inputs, \f$\mathbf{X}_d \in \mathbb{R}^{N_d \times D}}\f$
+	 * @param	[in] pYYd	The functional and derivative outputs, \f$\mathbf{yy}_d   \in \mathbb{R}^{N + N_d \times D}\f$
 	 */
 	void set(MatrixPtr pX, MatrixPtr pXd, VectorPtr pYYd)
 	{
@@ -102,12 +140,14 @@ public:
 		m_fSqDistXXd		= false;
 		m_fDeltaXdXdList	= false;
 		m_fDeltaXXdList	= false;
+
+		assert(NN() == pYYd.size());
 	}
 
 	/**
-	 * @brief	Resets the training inputs.
-	 * @param	[in] pXXd	The function/derivative training inputs.
-	 * @param	[in] pYYd	The function/derivative training outputs.
+	 * @brief	Resets the training data when the functional and derivative inputs are the same
+	 * @param	[in] pXXd	The function/derivative training inputs, \f$\mathbf{X} = \f$\mathbf{X}_d in \mathbb{R}^{N \times D}, \; N = N_d\f$
+	 * @param	[in] pYYd	The function/derivative training outputs, \f$\mathbf{yy}_d \in \mathbb{R}^{N + N_d \times D}\f$
 	 */
 	void set(MatrixPtr pXXd, VectorPtr pYYd)
 	{
