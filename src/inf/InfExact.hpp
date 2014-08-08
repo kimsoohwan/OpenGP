@@ -452,12 +452,13 @@ protected:
 					e = "NoConvergence";
 					break;
 				}
-				// Eigen 3.0.5
-				//case Eigen::/*ComputationInfo::*/InvalidInput :
-				//{
-				//	e = "InvalidInput";
-				//	break;
-				//}
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+				case Eigen::/*ComputationInfo::*/InvalidInput :
+				{
+					e = "InvalidInput";
+					break;
+				}
+#endif
 			}
 			throw e;
 		}
@@ -507,12 +508,13 @@ protected:
 					e = "NoConvergence";
 					break;
 				}
-				// Eigen 3.0.5
-				//case Eigen::/*ComputationInfo::*/InvalidInput :
-				//{
-				//	e = "InvalidInput";
-				//	break;
-				//}
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+				case Eigen::/*ComputationInfo::*/InvalidInput :
+				{
+					e = "InvalidInput";
+					break;
+				}
+#endif
 			}
 			throw e;
 		}
