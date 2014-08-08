@@ -141,7 +141,7 @@ public:
 		m_fDeltaXdXdList	= false;
 		m_fDeltaXXdList	= false;
 
-		assert(NN() == pYYd.size());
+		assert(NN() == pYYd->size());
 	}
 
 	/**

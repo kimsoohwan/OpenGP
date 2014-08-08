@@ -437,26 +437,27 @@ protected:
 		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
 
-		if(pL->info() != Eigen::ComputationInfo::Success)
+		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
 			Exception e;
 			switch(pL->info())
 			{
-				case Eigen::ComputationInfo::NumericalIssue :
+				case Eigen::/*ComputationInfo::*/NumericalIssue :
 				{
 					e = "NumericalIssue";
 					break;
 				}
-				case Eigen::ComputationInfo::NoConvergence :
+				case Eigen::/*ComputationInfo::*/NoConvergence :
 				{
 					e = "NoConvergence";
 					break;
 				}
-				case Eigen::ComputationInfo::InvalidInput :
-				{
-					e = "InvalidInput";
-					break;
-				}
+				// Eigen 3.0.5
+				//case Eigen::/*ComputationInfo::*/InvalidInput :
+				//{
+				//	e = "InvalidInput";
+				//	break;
+				//}
 			}
 			throw e;
 		}
@@ -491,26 +492,27 @@ protected:
 		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
 
-		if(pL->info() != Eigen::ComputationInfo::Success)
+		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
 			Exception e;
 			switch(pL->info())
 			{
-				case Eigen::ComputationInfo::NumericalIssue :
+				case Eigen::/*ComputationInfo::*/NumericalIssue :
 				{
 					e = "NumericalIssue";
 					break;
 				}
-				case Eigen::ComputationInfo::NoConvergence :
+				case Eigen::/*ComputationInfo::*/NoConvergence :
 				{
 					e = "NoConvergence";
 					break;
 				}
-				case Eigen::ComputationInfo::InvalidInput :
-				{
-					e = "InvalidInput";
-					break;
-				}
+				// Eigen 3.0.5
+				//case Eigen::/*ComputationInfo::*/InvalidInput :
+				//{
+				//	e = "InvalidInput";
+				//	break;
+				//}
 			}
 			throw e;
 		}

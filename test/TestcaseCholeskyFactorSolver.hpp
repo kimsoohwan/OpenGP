@@ -42,26 +42,27 @@ TEST_F(TestCaseCholeskyFactorSolver, InverseTest)
 	//CholeskyFactor L;
 	//L.compute(*pK);
 	CholeskyFactor L(*pK);
-	if(L.info() != Eigen::ComputationInfo::Success)
+	if(L.info() != Eigen::/*ComputationInfo::*/Success)
 	{
 		Exception e;
 		switch(L.info())
 		{
-			case Eigen::ComputationInfo::NumericalIssue :
+			case Eigen::/*ComputationInfo::*/NumericalIssue :
 			{
 				e = "NumericalIssue";
 				break;
 			}
-			case Eigen::ComputationInfo::NoConvergence :
+			case Eigen::/*ComputationInfo::*/NoConvergence :
 			{
 				e = "NoConvergence";
 				break;
 			}
-			case Eigen::ComputationInfo::InvalidInput :
-			{
-				e = "InvalidInput";
-				break;
-			}
+			// Eigen 3.0.5
+			//case Eigen::/*ComputationInfo::*/InvalidInput :
+			//{
+			//	e = "InvalidInput";
+			//	break;
+			//}
 		}
 		throw e;
 	}
