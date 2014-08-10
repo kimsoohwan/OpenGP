@@ -96,6 +96,7 @@
     <ClInclude Include="..\src\data\TrainingData.hpp" />
     <ClInclude Include="..\src\data\typetraits.hpp.old" />
     <ClInclude Include="..\src\gp\GaussianProcess.hpp" />
+    <ClInclude Include="..\src\gp\NlZ_DnlZ.hpp" />
     <ClInclude Include="..\src\gp\Trainer.hpp" />
     <ClInclude Include="..\src\inf\Hyp.hpp" />
     <ClInclude Include="..\src\inf\InfExact.hpp" />

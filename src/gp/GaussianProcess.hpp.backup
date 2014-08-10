@@ -27,28 +27,30 @@ class GaussianProcess : public InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>
 public:
 	// train hyperparameters
 	template<class SearchStrategy, class StoppingStrategy, template<typename> class GeneralTrainingData>
-	static DlibScalar train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	&logHyp,
-									GeneralTrainingData<Scalar>													&generalTrainingData,
-									const int																			maxIter = 0,
-									const DlibScalar																	minValue = 1e-15)
+	static void train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp		&logHyp,
+							GeneralTrainingData<Scalar>												&generalTrainingData,
+							const int																		maxIter = 0,
+							const double																	minValue = 1e-15)
 	{
 		assert(generalTrainingData.N() > 0);
-		if(generalTrainingData.N() <= 0) return 0.0;
+		if(generalTrainingData.N() <= 0) return;
 
-		// conversion from GP hyperparameters to a Dlib vector
+		// initialize hyperparameters
 		DlibVector logDlib;
 		logDlib.set_size(logHyp.size());
 		Hyp2Dlib<Scalar, MeanFunc, CovFunc, LikFunc>(logHyp, logDlib);
 
 		// trainer
-		DlibScalar minNlZ = TrainerUsingApproxDerivatives<NlZ <Scalar, MeanFunc, CovFunc, LikFunc, InfMethod, GeneralTrainingData> >::train<SearchStrategy, StoppingStrategy>(logDlib, 
-																																																		  NlZ <Scalar, MeanFunc, CovFunc, LikFunc, InfMethod, GeneralTrainingData>(generalTrainingData),
-																																																		  maxIter, minValue);
+		Trainer<NlZ, DnlZ> trainer::train<SearchStrategy, StoppingStrategy>(logDlib, NlZ(generalTrainingData), DnlZ(generalTrainingData), maxIter, minValue);
 
-		// conversion from a Dlib vector to GP hyperparameters
-		Dlib2Hyp<Scalar, MeanFunc, CovFunc, LikFunc>(logDlib, logHyp);
+		Trainer<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod, GeneralTrainingData> trainer(generalTrainingData);
+		trainer.train<SearchStrategy, StoppingStrategy>(logHyp, maxIter, minValue);
+		//Trainer::train<SearchStrategy, StoppingStrategy>(logHyp, generalTrainingData, maxIter, minValue);
+		//Trainer::train<SearchStrategy, StoppingStrategy, Scalar, GeneralTrainingData>(logHyp, generalTrainingData, maxIter, minValue);
 
-		return minNlZ;
+		// conversion  from Dlib to Eigen vectors
+		Dlib2Eigen(hypDlib, hypEigen);
+
 	}
 };
 

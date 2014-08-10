@@ -85,6 +85,9 @@
     <ClInclude Include="..\src\data\typetraits.hpp.old">
       <Filter>src\data</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\gp\NlZ_DnlZ.hpp">
+      <Filter>src\gp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

@@ -5,6 +5,7 @@
 #include <dlib/optimization.h>			// for dlib::find_min
 
 #include "../util/macros.h"
+#include "NlZ_DnlZ.hpp"
 
 namespace GP{
 
@@ -112,185 +113,104 @@ class GradientNorm	{	public:		typedef dlib::gradient_norm_stop_strategy		Type; }
  * @note			refer to http://dlib.net/optimization_ex.cpp.html
  * @ingroup		-Trainer
  */
-template<typename Scalar, 
-			template<typename> class MeanFunc, 
-			template<typename> class CovFunc, 
-			template<typename> class LikFunc,
-			template<typename, 
-						template<typename> class,
-						template<typename> class,
-						template<typename> class> class InfMethod,
-			template<typename> class GeneralTrainingData>
-class Trainer
+template <class NlZ_T, class DnlZ_T>
+class TrainerUsingExactDerivatives
 {
-// define vector types
-protected:	TYPE_DEFINE_VECTOR(Scalar);
-
-// typedef
-protected:
-	typedef	typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>		InfType;
-	typedef	typename InfType::Hyp													Hyp;
-
-	//typedef	Scalar																	DlibScalar;
-	typedef	double																		DlibScalar;
-	typedef	dlib::matrix<DlibScalar, 0, 1>										DlibVector;	
-
 public:
-	template<template<typename> class GeneralTrainingData>
-	Trainer(GeneralTrainingData<Scalar> &generalTrainingData)
-		: m_generalTrainingData(generalTrainingData)
-	{
-	}
-
-// inner class
-protected:
-	// nlZ
-	class NlZ
-	{
-	public:
-		template<template<typename> class GeneralTrainingData>
-		NlZ(GeneralTrainingData<Scalar> &generalTrainingData)
-			: m_generalTrainingData(generalTrainingData)
-		{
-		}
-
-	public:
-		DlibScalar operator()(const DlibVector &hypDlib) const
-		{
-			// conversion from Dlib to Eigen vectors
-			Hyp	hypEigen;
-			Dlib2Eigen(hypDlib, hypEigen);
-			std::cout << "hyp.mean = " << std::endl << hypEigen.mean.array().exp().matrix() << std::endl << std::endl;
-			std::cout << "hyp.cov = " << std::endl << hypEigen.cov.array().exp().matrix() << std::endl << std::endl;
-			std::cout << "hyp.lik = " << std::endl << hypEigen.lik.array().exp().matrix() << std::endl << std::endl;
-
-			// calculate nlZ only
-			Scalar			nlZ;
-			//GPType::negativeLogMarginalLikelihood(hypEigen, 
-			InfType::negativeLogMarginalLikelihood(hypEigen, 
-															  m_generalTrainingData,
-															  nlZ, 
-															  VectorPtr(),
-															  1);
-
-			std::cout << "nlz = " << nlZ << std::endl;
-			return nlZ;
-		}
-	protected:
-		GeneralTrainingData<Scalar> &m_generalTrainingData;
-	};
-
-	// dnlZ
-	class DnlZ
-	{
-	public:
-		template<template<typename> class GeneralTrainingData>
-		DnlZ(GeneralTrainingData<Scalar> &generalTrainingData)
-			: m_generalTrainingData(generalTrainingData)
-		{
-		}
-
-	public:
-		DlibVector operator()(const DlibVector &hypDlib) const
-		{
-			// conversion from Dlib to Eigen vectors
-			Hyp	hypEigen;
-			Dlib2Eigen(hypDlib, hypEigen);
-			std::cout << "hyp.mean = " << std::endl << hypEigen.mean.array().exp().matrix() << std::endl << std::endl;
-			std::cout << "hyp.cov = " << std::endl << hypEigen.cov.array().exp().matrix() << std::endl << std::endl;
-			std::cout << "hyp.lik = " << std::endl << hypEigen.lik.array().exp().matrix() << std::endl << std::endl;
-
-			// calculate dnlZ only
-			Scalar			nlZ;
-			VectorPtr		pDnlZ;
-			InfType::negativeLogMarginalLikelihood(hypEigen, 
-														  m_generalTrainingData,
-														  nlZ, //Scalar(),
-														  pDnlZ,
-														  -1);
-
-			std::cout << "dnlz = " << std::endl << *pDnlZ << std::endl << std::endl;
-
-			DlibVector dnlZ(hypEigen.size());
-			Eigen2Dlib(pDnlZ, dnlZ);
-			return dnlZ;
-		}
-	protected:
-		GeneralTrainingData<Scalar> &m_generalTrainingData;
-	};
+	TrainerUsingExactDerivatives() {}
 
 // method
 public:
 
 	// train hyperparameters
 	template<class SearchStrategy, class StoppingStrategy>
-	void train(Hyp					&hypEigen,
-				  int					maxIter,
-				  const double		minValue)
+	static double train(DlibVector		&hypDlib,
+							  NlZ_T				&nlZ,
+							  DnlZ_T				&dnlZ,
+							  int					maxIter,
+							  const double		minValue)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
-		// [0, -]:		max iteration criteria off
-
-		// hyperparameters
-		DlibVector hypDlib;
-		hypDlib.set_size(hypEigen.size());
-
-		// initialization
-		Eigen2Dlib(hypEigen, hypDlib);
+		// [0, -]:	max iteration criteria off
 
 		// find minimum
 		if(maxIter <= 0) // max_iter can't be 0
 		{
-			dlib::find_min(SearchStrategy::Type(),
-								StoppingStrategy::Type(minValue).be_verbose(),
-								NlZ(m_generalTrainingData), 
-								DnlZ(m_generalTrainingData),
-								hypDlib,
-								-std::numeric_limits<DlibScalar>::infinity());
-
-			//dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
-			//															StoppingStrategy::Type(minValue).be_verbose(),
-			//															NlZ(m_generalTrainingData), 
-			//															hypDlib,
-			//															-std::numeric_limits<DlibScalar>::infinity());
-			}
+			return dlib::find_min(SearchStrategy::Type(),
+										 StoppingStrategy::Type(minValue).be_verbose(),
+										 nlZ, 
+										 dnlZ,
+										 hypDlib,
+										 -std::numeric_limits<DlibScalar>::infinity());
+		}
 		else
 		{
-			dlib::find_min(SearchStrategy::Type(),
-								StoppingStrategy::Type(minValue, maxIter).be_verbose(),
-								NlZ(m_generalTrainingData), 
-								DnlZ(m_generalTrainingData),
-								hypDlib,
-								-std::numeric_limits<DlibScalar>::infinity());
-
-			//dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
-			//															StoppingStrategy::Type(minValue, maxIter).be_verbose(),
-			//															NlZ(m_generalTrainingData), 
-			//															hypDlib,
-			//															-std::numeric_limits<DlibScalar>::infinity());
+			return dlib::find_min(SearchStrategy::Type(),
+										 StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+										 nlZ,
+										 dnlZ,
+										 hypDlib,
+										 -std::numeric_limits<DlibScalar>::infinity());
 		}
+	}
+};
 
-		// conversion  from Dlib to Eigen vectors
-		Dlib2Eigen(hypDlib, hypEigen);
+
+/**
+ * @class		Trainer
+ * @note			refer to http://dlib.net/optimization_ex.cpp.html
+ * @ingroup		-Trainer
+ */
+template <class NlZ_T>
+class TrainerUsingApproxDerivatives
+{
+public:
+	TrainerUsingApproxDerivatives() {}
+
+// method
+public:
+
+	// train hyperparameters
+	template<class SearchStrategy, class StoppingStrategy>
+	static double train(DlibVector			&hypDlib,
+							  NlZ_T					&nlZ,
+							  int					maxIter,
+							  const double		minValue)
+	{
+		// maxIter
+		// [+]:		max iteration criteria on
+		// [0, -]:	max iteration criteria off
+
+		// find minimum
+		if(maxIter <= 0) // max_iter can't be 0
+		{
+			return dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
+																				 StoppingStrategy::Type(minValue).be_verbose(),
+																				 nlZ, 
+																				 hypDlib,
+																				 -std::numeric_limits<DlibScalar>::infinity());
+		}
+		else
+		{
+			return dlib::find_min_using_approximate_derivatives(SearchStrategy::Type(),
+																				 StoppingStrategy::Type(minValue, maxIter).be_verbose(),
+																				 nlZ, 
+																				 hypDlib,
+																				 -std::numeric_limits<DlibScalar>::infinity());
+		}
 	}
 
 	// train hyperparameters
 	template<>
-	void train<BOBYQA, NoStopping>(Hyp					&hypEigen,
-											 int					maxIter,
-											 const double		minValue)
+	static double train<BOBYQA, NoStopping>(DlibVector			&hypDlib,
+													  NlZ_T					&nlZ,
+													  int						maxIter,
+													  const double			minValue)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
 		// [0, -]:		max iteration criteria off
-
-		// hyperparameters
-		DlibVector hypDlib;
-		hypDlib.set_size(hypEigen.size());
-
-		// initialization
-		Eigen2Dlib(hypEigen, hypDlib);
 
 		// Training
 		if(maxIter <= 0) maxIter = 1000;
@@ -298,53 +218,21 @@ public:
 		// find minimum
 		try
 		{
-			dlib::find_min_bobyqa(NlZ(m_generalTrainingData), 
-										 hypDlib, 
-										 9,    // number of interpolation points
-										 dlib::uniform_matrix<double>(hypDlib.nr(), 1, -1e100),  // lower bound constraint
-										 dlib::uniform_matrix<double>(hypDlib.nr(), 1,  1e100),  // upper bound constraint
-										 1,			// initial trust region radius: 10
-										 1e-15,		// stopping trust region radius: 1e-6
-										 maxIter    // max number of objective function evaluations
-										 );
+			return dlib::find_min_bobyqa(nlZ, 
+												  hypDlib, 
+												  9,    // number of interpolation points
+												  dlib::uniform_matrix<double>(hypDlib.nr(), 1, -1e100),  // lower bound constraint
+												  dlib::uniform_matrix<double>(hypDlib.nr(), 1,  1e100),  // upper bound constraint
+												  1,			// initial trust region radius: 10
+												  1e-15,		// stopping trust region radius: 1e-6
+												  maxIter    // max number of objective function evaluations
+												  );
 		}
 		catch(const std::exception& e)
 		{
 			std::cout << e.what() << std::endl;
 		}
-
-		// conversion  from Dlib to Eigen vectors
-		Dlib2Eigen(hypDlib, hypEigen);
 	}
-
-protected:
-	// conversion between Eigen and Dlib vectors
-	inline static void Eigen2Dlib(const Hyp	&hypEigen,
-											DlibVector	&hypDlib)
-	{
-		int j = 0; // hyperparameter index
-		for(int i = 0; i < hypEigen.mean.size(); i++)		hypDlib(j++, 0) = hypEigen.mean(i);
-		for(int i = 0; i < hypEigen.cov.size();  i++)		hypDlib(j++, 0) = hypEigen.cov(i);
-		for(int i = 0; i < hypEigen.lik.size();  i++)		hypDlib(j++, 0) = hypEigen.lik(i);
-	}
-
-	inline static void Dlib2Eigen(const DlibVector	&hypDlib,
-											Hyp					&hypEigen)
-	{
-		int j = 0; // hyperparameter index
-		for(int i = 0; i < hypEigen.mean.size(); i++)		hypEigen.mean(i) = hypDlib(j++, 0);
-		for(int i = 0; i < hypEigen.cov.size();  i++)		hypEigen.cov(i)  = hypDlib(j++, 0);
-		for(int i = 0; i < hypEigen.lik.size();  i++)		hypEigen.lik(i)  = hypDlib(j++, 0);
-	}
-
-	inline static void Eigen2Dlib(const VectorConstPtr	pVector,
-											DlibVector				&vec)
-	{
-		for(int i = 0; i < pVector->size(); i++) vec(i, 0) = (*pVector)(i);
-	}
-
-protected:
-	GeneralTrainingData<Scalar> &m_generalTrainingData;
 };
 
 }
