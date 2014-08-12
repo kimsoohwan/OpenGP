@@ -102,6 +102,7 @@ public:
 	}
 
 	// nlZ, dnlZ
+	// TODO: separate nlZ and dnlZ into different methods
 	template<template<typename> class GeneralTrainingData>
 	static void negativeLogMarginalLikelihood(const Hyp							&logHyp,
 															GeneralTrainingData<Scalar>	&generalTrainingData, 

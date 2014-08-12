@@ -23,6 +23,16 @@ public:
 	typedef	typename CovFunc<Scalar>::Hyp		Cov;
 	typedef	typename LikFunc<Scalar>::Hyp		Lik;
 
+	/** @brief Default constructor */
+	Hyp() {}
+
+	///** @brief Coppy constructor */
+	//Hyp(const Hyp<Scalar, MeanFunc, CovFunc, LikFunc> &other)
+	//	mean(other.mean),
+	//	cov(other.cov),
+	//	lik(other.lik)
+	//{
+	//}
 
 	int size() const
 	{
