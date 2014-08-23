@@ -103,9 +103,11 @@
     <ClInclude Include="..\src\inf\InfExactGeneral.hpp" />
     <ClInclude Include="..\src\lik\LikGauss.hpp" />
     <ClInclude Include="..\src\lik\LikGaussDerObs.hpp" />
+    <ClInclude Include="..\src\llt\LLT_MKL.hpp" />
     <ClInclude Include="..\src\mean\MeanGP.hpp" />
     <ClInclude Include="..\src\mean\MeanZero.hpp" />
     <ClInclude Include="..\src\util\Exception.hpp" />
+    <ClInclude Include="..\src\util\LogFile.hpp" />
     <ClInclude Include="..\src\util\macros.h" />
     <ClInclude Include="..\src\util\PairwiseOp.hpp" />
   </ItemGroup>

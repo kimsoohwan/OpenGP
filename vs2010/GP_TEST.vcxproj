@@ -26,7 +26,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseIntelMKL>Sequential</UseIntelMKL>
+    <UseIntelMKL>Parallel</UseIntelMKL>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -39,12 +39,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExecutablePath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\compiler;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\mkl;$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\lib\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\lib\ia32;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ExecutablePath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\compiler;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\redist\ia32\mkl;$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\lib\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\lib\ia32;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -57,7 +57,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>E:\Documents\gtest-1.7.0\msvc\gtest\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libiomp5md.lib;mkl_core.lib;mkl_intel_c.lib;mkl_intel_thread.lib;gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,7 +76,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>E:\Documents\gtest-1.7.0\msvc\gtest\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libiomp5md.lib;mkl_core.lib;mkl_intel_c.lib;mkl_intel_thread.lib;gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

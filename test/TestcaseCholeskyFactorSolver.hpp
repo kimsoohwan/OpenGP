@@ -12,7 +12,7 @@
 class TestCaseCholeskyFactorSolver : public TestCaseCovSEiso
 {
 // define cholesky factor types
-protected:	TYPE_DEFINE_CHOLESKYFACTOR(TestType);
+protected:	TYPE_DEFINE_CHOLESKYFACTOR();
 
 public:
 	TestCaseCholeskyFactorSolver()

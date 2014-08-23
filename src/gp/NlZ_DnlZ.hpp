@@ -3,6 +3,7 @@
 
 #include <dlib/optimization.h>			// for dlib::find_min
 #include "../util/macros.h"
+#include "../util/LogFile.hpp"
 
 namespace GP {
 
@@ -73,9 +74,12 @@ public:
 		// convert a Dlib vector to GP hyperparameters
 		Hyp	logHyp;
 		Dlib2Hyp<Scalar, MeanFunc, CovFunc, LikFunc>(logDlib, logHyp);
-		std::cout << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
-		std::cout << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
-		std::cout << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
+
+		// log file
+		LogFile logFile;
+		logFile << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
+		logFile << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
+		logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
 
 		// calculate nlZ only
 		Scalar			nlZ;
@@ -86,7 +90,7 @@ public:
 															VectorPtr(),
 															1);
 
-		std::cout << "nlz = " << nlZ << std::endl;
+		logFile << "nlz = " << nlZ << std::endl;
 		return nlZ;
 	}
 protected:
@@ -128,9 +132,12 @@ public:
 		// convert a Dlib vector to GP hyperparameters
 		Hyp	logHyp;
 		Dlib2Hyp<Scalar, MeanFunc, CovFunc, LikFunc>(logDlib, logHyp);
-		std::cout << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
-		std::cout << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
-		std::cout << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
+
+		// log file
+		LogFile logFile;
+		logFile << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
+		logFile << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
+		logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
 
 		// calculate dnlZ only
 		Scalar			nlZ;
@@ -141,7 +148,7 @@ public:
 														pDnlZ,
 														-1);
 
-		std::cout << "dnlz = " << std::endl << *pDnlZ << std::endl << std::endl;
+		logFile << "dnlz = " << std::endl << *pDnlZ << std::endl << std::endl;
 
 		DlibVector dnlZ(logHyp.size());
 		Eigen2Dlib(pDnlZ, dnlZ);

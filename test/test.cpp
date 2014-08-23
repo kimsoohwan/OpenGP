@@ -1,3 +1,4 @@
+#define EIGEN_USE_MKL_ALL
 #include "TestcasePairwiseop.hpp"
 #include "TestcaseCovSEiso.hpp"
 #include "TestcaseCovSEisoDerObs.hpp"

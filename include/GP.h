@@ -61,6 +61,7 @@
  */ 
 #include "../src/util/macros.h"
 #include "../src/util/PairwiseOp.hpp"
+#include "../src/util/LogFile.hpp"
 
 
 #endif

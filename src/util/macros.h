@@ -10,7 +10,11 @@
 // TODO: [NumericalIssue] Check if Intel is correctly intalled and running.
 #include <Eigen/Dense>
 
-namespace GP{
+#ifdef EIGEN_USE_MKL_ALL
+#include "../llt/LLT_MKL.hpp"
+#endif
+
+//namespace GP{
 
 /** @brief	Define matrix and its shared pointer types */
 //#define TYPE_DEFINE_MATRIX(Scalar)		typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>	Matrix;\
@@ -45,15 +49,22 @@ namespace GP{
 	typedef Hyp<Scalar, MeanFunc, CovFunc, LikFunc>		Hyp;
 
 /** @brief	Define cholesky factor type and its shared pointer types */
-#define TYPE_DEFINE_CHOLESKYFACTOR(Scalar)		typedef Eigen::LLT<Matrix>											CholeskyFactor;\
-																typedef boost::shared_ptr<CholeskyFactor>						CholeskyFactorPtr;\
-																typedef boost::shared_ptr<const CholeskyFactor>				CholeskyFactorConstPtr;
+#ifndef EIGEN_USE_MKL_ALL
+#define TYPE_DEFINE_CHOLESKYFACTOR()		typedef Eigen::LLT<Matrix>											CholeskyFactor;\
+														typedef boost::shared_ptr<CholeskyFactor>						CholeskyFactorPtr;\
+														typedef boost::shared_ptr<const CholeskyFactor>				CholeskyFactorConstPtr;
+#else
+#define TYPE_DEFINE_CHOLESKYFACTOR()		typedef GP::LLT_MKL<Matrix>										CholeskyFactor;\
+														typedef boost::shared_ptr<CholeskyFactor>						CholeskyFactorPtr;\
+														typedef boost::shared_ptr<const CholeskyFactor>				CholeskyFactorConstPtr;
+#endif
 
 //typedef	Eigen::ConjugateGradient<Matrix, Eigen::Upper>					CholeskyFactor;
 //typedef	Eigen::ConjugateGradient<SparseMatrix, Eigen::Upper>			SparseCholeskyFactor;
 //typedef	Eigen::SimplicialLDLT<SparseMatrix, Eigen::Upper>				SparseCholeskyFactor;
 //typedef	boost::shared_ptr<SparseCholeskyFactor>							SparseCholeskyFactorPtr;
 //typedef	boost::shared_ptr<const SparseCholeskyFactor>					SparseCholeskyFactorConstPtr;
-}
+
+//}
 
 #endif

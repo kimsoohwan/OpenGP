@@ -47,23 +47,6 @@ public:		TYPE_DEFINE_HYP(Scalar, 1); // sigma_n
 		return pD;
 	}
 
-	// diagonal vector
-	static VectorPtr lik(const Hyp &logHyp, 
-								const TestData<Scalar> &testData)
-	{
-		// some constants
-		const int M  = testData.M();
-
-		// number of test data
-		VectorPtr pD(new Vector(M));
-
-		// sigma_n^2
-		const Scalar sn2 = exp(static_cast<Scalar>(2.f) * logHyp(0));
-		pD->fill(sn2);
-
-		return pD;
-	}
-
 	//// diagonal matrix
 	//MatrixPtr operator()(MatrixConstPtr pX, const Hyp &logHyp, const int pdHypIndex = -1) const
 	//{

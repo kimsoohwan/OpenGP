@@ -88,6 +88,12 @@
     <ClInclude Include="..\src\gp\NlZ_DnlZ.hpp">
       <Filter>src\gp</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\util\LogFile.hpp">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\llt\LLT_MKL.hpp">
+      <Filter>src\llt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -119,6 +125,9 @@
     </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{1fee1f35-31d8-4db4-8fa1-eaab5a1ef7e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\llt">
+      <UniqueIdentifier>{f14c2536-7b87-4688-9603-71c20b7e747a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

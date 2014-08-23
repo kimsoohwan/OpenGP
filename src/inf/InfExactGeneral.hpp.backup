@@ -3,11 +3,9 @@
 
 #include <iostream>		// for std::cerr
 #include <limits>			// for std::numeric_limits<Scalar>::infinity();
-#include <cmath>			// powf
 
 #include "../util/macros.h"
 #include "../util/Exception.hpp"
-#include "../util/LogFile.hpp"
 #include "../data/DerivativeTrainingData.hpp"
 #include "../data/TestData.hpp"
 #include "Hyp.hpp"
@@ -64,9 +62,7 @@ public:
 		if(NN <= 0 || M <= 0) return;
 
 		// some constants
-		// Note that we make the cholesky factor not to throw an exception even the covariance matrix is numerically singular
-		const bool			fDoNotThrowException = true;
-		const CholeskyFactorConstPtr	pL			= choleskyFactor(logHyp, generalTrainingData, fDoNotThrowException);
+		const CholeskyFactorConstPtr	pL			= choleskyFactor(logHyp, generalTrainingData);
 		const VectorConstPtr				pY_M		= y_m(logHyp.mean, generalTrainingData);
 		const VectorConstPtr				pAlpha	= alpha(pL, pY_M);
 
@@ -204,11 +200,6 @@ public:
 	}
 
 protected:
-	/** @brief	Predict the mean and the [co]variance 
-	  * @note	Please note that the [co]variance is 
-	  *			not for latent function outputs but for function outputs.
-	  *			This is because the Kss is sometimes numerically singular.
-	  */
 	template<template<typename> class GeneralTrainingData>
 	static void predict /* throw (Exception) */
 							 (const Hyp								&logHyp,
@@ -224,18 +215,11 @@ protected:
 
 		// Ks, Kss
 		MatrixConstPtr pKs		= CovFunc<Scalar>::Ks (logHyp.cov, generalTrainingData, testData); // NN x M
-		MatrixConstPtr pKss	= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
-		//MatrixPtr pKss				= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
-
-		// D = sn2*I
-		// not for latent function outputs but for function outputs
-		//VectorPtr pD = LikFunc<Scalar>::lik(logHyp.lik, testData);
-		//if(fVarianceVector)	(*pKss) += (*pD);
-		//else						(*pKss) += pD->asDiagonal();
+		MatrixConstPtr pKss		= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
 
 		// check pKss
-		//CholeskyFactor	L(*pKss);
-		//if(L.info() != Eigen::Success) std::cout << "Kss is not PSD!" << std::endl;
+		CholeskyFactor	L(*pKss);
+		if(L.info() != Eigen::Success) std::cout << "Kss is not PSD!" << std::endl;
 
 		// [1] predictive mean
 		// mu = ms + Ks' * inv(Kn) * (y-m)
@@ -267,10 +251,10 @@ protected:
 		{
 			// Sigma = Kss - V' *V
 			testData.pSigma().reset(new Matrix(M, M)); // covariance matrix (MxM)
-			testData.pSigma()->noalias() = (*pKss) - V.transpose() * V;
-			//testData.pSigma()->noalias() = (*pKss) - Matrix(V.transpose()) * V;
-			//L.compute(*(testData.pSigma()));
-			//if(L.info() != Eigen::Success) std::cout << "Sigma is not PSD!" << std::endl;
+			//testData.pSigma()->noalias() = (*pKss) - V.transpose() * V;
+			testData.pSigma()->noalias() = (*pKss) - Matrix(V.transpose()) * V;
+			L.compute(*(testData.pSigma()));
+			if(L.info() != Eigen::Success) std::cout << "Sigma is not PSD!" << std::endl;
 		}
 	}
 
@@ -278,8 +262,7 @@ protected:
 	template<template<typename> class GeneralTrainingData>
 	static CholeskyFactorPtr choleskyFactor /* throw (Exception) */
 														(const Hyp							&logHyp,
-														 GeneralTrainingData<Scalar>	&generalTrainingData,
-														 const bool							fDoNotThrowException = false)
+														 GeneralTrainingData<Scalar>	&generalTrainingData)
 	{
 		// number of training data
 		const int NN = generalTrainingData.NN();
@@ -297,46 +280,36 @@ protected:
 		//CholeskyFactorPtr pL(new CholeskyFactor());
 		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
-		if(fDoNotThrowException)
-		{
-			// log file
-			LogFile logFile;
-
-			// add the diagonal term until it is numerically non-singular
-			int num_iters(0);
-			while(pL->info() != Eigen::/*ComputationInfo::*/Success)
-			{
-				(*pKn) += pD->asDiagonal();
-				pL->compute(*pKn);
-			}
-
-			if(num_iters > 0)
-				logFile << "InfExactGeneral::choleskyFactor::num_iters: " << num_iters << std::endl;
-		}
 		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
-			Exception e;
-			switch(pL->info())
+			// inverse check
+			const int dim = pKn->rows();
+			std::cout << pL->solve(Eigen::MatrixXf::Identity(dim, dim).eval()) * (*pKn) << std::endl << std::endl;
+			if(!(pL->solve(Eigen::MatrixXf::Identity(dim, dim)) * (*pKn)).isApprox(Eigen::MatrixXf::Identity(dim, dim)))
 			{
-				case Eigen::/*ComputationInfo::*/NumericalIssue :
+				Exception e;
+				switch(pL->info())
 				{
-					e = "InfExactGeneral::choleskyFactor::NumericalIssue";
-					break;
-				}
-				case Eigen::/*ComputationInfo::*/NoConvergence :
-				{
-					e = "InfExactGeneral::choleskyFactor::NoConvergence";
-					break;
-				}
+					case Eigen::/*ComputationInfo::*/NumericalIssue :
+					{
+						e = "NumericalIssue";
+						break;
+					}
+					case Eigen::/*ComputationInfo::*/NoConvergence :
+					{
+						e = "NoConvergence";
+						break;
+					}
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
-				case Eigen::/*ComputationInfo::*/InvalidInput :
-				{
-					e = "InfExactGeneral::choleskyFactor::InvalidInput";
-					break;
-				}
+					case Eigen::/*ComputationInfo::*/InvalidInput :
+					{
+						e = "InvalidInput";
+						break;
+					}
 #endif
+				}
+				throw e;
 			}
-			throw e;
 		}
 
 		return pL;

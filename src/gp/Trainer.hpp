@@ -5,6 +5,7 @@
 #include <dlib/optimization.h>			// for dlib::find_min
 
 #include "../util/macros.h"
+#include "../util/LogFile.hpp"
 #include "NlZ_DnlZ.hpp"
 
 namespace GP{
@@ -230,7 +231,9 @@ public:
 		}
 		catch(const std::exception& e)
 		{
-			std::cout << e.what() << std::endl;
+			// log file
+			LogFile logFile;
+			logFile << e.what() << std::endl;
 			return 0.0;
 		}
 	}

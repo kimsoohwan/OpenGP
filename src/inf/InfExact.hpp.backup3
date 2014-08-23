@@ -6,7 +6,6 @@
 
 #include "../util/macros.h"
 #include "../util/Exception.hpp"
-#include "../util/LogFile.hpp"
 #include "../data/TrainingData.hpp"
 #include "../data/TestData.hpp"
 #include "Hyp.hpp"
@@ -62,14 +61,12 @@ public:
 		if(N <= 0 || M <= 0) return;
 
 		// some constants
-		// Note that we make the cholesky factor not to throw an exception even the covariance matrix is numerically singular
-		const bool fDoNotThrowException = true;
 		//const VectorConstPtr				pInvSqrtD	= invSqrtD(logHyp.lik, trainingData);
-		//const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD, fDoNotThrowException);
+		//const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
 		//const VectorConstPtr				pY_M			= y_m(logHyp.mean, trainingData);
 		//const VectorConstPtr				pAlpha		= alpha(pInvSqrtD, pL, pY_M);
 		const VectorConstPtr				pInvSqrtD	= invSqrtD(logHyp.lik, trainingData);
-		const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, logHyp.lik, trainingData, fDoNotThrowException);
+		const CholeskyFactorConstPtr	pL				= choleskyFactor(logHyp.cov, logHyp.lik, trainingData);
 		const VectorConstPtr				pY_M			= y_m(logHyp.mean, trainingData);
 		const VectorConstPtr				pAlpha		= alpha(logHyp.lik, pL, pY_M);
 
@@ -326,11 +323,6 @@ public:
 	}
 
 protected:
-	/** @brief	Predict the mean and the [co]variance 
-	  * @note	Please note that the [co]variance is 
-	  *			not for latent function outputs but for function outputs.
-	  *			This is because the Kss is sometimes numerically singular.
-	  */
 	static void predict /* throw (Exception) */
 							 (const Hyp								&logHyp,
 							  TrainingData<Scalar>				&trainingData, 
@@ -346,14 +338,7 @@ protected:
 
 		// Ks, Kss
 		MatrixConstPtr pKs		= CovFunc<Scalar>::Ks (logHyp.cov, trainingData, testData); // N x M
-		MatrixConstPtr pKss	= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
-		//MatrixPtr pKss				= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
-
-		// D = sn2*I
-		// not for latent function outputs but for function outputs
-		//VectorPtr pD = LikFunc<Scalar>::lik(logHyp.lik, testData);
-		//if(fVarianceVector)	(*pKss) += (*pD);
-		//else						(*pKss) += pD->asDiagonal();
+		MatrixConstPtr pKss		= CovFunc<Scalar>::Kss(logHyp.cov, testData, fVarianceVector); // Vector (Mx1) or Matrix (MxM)
 
 		// [1] predictive mean
 		// mu = ms + Ks' * inv(Kn) * (y-m) = ms + ks' * alpha
@@ -429,8 +414,7 @@ protected:
 	static CholeskyFactorPtr choleskyFactor /* throw (Exception) */
 														(const typename Hyp::Cov	&logHyp,
 														 TrainingData<Scalar>		&trainingData,
-														 const VectorConstPtr		pInvSqrtD,
-														 const bool						fDoNotThrowException = false)
+														 const VectorConstPtr		pInvSqrtD)
 	{
 		// number of training data
 		const int N = trainingData.N();
@@ -451,46 +435,36 @@ protected:
 		//CholeskyFactorPtr pL(new CholeskyFactor());
 		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
-		if(fDoNotThrowException)
-		{
-			// log file
-			LogFile logFile;
 
-			// add the diagonal term until it is numerically non-singular
-			int num_iters(0);
-			while(pL->info() != Eigen::/*ComputationInfo::*/Success)
-			{
-				(*pKn) += Matrix::Identity(N, N);
-				pL->compute(*pKn);
-			}
-
-			if(num_iters > 0)
-				logFile << "InfExact::choleskyFactor::num_iters: " << num_iters << std::endl;
-		}
 		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
-			Exception e;
-			switch(pL->info())
+			// inverse check
+			const int dim = pKn->rows();
+			if(!(pL->solve(Eigen::MatrixXf::Identity(dim, dim)) * (*pKn)).isApprox(Eigen::MatrixXf::Identity(dim, dim)))
 			{
-				case Eigen::/*ComputationInfo::*/NumericalIssue :
+				Exception e;
+				switch(pL->info())
 				{
-					e = "InfExact::choleskyFactor1::NumericalIssue";
-					break;
-				}
-				case Eigen::/*ComputationInfo::*/NoConvergence :
-				{
-					e = "InfExact::choleskyFactor1::NoConvergence";
-					break;
-				}
+					case Eigen::/*ComputationInfo::*/NumericalIssue :
+					{
+						e = "NumericalIssue";
+						break;
+					}
+					case Eigen::/*ComputationInfo::*/NoConvergence :
+					{
+						e = "NoConvergence";
+						break;
+					}
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
-				case Eigen::/*ComputationInfo::*/InvalidInput :
-				{
-					e = "InfExact::choleskyFactor1::InvalidInput";
-					break;
-				}
+					case Eigen::/*ComputationInfo::*/InvalidInput :
+					{
+						e = "InvalidInput";
+						break;
+					}
 #endif
+				}
+				throw e;
 			}
-			throw e;
 		}
 
 		return pL;
@@ -499,8 +473,7 @@ protected:
 	static CholeskyFactorPtr choleskyFactor /* throw (Exception) */
 														(const typename Hyp::Cov	&covLogHyp,
 														 const typename Hyp::Lik	&likLogHyp,
-														 TrainingData<Scalar>		&trainingData,
-														 const bool						fDoNotThrowException = false)
+														 TrainingData<Scalar>		&trainingData)
 	{
 		// number of training data
 		const int N = trainingData.N();
@@ -523,46 +496,36 @@ protected:
 		//CholeskyFactorPtr pL(new CholeskyFactor());
 		//pL->compute(*pKn);	// compute the Cholesky decomposition of Kn
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
-		if(fDoNotThrowException)
-		{
-			// log file
-			LogFile logFile;
 
-			// add the diagonal term until it is numerically non-singular
-			int num_iters(0);
-			while(pL->info() != Eigen::/*ComputationInfo::*/Success)
-			{
-				(*pKn) += Matrix::Identity(N, N);
-				pL->compute(*pKn);
-			}
-
-			if(num_iters > 0)
-				logFile << "InfExact::choleskyFactor2::num_iters: " << num_iters << std::endl;
-		}
 		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
-			Exception e;
-			switch(pL->info())
+			// inverse check
+			const int dim = pKn->rows();
+			if(!(pL->solve(Eigen::MatrixXf::Identity(dim, dim)) * (*pKn)).isApprox(Eigen::MatrixXf::Identity(dim, dim)))
 			{
-				case Eigen::/*ComputationInfo::*/NumericalIssue :
+				Exception e;
+				switch(pL->info())
 				{
-					e = "InfExact::choleskyFactor2::NumericalIssue";
-					break;
-				}
-				case Eigen::/*ComputationInfo::*/NoConvergence :
-				{
-					e = "InfExact::choleskyFactor2::NoConvergence";
-					break;
-				}
+					case Eigen::/*ComputationInfo::*/NumericalIssue :
+					{
+						e = "NumericalIssue";
+						break;
+					}
+					case Eigen::/*ComputationInfo::*/NoConvergence :
+					{
+						e = "NoConvergence";
+						break;
+					}
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
-				case Eigen::/*ComputationInfo::*/InvalidInput :
-				{
-					e = "InfExact::choleskyFactor2::InvalidInput";
-					break;
-				}
+					case Eigen::/*ComputationInfo::*/InvalidInput :
+					{
+						e = "InvalidInput";
+						break;
+					}
 #endif
+				}
+				throw e;
 			}
-			throw e;
 		}
 
 		return pL;
