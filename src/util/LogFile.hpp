@@ -22,11 +22,11 @@ public:
 	/** @brief Destructor */
 	virtual ~LogFile()
 	{
-		close();
+		//close();
 	}
 
 	/** @brief Open a log file */
-	static bool open(const std::string &strFilePath)
+	static inline bool open(const std::string &strFilePath)
 	{
 		// if it is already open, close it and open a new file
 		if(m_strFilePath.compare(strFilePath) == 0) return false;
@@ -45,7 +45,7 @@ public:
 	}
 
 	/** @brief Close the log file */
-	static bool close()
+	static inline bool close()
 	{
 		// if it is not open, return false
 		if(!m_ofs.is_open()) return false;
@@ -57,20 +57,21 @@ public:
 	}
 
 	/** @brief Check whether the log file is open or not */
-	static bool is_open()
+	static inline bool is_open()
 	{
-		return m_ofs.is_open();
+		const bool fIsOpen = m_ofs.is_open();
+		return fIsOpen;
 	}
 
 	/** @brief Set verbose */
-	static void set(const bool fVerbose)
+	static inline void verbose(const bool fVerbose)
 	{
 		m_fVerbose = fVerbose;
 	}
 		
 	/** @brief Write down the log */
 	template <typename T>
-	LogFile& operator<< (const T &obj)
+	inline LogFile& operator<< (const T &obj)
 	{
 		// print on screen
 		if(m_fVerbose)		std::cout << obj;
@@ -82,7 +83,7 @@ public:
 	}
 
 	/** @brief Write down std::endl which is a function template */
-	LogFile& operator<< (std::ostream& (*pfun)(std::ostream&))
+	inline LogFile& operator<< (std::ostream& (*pfun)(std::ostream&))
 	{
 		// print on screen
 		if(m_fVerbose)		pfun(std::cout);
@@ -91,6 +92,11 @@ public:
 		if(is_open())		pfun(m_ofs);
 
 	  return *this;
+	}
+
+	inline std::string getFilePath() const
+	{
+		return m_strFilePath;
 	}
 
 protected:

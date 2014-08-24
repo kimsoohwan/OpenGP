@@ -1,10 +1,10 @@
 #ifndef _LLT_MKL_HPP_
 #define _LLT_MKL_HPP_
 
-#ifdef EIGEN_USE_MKL_ALL
 namespace GP{
 
 /** @class	LLT_MKL
+  * @brief	Wrapper of LLT for using Intel MKL
   * @note	Refer to Eigen::LLT
   */
 template<typename _MatrixType, int _UpLo = Eigen::Lower>
@@ -20,6 +20,7 @@ public:
 	/**@ brief Cholesky decomposition */
 	Eigen::LLT<_MatrixType, _UpLo>& compute(const MatrixType& A)
 	{
+#if defined(EIGEN_USE_LAPACKE) || defined(EIGEN_USE_LAPACKE_STRICT)
 		// resize
 		eigen_assert(A.rows() == A.cols());
 		const Index size = A.rows();
@@ -42,9 +43,14 @@ public:
 		m_info = (info==0) ? Eigen::Success : Eigen::NumericalIssue;
 
 		return static_cast<Eigen::LLT<_MatrixType, _UpLo> >(*this);
+#else
+		return Eigen::LLT<_MatrixType, _UpLo>::compute(A);
+#endif
 	}
 
 protected:
+
+#if defined(EIGEN_USE_LAPACKE) || defined(EIGEN_USE_LAPACKE_STRICT)
 	template <typename T>
 	inline lapack_int potrf(int matrix_order, char uplo, lapack_int n, T* a, lapack_int lda);
 
@@ -59,9 +65,8 @@ protected:
 	{
 		return LAPACKE_dpotrf(matrix_order, uplo, n, a, lda);
 	}
+#endif
 };
 
 }
-#endif
-
 #endif

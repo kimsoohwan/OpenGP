@@ -219,9 +219,19 @@ public:
 		// find minimum
 		try
 		{
+			// N is the number of parameters
+			// it must be at least two
+			const long N = hypDlib.size();
+
+			// NPT is the number of interpolation conditions
+			// It must be in the interval of [N+2,(N+1)(N+2)/2].
+			// Choices that exceed 2*N+1 are not recommended.
+			const long NPT = static_cast<long>((N+1)*(N+2)/2.f); // previously fixed as 9
+
+			// train
 			return dlib::find_min_bobyqa(nlZ, 
 												  hypDlib, 
-												  9,    // number of interpolation points
+												  NPT,    // number of interpolation points
 												  dlib::uniform_matrix<double>(hypDlib.nr(), 1, -1e100),  // lower bound constraint
 												  dlib::uniform_matrix<double>(hypDlib.nr(), 1,  1e100),  // upper bound constraint
 												  1,			// initial trust region radius: 10
