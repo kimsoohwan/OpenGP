@@ -1,5 +1,8 @@
-#ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
-#define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_HPP_
+#ifndef _COVARIANCE_FUNCTION_SPARSE_ISO_HPP_
+#define _COVARIANCE_FUNCTION_SPARSE_ISO_HPP_
+
+#define _USE_MATH_DEFINES
+#include <cmath>	// sin, cos, M_PI
 
 #include "../../util/macros.h"
 #include "../../data/TrainingData.hpp"
@@ -7,18 +10,22 @@
 namespace GP{
 
 /**
- * @class		CovSEiso
- * @brief		Squared exponential covariance function with isotropic distances
+ * @class		CovSparseiso
+ * @brief		Sparse covariance function with isotropic distances
  *					\f[
- *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), \quad r = |\mathbf{x}-\mathbf{z}|
+ *					k(\mathbf{x}, \mathbf{z}) = 
+ *					\begin{cases} 
+ *					\sigma_f^2 \left( \frac{2+\cos(2\pi \frac{r}{l})}{3} \left(1-\frac{r}{l}\right) + \frac{1}{2\pi} \sin\left(2\pi \frac{r}{l}\right) \right) & r < l\\
+ *					0 & r \ge l
+ *					\end{cases}
  *					\f]
  *					All covariance classes should have public static member functions as follows.
  *					<CENTER>
  *					Public Static Member Functions | Corresponding Covariance Functions
  *					-------------------------------|-------------------------------------
- *					+CovSEiso::K			| \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
- *					+CovSEiso::Ks			| \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
- *					+CovSEiso::Kss			| \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
+ *					+CovSparseiso::K			| \f$\mathbf{K} = \mathbf{K}(\mathbf{X}, \mathbf{X}) \in \mathbb{R}^{N \times N}\f$
+ *					+CovSparseiso::Ks			| \f$\mathbf{K}_* = \mathbf{K}(\mathbf{X}, \mathbf{Z}) \in \mathbb{R}^{N \times M}\f$
+ *					+CovSparseiso::Kss		| \f$\mathbf{k}_{**} \in \mathbb{R}^{M \times 1}, \mathbf{k}_{**}^i = k(\mathbf{Z}_i, \mathbf{Z}_i)\f$ or \f$\mathbf{K}_{**} = \mathbf{K}(\mathbf{Z}, \mathbf{Z}) \in \mathbb{R}^{M \times M}\f$
  *					</CENTER>
  *					where \f$N\f$: the number of training data and \f$M\f$: the number of test data given
  *					\f[
@@ -46,24 +53,21 @@ namespace GP{
  *					-# TestData
  *					.
  * @tparam		Scalar	Datatype such as float and double
- * @ingroup		-SEiso
+ * @ingroup		-Sparseiso
  * @author		Soohwan Kim
- * @date			26/03/2014
+ * @date			25/08/2014
  */
 template<typename Scalar>
-class CovSEiso
+class CovSparseiso
 {
-/**@brief Number of hyperparameters */
-public: static const int N = 2;
-
-/**@brief Define Matrix, MatrixPtr, MatrixConstPtr */
+// define types
 protected:	TYPE_DEFINE_MATRIX(Scalar);
 
 /**@detailed
   * - Hyp(0) = \f$\log(l)\f$
   * - Hyp(1) = \f$\log(\sigma_f)\f$
   */
-public:		TYPE_DEFINE_HYP(Scalar, N);
+public:		TYPE_DEFINE_HYP(Scalar, 2);
 
 // public static member functions
 public:
@@ -71,8 +75,8 @@ public:
 	/**
 	 * @brief	Self covariance matrix between the training data, K(X, X) or its partial derivative
 	 * @note		It calls the protected general member function, 
-	 *				CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
-	 *				which only depends on pair-wise squared distances.\n\n
+	 *				CovSparseiso::K(const Hyp, const MatrixConstPtr, const int)
+	 *				which only depends on pair-wise absolute distances.\n\n
 	 *				Only this function returns partial derivatives
 	 *				since they are used for learning hyperparameters with training data.
 	 * @param	[in] logHyp 			The log hyperparameters
@@ -95,14 +99,14 @@ public:
 		assert(pdHypIndex < logHyp.size());
 
 		// K(r)
-		return K(logHyp, trainingData.pSqDistXX(), pdHypIndex);
+		return K(logHyp, trainingData.pAbsDistXX(), pdHypIndex);
 	}
 
 	/**
 	 * @brief	Cross covariance matrix between the training and test data, Ks(X, Z)
 	 * @note		It calls the protected general member function, 
-	 *				CovSEiso::K(const Hyp, const MatrixConstPtr, const int)
-	 *				which only depends on pair-wise squared distances.
+	 *				CovSparseiso::K(const Hyp, const MatrixConstPtr, const int)
+	 *				which only depends on pair-wise absolute distances.
 	 * @param	[in] logHyp 				The log hyperparameters
 	 *												- logHyp(0) = \f$\log(l)\f$
 	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
@@ -117,7 +121,7 @@ public:
 							  const TestData<Scalar>			&testData)
 	{
 		// K(r)
-		return K(logHyp, trainingData.pSqDistXXs(testData));
+		return K(logHyp, trainingData.pAbsDistXXs(testData));
 	}
 
 	/**
@@ -159,8 +163,10 @@ public:
 		// K: self-covariance matrix (MxM)
 		else					
 		{
-			// K(r^2)
-			pKss = K(logHyp, PairwiseOp<Scalar>::sqDist(testData.pXs()));
+			// K(r)
+			MatrixPtr pAbsDistXsXs = PairwiseOp<Scalar>::sqDist(testData.pXs()); // MxM
+			pAbsDistXsXs->noalias() = pAbsDistXsXs->cwiseSqrt();	
+			pKss = K(logHyp, pAbsDistXsXs);
 		}
 
 		return pKss;
@@ -170,19 +176,19 @@ protected:
 	/**
 	 * @brief	Covariance matrix given pair-wise squared distances, K(R.^2)
 	 * @note		This is the core function of this class which is called from
-	 *				other public static member functions, CovSEiso::K, CovSEiso::Ks and CovSEiso::Kss.
-	 * @param	[in] logHyp 			The log hyperparameters
-	 *											- logHyp(0) = \f$\log(l)\f$
-	 *											- logHyp(1) = \f$\log(\sigma_f)\f$
-	 * @param	[in] pSqDist 			The shared pointer to the pairwise squared distance matrix
-	 * @param	[in] pdHypIndex		(Optional) Hyperparameter index
-	 * 										- pdHypIndex = -1: return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$ (default)
-	 *											- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
-	 *											- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$
+	 *				other public static member functions, CovSparseiso::K, CovSparseiso::Ks and CovSparseiso::Kss.
+	 * @param	[in] logHyp 		The log hyperparameters
+	 *										- logHyp(0) = \f$\log(l)\f$
+	 *										- logHyp(1) = \f$\log(\sigma_f)\f$
+	 * @param	[in] pAbsDist 		The shared pointer to the pairwise absolute distance matrix
+	 * @param	[in] pdHypIndex	(Optional) Hyperparameter index
+	 * 									- pdHypIndex = -1: return \f$\mathbf{K}(\mathbf{X}, \mathbf{X})\f$ (default)
+	 *										- pdHypIndex =  0: return \f$\frac{\partial \mathbf{K}}{\partial \log(l)}\f$
+	 *										- pdHypIndex =  1: return \f$\frac{\partial \mathbf{K}}{\partial \log(\sigma_f)}\f$
 	 * @return	A matrix pointer of the same size of the pairwise squared distance matrix
 	 */
 	static MatrixPtr K(const Hyp						&logHyp, 
-							 const MatrixConstPtr		pSqDist, 
+							 const MatrixConstPtr		pAbsDist, 
 							 const int						pdHypIndex = -1)
 	{
 		// Output
@@ -190,14 +196,28 @@ protected:
 		// 1. K(X, X):    NxN
 		// 2. Ks(X, X):   NxM
 		// 3. Kss(Z, Z):	MxM
-		MatrixPtr pK(new Matrix(pSqDist->rows(), pSqDist->cols()));
+		MatrixPtr pK(new Matrix(pAbsDist->rows(), pAbsDist->cols()));
 
 		// some constant values
-		const Scalar inv_ell2					= exp(static_cast<Scalar>(-2.f) * logHyp(0));	// 1/ell^2
-		const Scalar sigma_f2					= exp(static_cast<Scalar>( 2.f) * logHyp(1));	// sigma_f^2
-		const Scalar neg_half_inv_ell2		= static_cast<Scalar>(-0.5f) * inv_ell2;			// -1/(2*ell^2)
-		const Scalar sigma_f2_inv_ell2		= sigma_f2 * inv_ell2;									// sigma_f^2/ell^2
-		const Scalar twice_sigma_f2			= static_cast<Scalar>(2.f) * sigma_f2;				// 2*sigma_f^2
+		const Scalar inv_ell				= exp(static_cast<Scalar>(-1.f) * logHyp(0));	// 1/ell
+		const Scalar sigma_f2			= exp(static_cast<Scalar>( 2.f) * logHyp(1));	// sigma_f^2
+		const Scalar twice_sigma_f2	= static_cast<Scalar>(2.f) * sigma_f2;				// 2*sigma_f^2
+		const Scalar twice_sigma_f2_inv_three	= twice_sigma_f2 / static_cast<Scalar>(3.f);				// 2*sigma_f^2/3
+
+		const Scalar pi				= static_cast<Scalar>(M_PI);				// pi
+		const Scalar two_pi			= static_cast<Scalar>(2.f)*pi;			// 2*pi
+		const Scalar inv_two_pi		= static_cast<Scalar>(1.f) / two_pi;	// 1/(2*pi)
+		const Scalar inv_three		= static_cast<Scalar>(1.f) / static_cast<Scalar>(3.f);	// 1/3
+
+		// scaled distance
+		Matrix S(pAbsDist->rows(), pAbsDist->cols());	// s = r/ell
+		S.noalias() = inv_ell * (*pAbsDist);
+
+		Matrix two_pi_S(S);	// 2*pi*r/ell
+		two_pi_S *= two_pi;
+
+		// sparse mask
+		Mask Mask_S_greater_than_one = S.array() >= static_cast<Scalar>(1.f);	// if the distance, r is greater or equal to ell, k(r) = 0
 
 		// hyperparameter index for the partial derivatives
 		switch(pdHypIndex)
@@ -205,38 +225,55 @@ protected:
 		// pd[k]/pd[log(ell)]: partial derivative of covariance function w.r.t log(ell)
 		case 0:
 			{
-				//				 k(x, z) = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-z|
-				// pd[k]/pd[log(ell)] = sigma_f^2 * exp(-r^2/(2*ell^2)) * (r^2/ell^3) * ell
-				//					       = sigma_f^2 * exp(-r^2/(2*ell^2)) * (r^2/ell^2)
-				pK->noalias() = (sigma_f2_inv_ell2 * (neg_half_inv_ell2 * pSqDist->array()).exp() * pSqDist->array()).matrix();
+				//	k(x, z) = sigma_f^2 * [(2+cos(2*pi*r/ell))/3 * (1-r/ell) + (1/(2*pi))*sin(2*pi*r/ell)]
+				//         = sigma_f^2 * [(2+cos(2*pi*s))/3 * (1-s) + (1/(2*pi))*sin(2*pi*s)], s = r/ell
+				//
+				// dk/ds = sigma_f^2 * [-2*pi*sin(2*pi*s)/3 * (1-s) - (2+cos(2*pi*s))/3 + cos(2*pi*s)]
+				//       = (2*sigma_f^2/3) * [cos(2*pi*s) - pi*sin(2*pi*s)*(1-s) - 1]
+				//
+				// ds/dlog(ell) = -r/ell = -s
+				//
+				// dk/dlog(ell) = dk/ds * ds/dlog(ell)
+				//              = (2*sigma_f^2/3) * [pi*sin(2*pi*s)*(1-s) - cos(2*pi*s) + 1] * s
+				pK->noalias() = (twice_sigma_f2_inv_three * (pi * two_pi_S.array().sin() * (static_cast<Scalar>(1.f) - S.array())
+					                                          - two_pi_S.array().cos() + static_cast<Scalar>(1.f))
+																		* S.array()).matrix();
 				break;
 			}
 
 		// pd[k]/pd[log(sigma_f)]: partial derivative of covariance function w.r.t log(sigma_f)
 		case 1:
 			{
-				//			        k(x, z) = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-z|
-				// pd[k]/pd[log(sigma_f)] = 2 * sigma_f * exp(-r^2/(2*ell^2)) * sigma_f
-				//								  = 2 * sigma_f^2 * exp(-r^2/(2*ell^2))
-				pK->noalias() = (twice_sigma_f2 * (neg_half_inv_ell2 * pSqDist->array()).exp()).matrix();
+				//	k(x, z) = sigma_f^2 * [(2+cos(2*pi*r/ell))/3 * (1-r/ell) + (1/(2*pi))*sin(2*pi*r/ell)]
+				// pd[k]/pd[log(sigma_f)] = 2 * k(x, z)
+				pK->noalias() = (twice_sigma_f2 * (inv_three * (static_cast<Scalar>(2.f) + two_pi_S.array().cos())
+																  * (static_cast<Scalar>(1.f) - S.array())
+												          + inv_two_pi * two_pi_S.array().sin())).matrix();
 				break;
 			}
 
 		// k: covariance function
 		default:
 			{
-				// k(x, z) = sigma_f^2 * exp(-r^2/(2*ell^2)), r = |x-z|
-				pK->noalias() = (sigma_f2 * (neg_half_inv_ell2 * pSqDist->array()).exp()).matrix();
+				//	k(x, z) = sigma_f^2 * [(2+cos(2*pi*r/ell))/3 * (1-r/ell) + (1/(2*pi))*sin(2*pi*r/ell)]
+				pK->noalias() = (sigma_f2 * (inv_three * (static_cast<Scalar>(2.f) + two_pi_S.array().cos())
+																  * (static_cast<Scalar>(1.f) - S.array())
+												    + inv_two_pi * two_pi_S.array().sin())).matrix();
 				break;
 			}
 		}
+
+		// sparse
+		for(int row = 0; row < Mask_S_greater_than_one.rows(); row++)
+			for(int col = 0; col < Mask_S_greater_than_one.cols(); col++)
+				if(Mask_S_greater_than_one(row, col)) (*pK)(row, col) = static_cast<Scalar>(0.f);
 
 		return pK;
 	}
 
 };
 
-//template<typename Scalar> const int CovSEiso::N = 2;
+
 }
 
 #endif

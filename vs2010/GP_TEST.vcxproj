@@ -84,8 +84,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\test\TestcaseCholeskyFactorSolver.hpp" />
+    <ClInclude Include="..\test\TestcaseCovMaterniso.hpp" />
+    <ClInclude Include="..\test\TestcaseCovMaternisoDerObs.hpp" />
+    <ClInclude Include="..\test\TestcaseCovProd.hpp" />
     <ClInclude Include="..\test\TestcaseCovSEiso.hpp" />
     <ClInclude Include="..\test\TestcaseCovSEisoDerObs.hpp" />
+    <ClInclude Include="..\test\TestcaseCovSparseiso.hpp" />
+    <ClInclude Include="..\test\TestcaseCovSparseisoDerObs.hpp" />
     <ClInclude Include="..\test\TestcaseGaussianProcess.hpp" />
     <ClInclude Include="..\test\TestcaseGaussianProcessDerObs.hpp" />
     <ClInclude Include="..\test\TestcaseInfExact.hpp" />

@@ -8,6 +8,17 @@
 #include "../src/cov/covSEiso/CovSEiso.hpp"
 #include "../src/cov/covSEiso/CovSEisoDerObsBase.hpp"
 
+// Matern
+#include "../src/cov/covMaterniso/CovMaterniso.hpp"
+#include "../src/cov/covMaterniso/CovMaternisoDerObsBase.hpp"
+
+// Sparse
+#include "../src/cov/covSparseiso/CovSparseiso.hpp"
+#include "../src/cov/covSparseiso/CovSparseisoDerObsBase.hpp"
+
+// Prod
+#include "../src/cov/covProd/CovProd.hpp"
+
 namespace GP {
 
 /**
@@ -49,7 +60,7 @@ namespace GP {
 
 /**
  * @defgroup	-SEiso
- * @brief		Squared Exponential Covariance Functions\n
+ * @brief		Squared exponential covariance functions with isotropic distances\n
  *					\f[
  *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \exp\left(-\frac{r^2}{2l^2}\right), \quad r = |\mathbf{x}-\mathbf{z}|
  *					\f]
@@ -58,7 +69,7 @@ namespace GP {
 
 /**
  * @class		CovSEisoDerObs
- * @brief		Squared exponential covariance function dealing with derivative observations.\n
+ * @brief		Squared exponential covariance function dealing with derivative observations\n
  *					It inherits from CovDerObs which takes CovSEisoDerObsBase as a template parameter.\n
  *					Thus, CovSEisoDerObs is a combination of CovDerObs and CovSEisoDerObsBase.
  * @tparam		Scalar	Datatype such as float and double
@@ -78,6 +89,59 @@ class CovSEisoDerObs : public CovDerObs<Scalar, CovSEisoDerObsBase> {};
 //   typedef CovDerObs<Scalar, CovSEisoDerObsBase> __CovSEisoDerObs;
 //};
 //template<typename Scalar> using CovSEisoDerObs = typename _CovDerObs::__CovSEisoDerObs;
+
+/**
+ * @defgroup	-Materniso
+ * @brief		Matern covariance function with isotropic distances, \f$\nu = 3/2\f$\n
+ *					\f[
+ *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \left(1+\frac{\sqrt{3}r}{l}\right)\exp\left(-\frac{\sqrt{3}r}{l}\right), \quad r = |\mathbf{x}-\mathbf{z}|
+ *					\f]
+ * @ingroup		-Cov
+ */ 
+
+/**
+ * @class		CovMaternisoDerObs
+ * @brief		Matern covariance function dealing with derivative observations\n
+ *					It inherits from CovDerObs which takes CovMaternisoDerObsBase as a template parameter.\n
+ *					Thus, CovMaternisoDerObs is a combination of CovDerObs and CovMaternisoDerObsBase.
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-Materniso
+ * @author		Soohwan Kim
+ * @date			25/08/2014
+ */
+template<typename Scalar>
+class CovMaternisoDerObs : public CovDerObs<Scalar, CovMaternisoDerObsBase> {};
+
+/**
+ * @class		CovSparseisoDerObs
+ * @brief		Sparse covariance function dealing with derivative observations\n
+ *					It inherits from CovDerObs which takes CovSparseisoDerObsBase as a template parameter.\n
+ *					Thus, CovMaternisoDerObs is a combination of CovDerObs and CovSparseisoDerObsBase.
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-Sparseiso
+ * @author		Soohwan Kim
+ * @date			25/08/2014
+ */
+template<typename Scalar>
+class CovSparseisoDerObs : public CovDerObs<Scalar, CovSparseisoDerObsBase> {};
+
+/**
+ * @defgroup	-CovComposite
+ * @brief		Product of two covariance functions\n
+ * @ingroup		-Cov
+ */ 
+
+/**
+ * @class		CovSEisoMaterniso
+ * @brief		Product of CovSEiso and CovMaterniso
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-CovComposite
+ * @author		Soohwan Kim
+ * @date			25/08/2014
+ */
+template <typename Scalar>
+class CovSEisoMaterniso : public CovProd<Scalar, CovSEiso, CovMaterniso> {};
+
 }
 
 #endif

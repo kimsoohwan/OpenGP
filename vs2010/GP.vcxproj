@@ -83,11 +83,16 @@
     <ClInclude Include="..\include\cov.h" />
     <ClInclude Include="..\include\gp.h" />
     <ClInclude Include="..\src\cov\CovDerObs.hpp" />
+    <ClInclude Include="..\src\cov\covMaterniso\CovMaterniso.hpp" />
+    <ClInclude Include="..\src\cov\covMaterniso\CovMaternisoDerObsBase.hpp" />
+    <ClInclude Include="..\src\cov\covProd\CovProd.hpp" />
     <ClInclude Include="..\src\cov\covseisoder.hpp.old" />
     <ClInclude Include="..\src\cov\covseisodiffbase.hpp.old" />
     <ClInclude Include="..\src\cov\covseisobase.hpp.old" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEiso.hpp" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp" />
+    <ClInclude Include="..\src\cov\covSparseiso\CovSparseiso.hpp" />
+    <ClInclude Include="..\src\cov\covSparseiso\CovSparseisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp.old" />
     <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp.old" />
     <ClInclude Include="..\src\cov\isotropic.hpp.old" />

@@ -13,8 +13,6 @@
 // GP
 #include "../llt/LLT_MKL.hpp"
 
-//namespace GP{
-
 /** @brief	Define matrix and its shared pointer types */
 //#define TYPE_DEFINE_MATRIX(Scalar)		typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>	Matrix;\
 //													typedef boost::shared_ptr<Matrix>										MatrixPtr;\
@@ -64,6 +62,19 @@
 //typedef	boost::shared_ptr<SparseCholeskyFactor>							SparseCholeskyFactorPtr;
 //typedef	boost::shared_ptr<const SparseCholeskyFactor>					SparseCholeskyFactorConstPtr;
 
-//}
+// STL
+#include <cfloat>			// FLT_EPSILON(1.192092896e-07F), DBL_EPSILON(2.2204460492503131e-016)
+namespace GP{
+	template <typename T> 
+	struct Epsilon
+	{
+		static const T value;
+	};
+	const float			Epsilon<float>::value			= FLT_EPSILON; 
+	const double		Epsilon<double>::value			= DBL_EPSILON; 
+	const long double	Epsilon<long double>::value	= LDBL_EPSILON; 
+
+	typedef Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> Mask;
+}
 
 #endif

@@ -28,7 +28,6 @@ protected:
 
 protected:
 	/** @brief Log hyperparameters: log([ell, sigma_f]). */
-	//typename CovSEIsoDerObsf::Hyp logHyp;
 	CovSEisoDerObs<TestType>::Hyp logHyp;
 };
 

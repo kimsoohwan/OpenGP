@@ -1,27 +1,27 @@
-#ifndef _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_WITH_DERIVATIVE_OBSERVATIONS_HPP_
-#define _COVARIANCE_FUNCTION_SQUARED_EXPONENTIAL_ISO_WITH_DERIVATIVE_OBSERVATIONS_HPP_
+#ifndef _COVARIANCE_FUNCTION_MATERN_ISO_WITH_DERIVATIVE_OBSERVATIONS_HPP_
+#define _COVARIANCE_FUNCTION_MATERN_ISO_WITH_DERIVATIVE_OBSERVATIONS_HPP_
 
-#include "CovSEiso.hpp"
+#include "CovMaterniso.hpp"
 
 namespace GP{
 
 /**
- * @class		CovSEisoDerObsBase
- * @brief		A base class for CovSEisoDerObs which will be passed to CovDerObs
+ * @class		CovMaternisoDerObsBase
+ * @brief		A base class for CovMaternisoDerObs which will be passed to CovDerObs
  *					as a template parameter.
- *					Thus, CovSEisoDerObs is a combination of CovDerObs and CovSEisoDerObsBase.
- * @note			It inherits from CovSEiso to use CovSEiso::K.
+ *					Thus, CovMaternisoDerObs is a combination of CovDerObs and CovMaternisoDerObsBase.
+ * @note			It inherits from CovMaterniso to use CovMaterniso::K.
  * @tparam		Scalar	Datatype such as float and double
- * @ingroup		-SEiso
+ * @ingroup		-Materniso
  * @author	Soohwan Kim
- * @date		30/06/2014
+ * @date		25/08/2014
  */
 template<typename Scalar>
-class CovSEisoDerObsBase : public CovSEiso<Scalar>
+class CovMaternisoDerObsBase : public CovMaterniso<Scalar>
 {
 protected:
-	/// define itself as a parent class to CovSEisoDerObs
-	typedef CovSEiso<Scalar> CovParent;
+	/// define itself as a parent class to CovMaternisoDerObs
+	typedef CovMaterniso<Scalar> CovParent;
 
 // for CovDerObs or CovNormalPoints
 protected:
@@ -29,8 +29,8 @@ protected:
 	 * @brief	Covariance matrix between the functional and derivative training data
 	 *				or its partial derivative
 	 * @note		It calls the protected general member function, 
-	 *				CovSEisoDerObsBase::K_FD(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta, const int pdHypIndex = -1)
-	 *				which only depends on pair-wise squared distances and differences.
+	 *				CovMaternisoDerObsBase::K_FD(const Hyp &logHyp, const MatrixConstPtr pAbsDist, const MatrixConstPtr pDelta, const int pdHypIndex = -1)
+	 *				which only depends on pair-wise absolute distances and differences.
 	 * @param	[in] logHyp 							The log hyperparameters
 	 *															- logHyp(0) = \f$\log(l)\f$
 	 *															- logHyp(1) = \f$\log(\sigma_f)\f$
@@ -49,7 +49,7 @@ protected:
 								 const int									pdHypIndex)
 	{
 		return K_FD(logHyp, 
-						derivativeTrainingData.pSqDistXXd(), 
+						derivativeTrainingData.pAbsDistXXd(), 
 						derivativeTrainingData.pDeltaXXd(coord_j), 
 						pdHypIndex);
 	}
@@ -58,7 +58,7 @@ protected:
 	 * @brief	Covariance matrix between the derivative training data
 	 *				or its partial derivative
 	 * @note		It calls the protected general member function, 
-	 *				CovSEisoDerObsBase::K_DD(const Hyp &logHyp, const MatrixConstPtr pSqDist, const MatrixConstPtr pDelta_i, const MatrixConstPtr pDelta_j, const bool fSameCoord, const int pdHypIndex = -1)
+	 *				CovMaternisoDerObsBase::K_DD(const Hyp &logHyp, const MatrixConstPtr pAbsDist, const MatrixConstPtr pDelta_i, const MatrixConstPtr pDelta_j, const bool fSameCoord, const int pdHypIndex = -1)
 	 *				which only depends on pair-wise squared distances and differences.
 	 * @param	[in] logHyp 							The log hyperparameters
 	 *															- logHyp(0) = \f$\log(l)\f$
@@ -80,7 +80,7 @@ protected:
 								 const int									pdHypIndex)
 	{
 		return K_DD(logHyp, 
-						derivativeTrainingData.pSqDistXdXd(), 
+						derivativeTrainingData.pAbsDistXdXd(), 
 						derivativeTrainingData.pDeltaXdXd(coord_i),
 						derivativeTrainingData.pDeltaXdXd(coord_j),
 						coord_i == coord_j,
@@ -89,7 +89,7 @@ protected:
 
 	/**
 	 * @brief	Cross covariance matrix between the derivative and functional training data
-	 * @note		It calls the protected static member function, CovSEisoDerObsBase::K_FD
+	 * @note		It calls the protected static member function, CovMaternisoDerObsBase::K_FD
 	 *				to utilize the symmetry property.
 	 * @param	[in] logHyp 							The log hyperparameters
 	 *															- logHyp(0) = \f$\log(l)\f$
@@ -106,8 +106,8 @@ protected:
 								  const int									coord_i)
 	{
 		// squared distance: FD
-		MatrixPtr pSqDistXsXd = derivativeTrainingData.pSqDistXdXs(testData);
-		pSqDistXsXd->transposeInPlace();
+		MatrixPtr pAbsDistXsXd = derivativeTrainingData.pAbsDistXdXs(testData);
+		pAbsDistXsXd->transposeInPlace();
 
 		// delta: FD
 		MatrixPtr pDeltaXsXd = derivativeTrainingData.pDeltaXdXs(testData, coord_i);
@@ -115,7 +115,7 @@ protected:
 		(*pDeltaXsXd) *= static_cast<Scalar>(-1.f);
 
 		// K_DF
-		MatrixPtr K = K_FD(logHyp, pSqDistXsXd, pDeltaXsXd);
+		MatrixPtr K = K_FD(logHyp, pAbsDistXsXd, pDeltaXsXd);
 		K->transposeInPlace();
 
 		return K;
@@ -129,7 +129,7 @@ protected:
 	 * @param	[in] logHyp 				The log hyperparameters
 	 *												- logHyp(0) = \f$\log(l)\f$
 	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
-	 * @param	[in] pSqDist 				The pair-wise squared distances between the functional and derivative training data
+	 * @param	[in] pAbsDist 				The pair-wise absolute distances between the functional and derivative training data
 	 * @param	[in] pDelta 				The pair-wise differences between the functional and derivative training data
 	 * @param	[in] pdHypIndex			(Optional) Hyperparameter index for partial derivatives
 	 * 											- pdHypIndex = -1: return \f$\frac{\partial \mathbf{K}(\mathbf{X}, \mathbf{Z})}{\partial \mathbf{Z}_j}\f$ (default)
@@ -139,27 +139,33 @@ protected:
 	 * 			NN: The number of functional and derivative training data
 	 */
 	static MatrixPtr K_FD(const Hyp						&logHyp, 
-								 const MatrixConstPtr		pSqDist, 
+								 const MatrixConstPtr		pAbsDist, 
 								 const MatrixConstPtr		pDelta, 
 								 const int						pdHypIndex = -1)
 	{
 		// K: same size with the squared distances
-		MatrixPtr pK = K(logHyp, pSqDist);
+		MatrixPtr pK(new Matrix(pAbsDist->rows(), pAbsDist->cols()));
 
 		// constants
-		const Scalar inv_ell2 = exp(static_cast<Scalar>(-2.f) * logHyp(0));	// (1/ell^2)
+		const Scalar inv_ell							= exp(static_cast<Scalar>(-1.f) * logHyp(0));	// (1/ell)
+		const Scalar inv_ell2						= inv_ell * inv_ell;										// (1/ell^2)
+		const Scalar neg_sqrt3_inv_ell			= static_cast<Scalar>(-1.732050807568877f) * inv_ell;		// -sqrt(3)/ell, sqrt(3) = 1.732050807568877f
+		const Scalar three_sigma_f2_inv_ell2	= static_cast<Scalar>(3.f) * exp(static_cast<Scalar>(2.f) * logHyp(1)) * inv_ell2; // 3*sigma_f^2/ell^2
 
-		// pre-calculation
-		// k(x, z) = sigma_f^2 * exp(-r^2/(2*ell^2)),	r = |x-z|
-		// k(s)    = sigma_f^2 * exp(s),						s = -r^2/(2*ell^2)
+		// pre-calculation: S = - sqrt(3) * r / ell
+		Matrix S(pAbsDist->rows(), pAbsDist->cols());
+		S.noalias() = neg_sqrt3_inv_ell * (*pAbsDist);
+
+		// k(x, z) = sigma_f^2 * (1 + sqrt(3)*r/ell) * exp(-sqrt(3)*r/ell),		r = |x - z|
+		// k(s)    = sigma_f^2 * (1 - s) * exp(s),										s = sqrt(3)*r/ell
 		//
-		// s = -r^2/(2*ell^2) = (-1/(2*ell^2)) * sum_{i=1}^d (xi - zi)^2
-		// ds/dzj  = (xj - zj) / ell^2
+		// s^2    = (3/ell^2) * sum_{i=1}^d (xi - zi)^2
+		// ds/dzj = -(3/ell^2)*(xj - zj)/s
 		//
-		// dk/ds		  = sigma_f^2 * exp(s) = k
-		// dk(s)/dzj  = dk/ds * ds/dzj
-		//            = k(x, z) * (xj - zj) / ell^2
-		pK->noalias() = (inv_ell2 * pK->array() * pDelta->array()).matrix();
+		// dk/ds		 = sigma_f^2 * exp(s) * (-s)
+		// dk(s)/dzj = dk/ds * ds/dzj
+		//           = 3*sigma_f^2 * exp(s) * (xj - zj)/ell^2
+		pK->noalias() = (three_sigma_f2_inv_ell2 * S.array().exp() * pDelta->array()).matrix(); // dk/dzj
 
 		// mode
 		switch(pdHypIndex)
@@ -167,10 +173,11 @@ protected:
 		// derivatives of covariance matrix w.r.t log ell
 		case 0:
 			{
-				// dk/dzj             = sigma_f^2 * exp(s) * (xj - zj) / ell^2
-				// d^2k/dzj dlog(ell) = sigma_f^2 * exp(s) * [(xj - zj) / ell^2] * (r^2/ell^2 - 2)
-				//                    = dk/dzj * (r^2/ell^2 - 2)
-				pK->noalias() = (pK->array() * (inv_ell2 * (pSqDist->array()) - static_cast<Scalar>(2.f))).matrix();
+				// dk/dzj             = 3*sigma_f^2 * exp(s) * (xj - zj)/ell^2
+				// d^2k/dzj dlog(ell) = 3*sigma_f^2 * exp(s) * [(-s) * (xj - zj)/ell^2 - 2*(xj - zj)/ell^2]
+				//                    = 3*sigma_f^2 * exp(s) * [(xj - zj)/ell^2] * (-2-s)
+				//                    = dk/dzj * (-2-s)
+				pK->noalias() = (pK->array() * (static_cast<Scalar>(-2.f) - S.array())).matrix();
 				break;
 			}
 
@@ -178,7 +185,7 @@ protected:
 		case 1:
 			{
 				// d^2k/dzj dlog(sigma_f) = 2 * dk/dzj
-				pK->noalias() = static_cast<Scalar>(2.f) * (*pK);
+				(*pK) *= static_cast<Scalar>(2.f);
 				break;
 			}
 		// covariance matrix, dk/dzj
@@ -194,11 +201,11 @@ protected:
 	/**
 	 * @brief	Covariance matrix between the derivative training data
 	 *				or its partial derivative
-	 *				given pair-wise squared distances and differences
+	 *				given pair-wise absolute distances and differences
 	 * @param	[in] logHyp 				The log hyperparameters
 	 *												- logHyp(0) = \f$\log(l)\f$
 	 *												- logHyp(1) = \f$\log(\sigma_f)\f$
-	 * @param	[in] pSqDist 				The pair-wise squared distances between the functional and derivative training data
+	 * @param	[in] pAbsDist 				The pair-wise absolute distances between the functional and derivative training data
 	 * @param	[in] pDelta_i 				The pair-wise differences of the i-th components between the functional and derivative training data
 	 * @param	[in] pDelta_j 				The pair-wise differences of the j-th components between the functional and derivative training data
 	 * @param	[in] fSameCoord 			i == j
@@ -210,48 +217,96 @@ protected:
 	 * 			NN: The number of functional and derivative training data
 	 */
 	static MatrixPtr K_DD(const Hyp &logHyp, 
-								 const MatrixConstPtr pSqDist, 
+								 const MatrixConstPtr pAbsDist, 
 								 const MatrixConstPtr pDelta_i, 
 								 const MatrixConstPtr pDelta_j,
 								 const bool fSameCoord,
 								 const int pdHypIndex = -1)
 	{
 		// K: same size with the squared distances
-		MatrixPtr pK = K(logHyp, pSqDist, pdHypIndex);
+		MatrixPtr pK(new Matrix(pAbsDist->rows(), pAbsDist->cols()));
 
 		// hyperparameters
-		const Scalar inv_ell2		= exp(static_cast<Scalar>(-2.f) * logHyp(0));	// 1/ell^2
-		const Scalar inv_ell4		= inv_ell2 * inv_ell2;									// 1/ell^4
-		const Scalar four_inv_ell4 = static_cast<Scalar>(4.f) * inv_ell4;				// 4/ell^4
+		const Scalar inv_ell  = exp(static_cast<Scalar>(-1.f) * logHyp(0));	// 1/ell
+		const Scalar inv_ell2 = inv_ell  * inv_ell;									// 1/ell^2
+		const Scalar inv_ell4 = inv_ell2 * inv_ell2;									// 1/ell^4
+
+		const Scalar three_inv_ell4		= static_cast<Scalar>( 3.f) * inv_ell4;	// 3/ell^4
+		const Scalar neg_nine_inv_ell4	= static_cast<Scalar>(-9.f) * inv_ell4;	// -9/ell^4
+		const Scalar neg_sqrt3_inv_ell	= static_cast<Scalar>(-1.732050807568877f) * inv_ell;		// -sqrt(3)/ell, sqrt(3) = 1.732050807568877f
+
+		const Scalar sigma_f2			= exp(static_cast<Scalar>( 2.f) * logHyp(1));	// sigma_f^2
+		const Scalar three_sigma_f2	= static_cast<Scalar>(3.f) * sigma_f2;	// 3*sigma_f^2
 
 		// delta
 		const Scalar delta_inv_ell2 = fSameCoord ? inv_ell2 : static_cast<Scalar>(0.f);			// delta(i, j)/ell^2
 		const Scalar neg_double_delta_inv_ell2 = static_cast<Scalar>(-2.f) * delta_inv_ell2;	// -2*delta(i, j)/ell^2
 
+		const Scalar neg_six_sigma_f2_delta_inv_ells = three_sigma_f2 * neg_double_delta_inv_ell2;	// -6*sigma_f^2*delta(i, j)/ell^2
+		const Scalar six_sigma_f2_delta_inv_ells = - neg_six_sigma_f2_delta_inv_ells;						//  6*sigma_f^2*delta(i, j)/ell^2
+
+		// pre-calculation: S = -sqrt(3)*r/ell
+		Matrix S(pAbsDist->rows(), pAbsDist->cols());
+		S.noalias() = neg_sqrt3_inv_ell * (*pAbsDist);
+		Mask Mask_S_less_than_eps = S.array() > - Epsilon<Scalar>::value;	// avoiding division by 0
+
 		// pre-calculation
-		// k(x, z) = sigma_f^2 * exp(-r^2/(2*ell^2)),	r = |x-z|
-		// k(s)    = sigma_f^2 * exp(s),						s = -r^2/(2*ell^2)
+		// k(x, z) = sigma_f^2 * (1 + sqrt(3)*r/ell) * exp(-sqrt(3)*r/ell),		r = |x - z|
+		// k(s)    = sigma_f^2 * (1 - s) * exp(s),										s = sqrt(3)*r/ell
 		//
-		// s = -r^2/(2*ell^2) = (-1/(2*ell^2)) * sum_{i=1}^d (xi - zi)^2
-		// ds/dzj  = (xj - zj) / ell^2
+		// s^2    = (3/ell^2) * sum_{i=1}^d (xi - zi)^2
+		// ds/dzj = -(3/ell^2)*(xj - zj)/s
 		//
-		// dk/ds		  = sigma_f^2 * exp(s) = k
-		// dk(s)/dzj  = dk/ds * ds/dzj
-		//            = k(x, z) * (xj - zj) / ell^2
+		// dk/ds		 = sigma_f^2 * exp(s) * (-s)
+		// dk(s)/dzj = dk/ds * ds/dzj
+		//           = 3*sigma_f^2 * exp(s) * (xj - zj)/ell^2
 		//
-		// d^2k/dzj dxi = dk/dxi						 * (xj - zj) / ell^2		+ k * delta(i, j) / ell^2
-		//              = k * [-(xi - zi)/ell^2] * (xj - zj) / ell^2		+ k * delta(i, j) / ell^2
-		//              = k * [delta(i, j)/ell^2 - (xi - zi)*(xj - zj)/ell^4]
-		pK->noalias() = (pK->array() * (delta_inv_ell2 - inv_ell4 * pDelta_i->array() * pDelta_j->array())).matrix();
+		// d^2k/dzj dxi = 3*sigma_f^2 * exp(s) * {[(3/ell^2)*(xi - zi)/s] * (xj - zj)/ell^2 + delta(i, j)/ell^2}
+		//              = 3*sigma_f^2 * exp(s) * {delta(i, j)/ell^2 + [3/(s*ell^4)]*(xi - zi)*(xj - zj)}
+		pK->noalias() = (three_sigma_f2 * S.array().exp() * (delta_inv_ell2 + three_inv_ell4 * pDelta_i->array() * pDelta_j->array() / S.array())).matrix();
 	
-		// particularly, derivatives of covariance matrix w.r.t log ell
-		if(pdHypIndex == 0)
+		// mode
+		switch(pdHypIndex)
 		{
-			// d^2k/dxi dzj           = k * [delta(i, j)/ell^2 - (xi - zi)*(xj - zj)/ell^4]
-			// d^3k/dxi dzj dlog(ell) = dk/dlog(ell) * [delta(i, j)/ell^2 - (xi - zi)*(xj - zj)/ell^4]
-			//                        + k * [-2*delta(i, j)/ell^2 + 4*(xi - zi)*(xj - zj)/ell^4]
-			MatrixPtr pK0 = K(logHyp, pSqDist);
-			pK->noalias() += (pK0->array() * (neg_double_delta_inv_ell2 + four_inv_ell4 * pDelta_i->array() * pDelta_j->array())).matrix();
+		// derivatives of covariance matrix w.r.t log ell
+		case 0:
+			{
+				// d^2k/dxi dzj       = 3*sigma_f^2 * exp(s) * {delta(i, j)/ell^2 + [3/(s*ell^4)]*(xi - zi)*(xj - zj)}
+				// d^3k/dzj dlog(ell) = d^2k/dxi dzj * (-s)
+				//                    + 3*sigma_f^2 * exp(s) * {-2*delta(i, j)/ell^2 - [9/(s*ell^4)]*(xi - zi)*(xj - zj)}
+				pK->noalias() = (three_sigma_f2 * S.array().exp() * (neg_double_delta_inv_ell2 + neg_nine_inv_ell4 * pDelta_i->array() * pDelta_j->array() / S.array())
+									  - pK->array() * S.array()).matrix();
+
+				// if s = 0 ?
+				for(int row = 0; row < Mask_S_less_than_eps.rows(); row++)
+					for(int col = 0; col < Mask_S_less_than_eps.cols(); col++)
+						if(Mask_S_less_than_eps(row, col)) (*pK)(row, col) = neg_six_sigma_f2_delta_inv_ells;
+				break;
+ 			}
+
+		// derivatives of covariance matrix w.r.t log sigma_f
+		case 1:
+			{
+				// d^2k/dzj dlog(sigma_f) = 2 * dk/dzj
+				pK->noalias() = static_cast<Scalar>(2.f) * (*pK);
+
+				// if s = 0 ?
+				for(int row = 0; row < Mask_S_less_than_eps.rows(); row++)
+					for(int col = 0; col < Mask_S_less_than_eps.cols(); col++)
+						if(Mask_S_less_than_eps(row, col)) (*pK)(row, col) = six_sigma_f2_delta_inv_ells;
+				break;
+			}
+
+		// covariance matrix, d^2k/dxi dzj
+		default:
+			{
+				// d^2k/dxi dzj = 3*sigma_f^2 * exp(s) * {delta(i, j)/ell^2 + [3/(s*ell^4)]*(xi - zi)*(xj - zj)}
+				// if s = 0 ?
+				for(int row = 0; row < Mask_S_less_than_eps.rows(); row++)
+					for(int col = 0; col < Mask_S_less_than_eps.cols(); col++)
+						if(Mask_S_less_than_eps(row, col)) (*pK)(row, col) = three_sigma_f2 * delta_inv_ell2;
+				break;
+			}
 		}
 
 		return pK;

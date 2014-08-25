@@ -14,7 +14,7 @@ namespace GP{
  *					\f]
  * 				where \f$N\f$: number of training data, 
  * 						\f$D\f$: number of dimensions.\n\n
- *					It also holds the pair-wise squared distances and differences between the training inputs
+ *					It also holds the pair-wise squared distances, absolute distances and differences between the training inputs
  *					which will be repeatedly used in covariance functioins.					
  * @tparam		Scalar	Datatype such as float and double
  * @author		Soohwan Kim
@@ -35,6 +35,7 @@ public:
 	 */
 	TrainingData() :
 		m_fSqDistXX(false),
+		m_fAbsDistXX(false),
 	   m_fDeltaXXList(false)
 	{
 	}
@@ -80,6 +81,7 @@ public:
 		m_pX = pX;
 		m_pY = pY;
 		m_fSqDistXX		= false;
+		m_fAbsDistXX		= false;
 		m_fDeltaXXList = false;
 	}
 
@@ -121,6 +123,27 @@ public:
 		}
 
 		return m_pSqDistXX;
+	}
+
+	/**
+	 * @brief	Gets the self absolute distances between the training inputs
+	 * @return	A const matrix const pointer
+	 *				\f[
+	 *				\mathbf{R} \in \mathbb{R}^{N \times N}, \quad
+	 *				\mathbf{R}_{ij} = |\mathbf{x}_i - \mathbf{x}_j|
+	 *				\f]
+	 */
+	const MatrixConstPtr pAbsDistXX()
+	{
+		// Calculate it only once.
+		if(!m_fAbsDistXX)
+		{
+			m_pAbsDistXX.reset(new Matrix(*pSqDistXX()));
+			m_pAbsDistXX->noalias() = m_pAbsDistXX->cwiseSqrt();	
+			m_fAbsDistXX = true;
+		}
+
+		return m_pAbsDistXX;
 	}
 
 	/**
@@ -167,6 +190,23 @@ public:
 	}
 
 	/**
+	 * @brief	Gets the cross absolute distances between the training and test inputs
+	 * @param	[in] pXs		The M test inputs
+	 * @return	An matrix pointer
+	 *				\f[
+	 *				\mathbf{R} \in \mathbb{R}^{N \times M}, \quad
+	 *				\mathbf{R}_{ij} = |\mathbf{x}_i - \mathbf{z}_j|
+	 *				\f]
+	 * @todo		Include this matrix as a member variable like m_pDistXX
+	 */
+	MatrixPtr pAbsDistXXs(const TestData<Scalar> &testData) const
+	{
+		MatrixPtr pAbsDist = pSqDistXXs(testData); // NxM
+		pAbsDist->noalias() = pAbsDist->cwiseSqrt();	
+		return pAbsDist;
+	}
+
+	/**
 	 * @brief	Gets the cross differences between the training and test inputs.
 	 * @param	[in] pXs		The M test inputs
 	 * @param	[in] coord	Corresponding coordinate
@@ -191,19 +231,23 @@ protected:
 	/** @brief Training outputs: Nx1 vector */
 	VectorConstPtr m_pY;
 
+	/** @brief	Flag for the pre-calculated self squared distances between the training inputs */
+	bool m_fSqDistXX;
 
 	/** @brief	Pre-calculated self squared distances between the training inputs:  NxN matrix */
 	MatrixConstPtr m_pSqDistXX;
 
-	/** @brief	Pre-calculated self differences between the training inputs: NxN matrices per each dimension*/
-	std::vector<MatrixConstPtr> m_pDeltaXXList;
+	/** @brief	Flag for the pre-calculated self distances between the training inputs */
+	bool m_fAbsDistXX;
 
-
-	/** @brief	Flag for the pre-calculated self squared distances between the training inputs */
-	bool m_fSqDistXX;
+	/** @brief	Pre-calculated self distances between the training inputs:  NxN matrix */
+	MatrixPtr m_pAbsDistXX;
 
 	/** @brief	Flag for the pre-calculated self differences between the training inputs */
 	bool m_fDeltaXXList;
+
+	/** @brief	Pre-calculated self differences between the training inputs: NxN matrices per each dimension*/
+	std::vector<MatrixConstPtr> m_pDeltaXXList;
 };
 
 }

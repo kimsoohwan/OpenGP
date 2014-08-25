@@ -94,6 +94,21 @@
     <ClInclude Include="..\src\llt\LLT_MKL.hpp">
       <Filter>src\llt</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cov\covMaterniso\CovMaterniso.hpp">
+      <Filter>src\cov\covMaterniso</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covMaterniso\CovMaternisoDerObsBase.hpp">
+      <Filter>src\cov\covMaterniso</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covSparseiso\CovSparseiso.hpp">
+      <Filter>src\cov\covSparseiso</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covSparseiso\CovSparseisoDerObsBase.hpp">
+      <Filter>src\cov\covSparseiso</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covProd\CovProd.hpp">
+      <Filter>src\cov\covProd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -128,6 +143,15 @@
     </Filter>
     <Filter Include="src\llt">
       <UniqueIdentifier>{f14c2536-7b87-4688-9603-71c20b7e747a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cov\covMaterniso">
+      <UniqueIdentifier>{371c27da-3c8e-436a-ab47-ec390bb62593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cov\covSparseiso">
+      <UniqueIdentifier>{e9df9351-7992-4982-b6d8-80c56998f6c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cov\covProd">
+      <UniqueIdentifier>{2c319aeb-1f40-4219-a4b7-be292a00bfc0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

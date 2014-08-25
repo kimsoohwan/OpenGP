@@ -66,6 +66,8 @@ public:
 	DerivativeTrainingData() :
 		m_fSqDistXdXd(false),
 		m_fSqDistXXd(false),
+		m_fAbsDistXdXd(false),
+		m_fAbsDistXXd(false),
 		m_fDeltaXdXdList(false),
 	   m_fDeltaXXdList(false)
 	{
@@ -138,6 +140,8 @@ public:
 		m_pXd = pXd;
 		m_fSqDistXdXd		= false;
 		m_fSqDistXXd		= false;
+		m_fAbsDistXdXd		= false;
+		m_fAbsDistXXd		= false;
 		m_fDeltaXdXdList	= false;
 		m_fDeltaXXdList	= false;
 
@@ -190,6 +194,42 @@ public:
 		}
 
 		return m_pSqDistXXd;
+	}
+
+	/**
+	 * @brief	Gets the const pointer to the pre-calculated
+	 * 			self absolute distances between the derivative training inputs.
+	 * @return	An NdxNd matrix const pointer.
+	 */
+	const MatrixConstPtr pAbsDistXdXd()
+	{
+		// Calculate it only once.
+		if(!m_fAbsDistXdXd)
+		{
+			m_pAbsDistXdXd.reset(new Matrix(*pSqDistXdXd()));
+			m_pAbsDistXdXd->noalias() = m_pAbsDistXdXd->cwiseSqrt();	
+			m_fAbsDistXdXd = true;
+		}
+
+		return m_pAbsDistXdXd;
+	}
+
+	/**
+	 * @brief	Gets the const pointer to the pre-calculated
+	 * 			cross absolute distances between the derivative training inputs and training inputs.
+	 * @return	An NxNd matrix const pointer.
+	 */
+	const MatrixConstPtr pAbsDistXXd()
+	{
+		// Calculate it only once.
+		if(!m_fAbsDistXXd)
+		{
+			m_pAbsDistXXd.reset(new Matrix(*pSqDistXXd()));
+			m_pAbsDistXXd->noalias() = m_pAbsDistXXd->cwiseSqrt();	
+			m_fAbsDistXXd = true;
+		}
+
+		return m_pAbsDistXXd;
 	}
 
 	/**
@@ -252,6 +292,19 @@ public:
 	}
 
 	/**
+	 * @brief	Gets the pointer to the cross absolute distances
+	 * 			between the derivative training inputs and test inputs.
+	 * @param	[in] pXs		The test inputs. A MxD matrix.
+	 * @return	An NdxM matrix const pointer.
+	 */
+	MatrixPtr pAbsDistXdXs(const TestData<Scalar> &testData) const
+	{
+		MatrixPtr pAbsDist = pSqDistXdXs(testData); // NdxM
+		pAbsDist->noalias() = pAbsDist->cwiseSqrt();	
+		return pAbsDist;
+	}
+
+	/**
 	 * @brief	Gets the pointer to the cross differences
 	 * 			between the derivative training inputs and test inputs.
 	 * @param	[in] pXs		The test inputs. A MxD matrix.
@@ -275,32 +328,43 @@ protected:
 	///** @brief Derivative training outputs with respect to each dimension */
 	//std::vector<VectorPtr>	m_pdYList;		// Ndx1 vector per each dimension
 
+	/** @brief	Flag for the pre-calculated self squared distances between the derivative training inputs. */
+	bool m_fSqDistXdXd;
 
 	/** @brief	Pre-calculated self squared distances between the derivative training inputs. */
 	MatrixConstPtr m_pSqDistXdXd;	// NdxNd matrix
 
-	/** @brief	Pre-calculated cross quared distances between the derivative training inputs and function training inputs. */
+	/** @brief	Flag for the pre-calculated cross squared distances between the function training inputs and derivative training inputs. */
+	bool m_fSqDistXXd;
+
+	/** @brief	Pre-calculated cross squared distances between the derivative training inputs and function training inputs. */
 	MatrixConstPtr m_pSqDistXXd;	// NxNd matrix
 	//MatrixConstPtr m_pSqDistXdX;	// NdxN matrix
 
-	/** @brief	Pre-calculated self differences between the derivative training inputs. */
-	std::vector<MatrixConstPtr> m_pDeltaXdXdList;	// NdxNd matrix per each dimension
+	/** @brief	Flag for the pre-calculated self absolute distances between the derivative training inputs. */
+	bool m_fAbsDistXdXd;
 
-	/** @brief	Pre-calculated cross differences between the derivative training inputs and training inputs. */
-	std::vector<MatrixConstPtr> m_pDeltaXXdList;	// NxNd matrix per each dimension
+	/** @brief	Pre-calculated self absolute distances between the derivative training inputs. */
+	MatrixPtr m_pAbsDistXdXd;	// NdxNd matrix
 
+	/** @brief	Flag for the pre-calculated cross absolute distances between the function training inputs and derivative training inputs. */
+	bool m_fAbsDistXXd;
 
-	/** @brief	Flag for the pre-calculated self squared distances between the derivative training inputs. */
-	bool m_fSqDistXdXd;
-
-	/** @brief	Flag for the pre-calculated cross quared distances between the function training inputs and derivative training inputs. */
-	bool m_fSqDistXXd;
+	/** @brief	Pre-calculated cross absolute distances between the derivative training inputs and function training inputs. */
+	MatrixPtr m_pAbsDistXXd;	// NxNd matrix
+	//MatrixConstPtr m_pAbsDistXdX;	// NdxN matrix
 
 	/** @brief	Flag for the pre-calculated self differences between the derivative training inputs. */
 	bool m_fDeltaXdXdList;
 
+	/** @brief	Pre-calculated self differences between the derivative training inputs. */
+	std::vector<MatrixConstPtr> m_pDeltaXdXdList;	// NdxNd matrix per each dimension
+
 	/** @brief	Flag for the pre-calculated cross differences between the function training inputs and derivativetraining inputs. */
 	bool m_fDeltaXXdList;
+
+	/** @brief	Pre-calculated cross differences between the derivative training inputs and training inputs. */
+	std::vector<MatrixConstPtr> m_pDeltaXXdList;	// NxNd matrix per each dimension
 };
 
 }

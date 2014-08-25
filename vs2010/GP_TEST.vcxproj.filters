@@ -43,6 +43,21 @@
     <ClInclude Include="..\test\TestFunctionDataSetting2.hpp">
       <Filter>04 gp</Filter>
     </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovMaterniso.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovMaternisoDerObs.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovSparseiso.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovSparseisoDerObs.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
+    <ClInclude Include="..\test\TestcaseCovProd.hpp">
+      <Filter>02 cov</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\TODO.txt" />
