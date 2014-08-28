@@ -132,7 +132,7 @@ class CovSparseisoDerObs : public CovDerObs<Scalar, CovSparseisoDerObsBase> {};
  */ 
 
 /**
- * @class		CovSEisoMaterniso
+ * @class		CovSEMaterniso
  * @brief		Product of CovSEiso and CovMaterniso
  * @tparam		Scalar	Datatype such as float and double
  * @ingroup		-CovComposite
@@ -140,7 +140,29 @@ class CovSparseisoDerObs : public CovDerObs<Scalar, CovSparseisoDerObsBase> {};
  * @date			25/08/2014
  */
 template <typename Scalar>
-class CovSEisoMaterniso : public CovProd<Scalar, CovSEiso, CovMaterniso> {};
+class CovSEMaterniso : public CovProd<Scalar, CovSEiso, CovMaterniso> {};
+
+/**
+ * @class		CovSparseMaterniso
+ * @brief		Product of CovSparseiso and CovMaterniso
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-CovComposite
+ * @author		Soohwan Kim
+ * @date			25/08/2014
+ */
+template <typename Scalar>
+class CovSparseMaterniso : public CovProd<Scalar, CovSparseiso, CovMaterniso> {};
+
+/**
+ * @class		CovSparseMaternisoDerObs
+ * @brief		Product of CovSparseisoDerObs and CovMaternisoDerObs
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-CovComposite
+ * @author		Soohwan Kim
+ * @date			25/08/2014
+ */
+template <typename Scalar>
+class CovSparseMaternisoDerObs : public CovProd<Scalar, CovSparseisoDerObs, CovMaternisoDerObs> {};
 
 }
 

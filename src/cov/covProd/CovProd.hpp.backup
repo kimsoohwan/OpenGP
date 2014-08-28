@@ -20,7 +20,7 @@ protected:
 	typedef _Cov2<Scalar>	Cov2;
 
 /**@brief Number of hyperparameters */
-public: static const int N = Cov1::N + Cov2::N - 1; // one sigma_f
+public: static const int N = Cov1::N + Cov2::N;
 
 /**@brief Define Matrix, MatrixPtr, MatrixConstPtr */
 protected:	TYPE_DEFINE_MATRIX(Scalar);
@@ -58,24 +58,18 @@ public:
 		else
 		{
 			// dCov1
-			if(pdHypIndex < Cov1::N - 1)
+			if(pdHypIndex < Cov1::N)
 			{
 				// dCov = dCov1*Cov2
 				pK = Cov1::K(logHyp1, generalTrainingData, pdHypIndex);									// dCov1
 				pK->noalias() = pK->cwiseProduct(*Cov2::K(logHyp2, generalTrainingData, -1));		// Cov2
 			}
-			else if(pdHypIndex == N - 1)
-			{
-				// dCov = dCov1*dCov2
-				pK = Cov1::K(logHyp1, generalTrainingData, logHyp1.size()-1);											// dCov1
-				pK->noalias() = pK->cwiseProduct(*Cov2::K(logHyp2, generalTrainingData, logHyp2.size()-1));	// dCov2
-			}
 			// dCov2
 			else
 			{
 				// dCov = Cov1*dCov2
-				pK = Cov1::K(logHyp1, generalTrainingData, -1);																			// Cov1
-				pK->noalias() = pK->cwiseProduct(*Cov2::K(logHyp2, generalTrainingData, pdHypIndex - Cov1::N - 1));	// dCov2
+				pK = Cov1::K(logHyp1, generalTrainingData, -1);																		// Cov1
+				pK->noalias() = pK->cwiseProduct(*Cov2::K(logHyp2, generalTrainingData, pdHypIndex - Cov1::N));		// dCov2
 			}
 		}
 		
@@ -120,14 +114,9 @@ protected:
 						  typename Cov1::Hyp		&logHyp1,
 						  typename Cov2::Hyp		&logHyp2)
 	{
-		// copy except the last hyperparameter
 		int j = 0;
-		for(int i = 0; i < logHyp1.size()-1; i++)	logHyp1(i) = logHyp(j++);
-		for(int i = 0; i < logHyp2.size()-1; i++)	logHyp2(i) = logHyp(j++);
-
-		// last hyperparameter: sigma_f
-		logHyp1(logHyp1.size()-1) = logHyp(logHyp.size()-1);
-		logHyp2(logHyp2.size()-1) = logHyp(logHyp.size()-1);
+		for(int i = 0; i < logHyp1.size(); i++)	logHyp1(i) = logHyp(j++);
+		for(int i = 0; i < logHyp2.size(); i++)	logHyp2(i) = logHyp(j++);
 	}
 
 };

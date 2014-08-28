@@ -5,14 +5,14 @@
 
 
 /**
- * @class	TestCaseCovSEisoMaterniso
- * @brief	Test fixture for testing CovSEisoMaterniso class.
+ * @class	TestCaseCovSEMaterniso
+ * @brief	Test fixture for testing CovSEMaterniso class.
  * @note		Inherits from TestDataSetting
  * 			to use the initialized training data and test positions.
  * @author	Soohwan Kim
  * @date		25/08/2014
  */
-class TestCaseCovSEisoMaterniso : public TestFunctionDataSetting
+class TestCaseCovSEMaterniso : public TestFunctionDataSetting
 {
 protected:
 	/** @brief	Overloading the test fixture set up. */
@@ -23,18 +23,17 @@ protected:
 
 		// Set the hyperparameters.
 		logHyp(0) = log(ell);
-		logHyp(1) = log(sigma_f);
-		logHyp(2) = log(ell);
-		logHyp(3) = log(sigma_f);
+		logHyp(1) = log(ell);
+		logHyp(2) = log(sigma_f);
 	}
 
 protected:
 	/** @brief Log hyperparameters: log([ell, sigma_f]). */
-	CovSEisoMaterniso<TestType>::Hyp logHyp;
+	CovSEMaterniso<TestType>::Hyp logHyp;
 };
 
 /** @brief	K: (NxN) self covariance matrix between the training data. */  
-TEST_F(TestCaseCovSEisoMaterniso, KTest)
+TEST_F(TestCaseCovSEMaterniso, KTest)
 {
 	// Expected value
 	Matrix K1(5, 5);
@@ -45,14 +44,14 @@ TEST_F(TestCaseCovSEisoMaterniso, KTest)
 			 0.314566189277918f,  0.895908946106318f,  1.551400421143818f,  5.062500000000000f,  5.062500000000000f;
 
 	// Actual value
-	MatrixPtr pK2 = CovSEisoMaterniso<TestType>::K(logHyp, trainingData);
+	MatrixPtr pK2 = CovSEMaterniso<TestType>::K(logHyp, trainingData);
 
 	// Test
 	TEST_MACRO::COMPARE(K1, *pK2, __FILE__, __LINE__);
 }
 
 /** @brief	pd[K]/pd[log(ell)]: (NxN) partial derivative of K with respect to log(ell). */  
-TEST_F(TestCaseCovSEisoMaterniso, dKdlogell1Test)
+TEST_F(TestCaseCovSEMaterniso, dKdlogell1Test)
 {
 	// Expected value
 	Matrix K1(5, 5);
@@ -63,14 +62,14 @@ TEST_F(TestCaseCovSEisoMaterniso, dKdlogell1Test)
 			0.824441957959973f,  1.342687327213515f,  1.486123743927200f,  0.000000000000000f,  0.000000000000000f;
 
 	// Actual value
-	MatrixPtr pK2 = CovSEisoMaterniso<TestType>::K(logHyp, trainingData, 0);
+	MatrixPtr pK2 = CovSEMaterniso<TestType>::K(logHyp, trainingData, 0);
 
 	// Test
 	TEST_MACRO::COMPARE(K1, *pK2, __FILE__, __LINE__);
 }
 
 /** @brief	pd[K]/pd[log(sigma_f)]: (NxN) partial derivative of K with respect to log(sigma_f). */  
-TEST_F(TestCaseCovSEisoMaterniso, dKdlogsigmaf1Test)
+TEST_F(TestCaseCovSEMaterniso, dKdlogsigmaf1Test)
 {
 	// Expected value
 	Matrix K1(5, 5);
@@ -81,14 +80,14 @@ TEST_F(TestCaseCovSEisoMaterniso, dKdlogsigmaf1Test)
 			 0.629132378555836f,  1.791817892212636f,  3.102800842287636f,  10.125000000000000f,  10.125000000000000f;
 
 	// Actual value
-	MatrixPtr pK2 = CovSEisoMaterniso<TestType>::K(logHyp, trainingData, 1);
+	MatrixPtr pK2 = CovSEMaterniso<TestType>::K(logHyp, trainingData, 1);
 
 	// Test
 	TEST_MACRO::COMPARE(K1, *pK2, __FILE__, __LINE__);
 }
 
 /** @brief	pd[K]/pd[log(ell)]: (NxN) partial derivative of K with respect to log(ell). */  
-TEST_F(TestCaseCovSEisoMaterniso, dKdlogell2Test)
+TEST_F(TestCaseCovSEMaterniso, dKdlogell2Test)
 {
 	// Expected value
 	Matrix K1(5, 5);
@@ -99,14 +98,14 @@ TEST_F(TestCaseCovSEisoMaterniso, dKdlogell2Test)
 			0.650183490495004f,  1.290883362123079f,  1.654176885623780f,  0.000000000000000f,  0.000000000000000f;
 
 	// Actual value
-	MatrixPtr pK2 = CovSEisoMaterniso<TestType>::K(logHyp, trainingData, 2);
+	MatrixPtr pK2 = CovSEMaterniso<TestType>::K(logHyp, trainingData, 2);
 
 	// Test
 	TEST_MACRO::COMPARE(K1, *pK2, __FILE__, __LINE__);
 }
 
 /** @brief	pd[K]/pd[log(sigma_f)]: (NxN) partial derivative of K with respect to log(sigma_f). */  
-TEST_F(TestCaseCovSEisoMaterniso, dKdlogsigmaf2Test)
+TEST_F(TestCaseCovSEMaterniso, dKdlogsigmaf2Test)
 {
 	// Expected value
 	Matrix K1(5, 5);
@@ -117,14 +116,14 @@ TEST_F(TestCaseCovSEisoMaterniso, dKdlogsigmaf2Test)
 			 0.629132378555836f,  1.791817892212636f,  3.102800842287636f,  10.125000000000000f,  10.125000000000000f;
 
 	// Actual value
-	MatrixPtr pK2 = CovSEisoMaterniso<TestType>::K(logHyp, trainingData, 3);
+	MatrixPtr pK2 = CovSEMaterniso<TestType>::K(logHyp, trainingData, 3);
 
 	// Test
 	TEST_MACRO::COMPARE(K1, *pK2, __FILE__, __LINE__);
 }
 
 /** @brief	Ks: (NxM) cross covariance matrix between the training data and test data. */  
-TEST_F(TestCaseCovSEisoMaterniso, KsTest)
+TEST_F(TestCaseCovSEMaterniso, KsTest)
 {
 	// Expected value
 	Matrix Ks1(5, 3);
@@ -135,14 +134,14 @@ TEST_F(TestCaseCovSEisoMaterniso, KsTest)
 			 0.148884011301953f,  5.062500000000000f,  0.164469465529416f;
 
 	// Actual value
-	MatrixPtr pKs2 = CovSEisoMaterniso<TestType>::Ks(logHyp, trainingData, testData);
+	MatrixPtr pKs2 = CovSEMaterniso<TestType>::Ks(logHyp, trainingData, testData);
 
 	// Test
 	TEST_MACRO::COMPARE(Ks1, *pKs2, __FILE__, __LINE__);
 }
 
 /** @brief	Kss: (Nx1) self variance matrix between the test data. */  
-TEST_F(TestCaseCovSEisoMaterniso, KssTest)
+TEST_F(TestCaseCovSEMaterniso, KssTest)
 {
 	// Expected value
 	Matrix Kss1(3, 1);
@@ -151,7 +150,7 @@ TEST_F(TestCaseCovSEisoMaterniso, KssTest)
 			  5.062500000000000f;
 
 	// Actual value
-	MatrixPtr pKss2 = CovSEisoMaterniso<TestType>::Kss(logHyp, testData);
+	MatrixPtr pKss2 = CovSEMaterniso<TestType>::Kss(logHyp, testData);
 
 	// Test
 	TEST_MACRO::COMPARE(Kss1, *pKss2, __FILE__, __LINE__);

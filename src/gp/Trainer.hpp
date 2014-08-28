@@ -1,6 +1,7 @@
 #ifndef _HYPER_PARAMETER_TRAINER_HPP_
 #define _HYPER_PARAMETER_TRAINER_HPP_
 
+#include <algorithm>
 #include <limits>								// for std::numeric_limits<Scalar>::infinity()
 #include <dlib/optimization.h>			// for dlib::find_min
 
@@ -226,7 +227,7 @@ public:
 			// NPT is the number of interpolation conditions
 			// It must be in the interval of [N+2,(N+1)(N+2)/2].
 			// Choices that exceed 2*N+1 are not recommended.
-			const long NPT = static_cast<long>((N+1)*(N+2)/2.f); // previously fixed as 9
+			const long NPT = std::min<long>(static_cast<long>((N+1)*(N+2)/2.f), 2*N+1); // previously fixed as 9
 
 			// train
 			return dlib::find_min_bobyqa(nlZ, 

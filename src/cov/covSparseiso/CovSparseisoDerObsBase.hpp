@@ -100,10 +100,10 @@ protected:
 	 * @return	An NNxNN matrix pointer, \f$\frac{\partial \mathbf{K}_*(\mathbf{X}, \mathbf{X}_*)}{\partial \mathbf{X}_i} = \mathbf{K}(\mathbf{X}, \mathbf{Z})\f$\n
 	 * 			NN: The number of functional and derivative training data
 	 */
-	static MatrixPtr Ks_DF(const Hyp									&logHyp, 
-								  DerivativeTrainingData<Scalar>		&derivativeTrainingData, 
-								  const TestData<Scalar>				&testData, 
-								  const int									coord_i)
+	static MatrixPtr Ks_DF(const Hyp											&logHyp, 
+								  const DerivativeTrainingData<Scalar>		&derivativeTrainingData, 
+								  const TestData<Scalar>						&testData, 
+								  const int											coord_i)
 	{
 		// squared distance: FD
 		MatrixPtr pAbsDistXsXd = derivativeTrainingData.pAbsDistXdXs(testData);

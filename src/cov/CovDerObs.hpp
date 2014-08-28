@@ -134,7 +134,7 @@ public:
 	 *				In that case, Kss should be overloaded for DerivativeTestData.
 	 */
 	static MatrixPtr Ks(const typename CovBase<Scalar>::Hyp		&logHyp, 
-							  DerivativeTrainingData<Scalar>				&derivativeTrainingData, 
+							  const DerivativeTrainingData<Scalar>		&derivativeTrainingData, 
 							  const TestData<Scalar>						&testData)
 	{
 		// N: number of functional training data only

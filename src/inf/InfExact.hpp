@@ -53,7 +53,7 @@ public:
 							 TrainingData<Scalar>			&trainingData, 
 							 TestData<Scalar>					&testData,
 							 const bool							fVarianceVector = true,
-							 const int							perBatch = 5000)
+							 const int							perBatch = 1000)
 	{
 		// number of data
 		const int N = trainingData.N();
@@ -453,19 +453,21 @@ protected:
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
 		if(fDoNotThrowException)
 		{
-			// log file
-			LogFile logFile;
-
 			// add the diagonal term until it is numerically non-singular
-			int num_iters(0);
+			int num_iters(-1);
+			float factor;
 			while(pL->info() != Eigen::/*ComputationInfo::*/Success)
 			{
-				(*pKn) += Matrix::Identity(N, N);
+				num_iters++;
+				factor = powf(10.f, static_cast<float>(num_iters)) * Epsilon<float>::value;
+				pKn->noalias() += factor * Matrix::Identity(pKn->rows(), pKn->cols());
 				pL->compute(*pKn);
 			}
-
 			if(num_iters > 0)
-				logFile << "InfExact::choleskyFactor::num_iters: " << num_iters << std::endl;
+			{
+				LogFile logFile;
+				logFile << "InfExact::choleskyFactor::num_iters: " << num_iters << "(" << factor << ")" << std::endl;
+			}
 		}
 		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
@@ -525,19 +527,21 @@ protected:
 		CholeskyFactorPtr pL(new CholeskyFactor(*pKn));
 		if(fDoNotThrowException)
 		{
-			// log file
-			LogFile logFile;
-
 			// add the diagonal term until it is numerically non-singular
-			int num_iters(0);
+			int num_iters(-1);
+			float factor;
 			while(pL->info() != Eigen::/*ComputationInfo::*/Success)
 			{
-				(*pKn) += Matrix::Identity(N, N);
+				num_iters++;
+				factor = powf(10.f, static_cast<float>(num_iters)) * Epsilon<float>::value;
+				pKn->noalias() += factor * Matrix::Identity(pKn->rows(), pKn->cols());
 				pL->compute(*pKn);
 			}
-
 			if(num_iters > 0)
-				logFile << "InfExact::choleskyFactor2::num_iters: " << num_iters << std::endl;
+			{
+				LogFile logFile;
+				logFile << "InfExact::choleskyFactor2::num_iters: " << num_iters << "(" << factor << ")" << std::endl;
+			}
 		}
 		if(pL->info() != Eigen::/*ComputationInfo::*/Success)
 		{
