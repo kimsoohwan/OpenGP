@@ -1,6 +1,7 @@
 #ifndef _NEGATIVE_LOG_MARGINALIZATION_AND_ITS_DERIVATIVES_HPP_
 #define _NEGATIVE_LOG_MARGINALIZATION_AND_ITS_DERIVATIVES_HPP_
 
+#include <limits>			// for std::numeric_limits<Scalar>::infinity();
 #include <dlib/optimization.h>			// for dlib::find_min
 #include "../util/macros.h"
 #include "../util/LogFile.hpp"
@@ -82,13 +83,22 @@ public:
 		logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
 
 		// calculate nlZ only
-		Scalar			nlZ;
-		//GPType::negativeLogMarginalLikelihood(logHyp, 
-		InfType::negativeLogMarginalLikelihood(logHyp, 
-															m_generalTrainingData,
-															nlZ, 
-															VectorPtr(),
-															1);
+		Scalar nlZ;
+		try
+		{
+			//GPType::negativeLogMarginalLikelihood(logHyp, 
+			InfType::negativeLogMarginalLikelihood(logHyp, 
+																m_generalTrainingData,
+																nlZ, 
+																VectorPtr(),
+																1);
+		}
+		// if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
+		catch(Exception &e)
+		{
+			logFile << e.what() << std::endl;
+			nlZ = std::numeric_limits<Scalar>::infinity();
+		}
 
 		logFile << "nlz = " << nlZ << std::endl;
 		return nlZ;
@@ -142,11 +152,21 @@ public:
 		// calculate dnlZ only
 		Scalar			nlZ;
 		VectorPtr		pDnlZ;
-		InfType::negativeLogMarginalLikelihood(logHyp, 
-														m_generalTrainingData,
-														nlZ, //Scalar(),
-														pDnlZ,
-														-1);
+		try
+		{
+			InfType::negativeLogMarginalLikelihood(logHyp, 
+															m_generalTrainingData,
+															nlZ, //Scalar(),
+															pDnlZ,
+															-1);
+		}
+		// if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
+		catch(Exception &e)
+		{
+			logFile << e.what() << std::endl;
+			pDnlZ.reset(new Vector(logHyp.size()));
+			pDnlZ->setZero();
+		}
 
 		logFile << "dnlz = " << std::endl << *pDnlZ << std::endl << std::endl;
 

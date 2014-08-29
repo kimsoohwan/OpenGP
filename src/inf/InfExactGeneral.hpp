@@ -107,7 +107,8 @@ public:
 	// nlZ, dnlZ
 	// TODO: separate nlZ and dnlZ into different methods
 	template<template<typename> class GeneralTrainingData>
-	static void negativeLogMarginalLikelihood(const Hyp							&logHyp,
+	static void negativeLogMarginalLikelihood /* throw (Exception) */
+														  (const Hyp							&logHyp,
 															GeneralTrainingData<Scalar>	&generalTrainingData, 
 															Scalar								&nlZ, 
 															VectorPtr							&pDnlZ,
@@ -123,18 +124,18 @@ public:
 
 		// some constants
 		CholeskyFactorConstPtr	pL;
-		try
-		{
+		//try
+		//{
 			pL = choleskyFactor(logHyp, generalTrainingData);
-		}
-		catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
-		{
-			std::cerr << e.what() << std::endl;
-			nlZ = std::numeric_limits<Scalar>::infinity();
-			pDnlZ.reset(new Vector(logHyp.size()));
-			pDnlZ->setZero();
-			return;
-		}
+		//}
+		//catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
+		//{
+		//	std::cerr << e.what() << std::endl;
+		//	nlZ = std::numeric_limits<Scalar>::infinity();
+		//	pDnlZ.reset(new Vector(logHyp.size()));
+		//	pDnlZ->setZero();
+		//	return;
+		//}
 		const VectorConstPtr pY_M		= y_m(logHyp.mean, generalTrainingData);
 		const VectorConstPtr pAlpha	= alpha(pL, pY_M);
 

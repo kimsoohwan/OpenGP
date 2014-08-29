@@ -108,7 +108,8 @@ public:
 	}
 
 	// nlZ, dnlZ
-	static void negativeLogMarginalLikelihood(const Hyp					&logHyp,
+	static void negativeLogMarginalLikelihood /* throw (Exception) */
+														  (const Hyp					&logHyp,
 															TrainingData<Scalar>		&trainingData, 
 															Scalar						&nlZ, 
 															VectorPtr					&pDnlZ,
@@ -128,19 +129,19 @@ public:
 		const Scalar sn = exp(logHyp.lik(0));	// sn
 
 		CholeskyFactorConstPtr	pL;
-		try
-		{
+		//try
+		//{
 			//pL = choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
 			pL	= choleskyFactor(logHyp.cov, logHyp.lik, trainingData);
-		}
-		catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
-		{
-			std::cerr << e.what() << std::endl;
-			nlZ = std::numeric_limits<Scalar>::infinity();
-			pDnlZ.reset(new Vector(logHyp.size()));
-			pDnlZ->setZero();
-			return;
-		}
+		//}
+		//catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
+		//{
+		//	std::cerr << e.what() << std::endl;
+		//	nlZ = std::numeric_limits<Scalar>::infinity();
+		//	pDnlZ.reset(new Vector(logHyp.size()));
+		//	pDnlZ->setZero();
+		//	return;
+		//}
 		const VectorConstPtr		pY_M		= y_m(logHyp.mean, trainingData);
 		const VectorConstPtr		pAlpha	= alpha(logHyp.lik, pL, pY_M);
 
@@ -217,8 +218,9 @@ public:
 	}
 
 	// nlZ, dnlZ
-	static void negativeLogMarginalLikelihood2(const Hyp					&logHyp,
-															 TrainingData<Scalar>		&trainingData, 
+	static void negativeLogMarginalLikelihood2 /* throw (Exception) */
+															(const Hyp					&logHyp,
+															 TrainingData<Scalar>	&trainingData, 
 															 Scalar						&nlZ, 
 															 VectorPtr					&pDnlZ,
 															 const int					calculationMode = 0)
@@ -238,18 +240,18 @@ public:
 		const Scalar sn = exp(logHyp.lik(0));	// sn
 
 		CholeskyFactorConstPtr	pL;
-		try
-		{
+		//try
+		//{
 			pL = choleskyFactor(logHyp.cov, trainingData, pInvSqrtD);
-		}
-		catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
-		{
-			std::cerr << e.what() << std::endl;
-			nlZ = std::numeric_limits<Scalar>::infinity();
-			pDnlZ.reset(new Vector(logHyp.size()));
-			pDnlZ->setZero();
-			return;
-		}
+		//}
+		//catch(Exception &e) // if Kn is non positivie definite, nlZ = Inf, dnlZ = zeros
+		//{
+		//	std::cerr << e.what() << std::endl;
+		//	nlZ = std::numeric_limits<Scalar>::infinity();
+		//	pDnlZ.reset(new Vector(logHyp.size()));
+		//	pDnlZ->setZero();
+		//	return;
+		//}
 		const VectorConstPtr		pY_M		= y_m(logHyp.mean, trainingData);
 		const VectorConstPtr		pAlpha	= alpha(pInvSqrtD, pL, pY_M);
 

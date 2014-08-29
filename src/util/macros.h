@@ -63,16 +63,22 @@
 //typedef	boost::shared_ptr<const SparseCholeskyFactor>					SparseCholeskyFactorConstPtr;
 
 // STL
-#include <cfloat>			// FLT_EPSILON(1.192092896e-07F), DBL_EPSILON(2.2204460492503131e-016)
+#include <cfloat>			
+// FLT_EPSILON		1.192092896e-07F
+// FLT_MIN			1.175494351e-38F
+// DBL_EPSILON		2.2204460492503131e-016
+// DBL_MIN			2.2250738585072014e-308
+// LDBL_EPSILON	DBL_EPSILON
+// LDBL_MIN			DBL_MIN
 namespace GP{
 	template <typename T> 
 	struct Epsilon
 	{
 		static const T value;
 	};
-	const float			Epsilon<float>::value			= FLT_EPSILON; 
-	const double		Epsilon<double>::value			= DBL_EPSILON; 
-	const long double	Epsilon<long double>::value	= LDBL_EPSILON; 
+	const float			Epsilon<float>::value			= DBL_EPSILON;						// FLT_EPSILON;
+	const double		Epsilon<double>::value			= DBL_EPSILON*DBL_EPSILON;		// DBL_EPSILON;
+	const long double	Epsilon<long double>::value	= LDBL_EPSILON*LDBL_EPSILON;	// LDBL_EPSILON;
 
 	typedef Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> Mask;
 }
