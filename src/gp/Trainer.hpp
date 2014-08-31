@@ -177,8 +177,9 @@ public:
 	template<class SearchStrategy, class StoppingStrategy>
 	static double train(DlibVector			&hypDlib,
 							  NlZ_T					&nlZ,
-							  int					maxIter,
-							  const double		minValue)
+							  int						maxIter,
+							  const double			minValue,
+							  long					NPT = 0)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
@@ -208,7 +209,8 @@ public:
 	static double train<BOBYQA, NoStopping>(DlibVector			&hypDlib,
 													  NlZ_T					&nlZ,
 													  int						maxIter,
-													  const double			minValue)
+													  const double			minValue,
+													  long					NPT)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
@@ -227,7 +229,7 @@ public:
 			// NPT is the number of interpolation conditions
 			// It must be in the interval of [N+2,(N+1)(N+2)/2].
 			// Choices that exceed 2*N+1 are not recommended.
-			const long NPT = std::min<long>(static_cast<long>((N+1)*(N+2)/2.f), 2*N+1); // previously fixed as 9
+			if(NPT == 0) NPT = std::min<long>(static_cast<long>((N+1)*(N+2)/2.f), 2*N+1); // previously fixed as 9
 
 			// train
 			return dlib::find_min_bobyqa(nlZ, 
