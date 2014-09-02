@@ -80,6 +80,7 @@ namespace GP {
 template<typename Scalar>
 class CovSEisoDerObs : public CovDerObs<Scalar, CovSEisoDerObsBase> {};
 
+
 //template <typename Scalar>
 //using CovSEisoDerObs = CovDerObs<Scalar, CovSEisoDerObsBase>;
 
