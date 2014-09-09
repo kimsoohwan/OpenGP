@@ -1,0 +1,7 @@
+<map id="GP::InfExactGeneral::predict" name="GP::InfExactGeneral::predict">
+<area shape="rect" id="node2" href="$classGP_1_1InfExactGeneral.html#abe322ad558ca8ac73860994e106f9d6e" title="GP::InfExactGeneral\l::choleskyFactor" alt="" coords="212,5,353,46"/>
+<area shape="rect" id="node3" href="$classGP_1_1InfExactGeneral.html#a748248e98b6835170fed028307577e21" title="GP::InfExactGeneral::y_m" alt="" coords="195,71,370,97"/>
+<area shape="rect" id="node4" href="$classGP_1_1InfExactGeneral.html#a0c1467236f688d2147432b22fe819993" title="GP::InfExactGeneral\l::alpha" alt="" coords="212,122,353,163"/>
+<area shape="rect" id="node5" href="$classGP_1_1TestData.html#a7ddabc147cca67eadee5089851cb5df0" title="Gets the pointer to the output means. " alt="" coords="215,188,350,215"/>
+<area shape="rect" id="node6" href="$classGP_1_1TestData.html#a25e5553b1362a047d43b55af3915aebd" title="Gets the pointer to the output (co)variances. " alt="" coords="206,239,359,265"/>
+</map>

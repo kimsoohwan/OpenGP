@@ -1,0 +1,7 @@
+<map id="GP::CovMaternisoDerObsBase::Ks_DF" name="GP::CovMaternisoDerObsBase::Ks_DF">
+<area shape="rect" id="node2" href="$classGP_1_1CovMaterniso.html#ad9717e9d77771bdbba1c5de04fc211b7" title="Self covariance matrix between the training data, K(X, X) or its partial derivative. " alt="" coords="285,5,429,32"/>
+<area shape="rect" id="node6" href="$classGP_1_1CovMaternisoDerObsBase.html#afd8af188785a04aad1e9d26867f6a7a9" title="Covariance matrix between the functional and derivative training data or its partial derivative..." alt="" coords="257,57,458,98"/>
+<area shape="rect" id="node3" href="$classGP_1_1TrainingData.html#a836d72944fe7558492341c6173cef0bb" title="Gets the self absolute distances between the training inputs. " alt="" coords="507,5,703,32"/>
+<area shape="rect" id="node4" href="$classGP_1_1TrainingData.html#ac95aa939abdd33ac04b07d4e2fe4d470" title="Gets the self squared distances between the training inputs. " alt="" coords="752,5,941,32"/>
+<area shape="rect" id="node5" href="$classGP_1_1PairwiseOp.html#a837523813c6b7bccaa4e9e7336741ddc" title="Pairwise squared distances between N training inputs. " alt="" coords="989,5,1149,32"/>
+</map>

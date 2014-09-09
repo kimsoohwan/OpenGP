@@ -1,0 +1,6 @@
+<map id="GP::CovSparseisoDerObsBase::K_DD" name="GP::CovSparseisoDerObsBase::K_DD">
+<area shape="rect" id="node2" href="$classGP_1_1CovSparseiso.html#ad56e18eb0cfb4b46463a3d0b13ee0fd5" title="Self covariance matrix between the training data, K(X, X) or its partial derivative. " alt="" coords="257,12,402,39"/>
+<area shape="rect" id="node3" href="$classGP_1_1TrainingData.html#a836d72944fe7558492341c6173cef0bb" title="Gets the self absolute distances between the training inputs. " alt="" coords="451,12,647,39"/>
+<area shape="rect" id="node4" href="$classGP_1_1TrainingData.html#ac95aa939abdd33ac04b07d4e2fe4d470" title="Gets the self squared distances between the training inputs. " alt="" coords="696,12,885,39"/>
+<area shape="rect" id="node5" href="$classGP_1_1PairwiseOp.html#a837523813c6b7bccaa4e9e7336741ddc" title="Pairwise squared distances between N training inputs. " alt="" coords="933,12,1093,39"/>
+</map>

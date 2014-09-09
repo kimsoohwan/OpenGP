@@ -1,0 +1,8 @@
+<map id="GP::TrainingData::pAbsDistXXs" name="GP::TrainingData::pAbsDistXXs">
+<area shape="rect" id="node2" href="$classGP_1_1TrainingData.html#a4e6f6a0b869d0165506d89bc00115d73" title="Gets the cross squared distances between the training and test inputs. " alt="" coords="257,107,453,133"/>
+<area shape="rect" id="node3" href="$classGP_1_1TestData.html#aed3a8cf3d9f1fd7edf8b32ad812f19db" title="Gets the number of test data, M. " alt="" coords="521,5,641,32"/>
+<area shape="rect" id="node4" href="$classGP_1_1TrainingData.html#a09dedd5bbed414d214f024337536e487" title="Gets the number of dimensions. " alt="" coords="512,56,651,83"/>
+<area shape="rect" id="node5" href="$classGP_1_1TestData.html#ae2a0c20e600663d20d0431ff171e41d3" title="Gets the number of dimensions, D. " alt="" coords="522,107,641,133"/>
+<area shape="rect" id="node6" href="$classGP_1_1PairwiseOp.html#a837523813c6b7bccaa4e9e7336741ddc" title="Pairwise squared distances between N training inputs. " alt="" coords="501,157,661,184"/>
+<area shape="rect" id="node7" href="$classGP_1_1TestData.html#a5d55ea7524fcbd70a06dd057740369dc" title="Gets the const pointer to the training inputs. " alt="" coords="516,208,647,235"/>
+</map>

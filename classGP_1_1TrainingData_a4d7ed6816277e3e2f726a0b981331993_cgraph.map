@@ -1,0 +1,7 @@
+<map id="GP::TrainingData::pDeltaXXs" name="GP::TrainingData::pDeltaXXs">
+<area shape="rect" id="node2" href="$classGP_1_1TestData.html#aed3a8cf3d9f1fd7edf8b32ad812f19db" title="Gets the number of test data, M. " alt="" coords="256,5,376,32"/>
+<area shape="rect" id="node3" href="$classGP_1_1TrainingData.html#a09dedd5bbed414d214f024337536e487" title="Gets the number of dimensions. " alt="" coords="247,56,385,83"/>
+<area shape="rect" id="node4" href="$classGP_1_1TestData.html#ae2a0c20e600663d20d0431ff171e41d3" title="Gets the number of dimensions, D. " alt="" coords="257,107,375,133"/>
+<area shape="rect" id="node5" href="$classGP_1_1PairwiseOp.html#a97dea0ef08c71981e32dea2166bfad22" title="Pairwise differences between the coord&#45;th coordinates of N training inputs. " alt="" coords="241,157,391,184"/>
+<area shape="rect" id="node6" href="$classGP_1_1TestData.html#a5d55ea7524fcbd70a06dd057740369dc" title="Gets the const pointer to the training inputs. " alt="" coords="251,208,381,235"/>
+</map>

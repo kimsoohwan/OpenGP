@@ -1,0 +1,4 @@
+<map id="TestCaseInfExactDerObs" name="TestCaseInfExactDerObs">
+<area shape="rect" id="node3" href="$classGP_1_1InfExactDerObs.html" title="{GP::InfExactDerObs\l\&lt; TestType, MeanZeroDerObs,\l CovSEisoDerObs, LikGaussDerObs \&gt;\n||}" alt="" coords="199,277,444,384"/>
+<area shape="rect" id="node4" href="$classGP_1_1InfExactGeneral.html" title="{GP::InfExactGeneral\l\&lt; TestType, MeanZeroDerObs,\l CovSEisoDerObs, LikGaussDerObs \&gt;\n||+ predict()\l+ negativeLogMarginalLikelihood()\l# predict()\l# choleskyFactor()\l# y_m()\l# alpha()\l# q()\l# dnlZWRTLikHyp()\l# dnlZWRTLikHyp2()\l}" alt="" coords="199,5,444,229"/>
+</map>

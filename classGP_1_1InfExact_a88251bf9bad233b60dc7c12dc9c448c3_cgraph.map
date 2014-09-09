@@ -1,0 +1,9 @@
+<map id="GP::InfExact::negativeLogMarginalLikelihood" name="GP::InfExact::negativeLogMarginalLikelihood">
+<area shape="rect" id="node2" href="$classGP_1_1InfExact.html#ab73ffa1abbb97c0f8318af9a9486e495" title="GP::InfExact::choleskyFactor" alt="" coords="229,5,422,32"/>
+<area shape="rect" id="node3" href="$classGP_1_1InfExact.html#a83057a23bf7772bc423c5f3448b26ae8" title="GP::InfExact::y_m" alt="" coords="261,56,390,83"/>
+<area shape="rect" id="node6" href="$classGP_1_1InfExact.html#ac93d3e89f43b8152e81c0f787a52d536" title="GP::InfExact::alpha" alt="" coords="258,107,393,133"/>
+<area shape="rect" id="node7" href="$classGP_1_1InfExact.html#afcc5be17e8c876741de85bde7b576e12" title="GP::InfExact::q" alt="" coords="270,157,381,184"/>
+<area shape="rect" id="node8" href="$classGP_1_1InfExact.html#a3f41fd4c5eaf3116b15e544ad7145b74" title="GP::InfExact::dnlZWRTLikHyp" alt="" coords="227,208,424,235"/>
+<area shape="rect" id="node4" href="$classGP_1_1TrainingData.html#ae5da6a507565e88f9f1a2ae52bf633da" title="Gets the number of functional observations. " alt="" coords="476,31,615,57"/>
+<area shape="rect" id="node5" href="$classGP_1_1TrainingData.html#a6caa4fd7b22b33cc32d22ce5956edea6" title="Gets the training outputs. " alt="" coords="473,81,618,108"/>
+</map>

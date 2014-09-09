@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['testdata',['TestData',['../classGP_1_1TestData.html',1,'GP']]],
+  ['testdata',['TestData',['../classGP_1_1TestData.html#a8a1e2d8e68b8f5319e9717997a26ec8a',1,'GP::TestData::TestData()'],['../classGP_1_1TestData.html#a999c32dda0287da870dc158160d6405b',1,'GP::TestData::TestData(const TestData &amp;other, const int startRow, const int n)']]],
+  ['testdata_2ehpp',['TestData.hpp',['../TestData_8hpp.html',1,'']]],
+  ['todo_20list',['Todo List',['../todo.html',1,'']]],
+  ['train',['train',['../classGP_1_1GaussianProcess.html#a50a601aab8b3a7f96c5e3fe9352687a6',1,'GP::GaussianProcess::train()'],['../classGP_1_1TrainerUsingExactDerivatives.html#aa09850d561b2be7a1a5135e2fa22d0d9',1,'GP::TrainerUsingExactDerivatives::train()'],['../classGP_1_1TrainerUsingApproxDerivatives.html#a72fbab8cc5c08285cbc98bfd7e4cf5f8',1,'GP::TrainerUsingApproxDerivatives::train(DlibVector &amp;hypDlib, NlZ_T &amp;nlZ, int maxIter, const double minValue, long NPT=0)'],['../classGP_1_1TrainerUsingApproxDerivatives.html#a20363725ec2ede59e16392303c76b411',1,'GP::TrainerUsingApproxDerivatives::train(DlibVector &amp;hypDlib, NlZ_T &amp;nlZ, int maxIter, const double minValue, long NPT)']]],
+  ['trainer',['Trainer',['../classTrainer.html',1,'Trainer'],['../classTrainer.html',1,'Trainer'],['../group__Trainer.html',1,'(Global Namespace)']]],
+  ['trainer_2ehpp',['Trainer.hpp',['../Trainer_8hpp.html',1,'']]],
+  ['trainerusingapproxderivatives',['TrainerUsingApproxDerivatives',['../classGP_1_1TrainerUsingApproxDerivatives.html#ab51f73fe22000588802ff7984481f74d',1,'GP::TrainerUsingApproxDerivatives']]],
+  ['trainerusingapproxderivatives',['TrainerUsingApproxDerivatives',['../classGP_1_1TrainerUsingApproxDerivatives.html',1,'GP']]],
+  ['trainerusingexactderivatives',['TrainerUsingExactDerivatives',['../classGP_1_1TrainerUsingExactDerivatives.html',1,'GP']]],
+  ['trainerusingexactderivatives',['TrainerUsingExactDerivatives',['../classGP_1_1TrainerUsingExactDerivatives.html#a4f170a7ee960f830a404ec24ae501b0c',1,'GP::TrainerUsingExactDerivatives']]],
+  ['trainingdata',['TrainingData',['../classGP_1_1TrainingData.html',1,'GP']]],
+  ['trainingdata',['TrainingData',['../classGP_1_1TrainingData.html#a98dead43a9e77f27a3f18a5a35568af7',1,'GP::TrainingData']]],
+  ['trainingdata_2ehpp',['TrainingData.hpp',['../TrainingData_8hpp.html',1,'']]],
+  ['trustregion',['TrustRegion',['../group__TrustRegion.html',1,'']]],
+  ['type',['Type',['../classGP_1_1CG.html#a89444f1f1af46126c8f309fceec33147',1,'GP::CG::Type()'],['../classGP_1_1BFGS.html#ac8e0b5a5431e2e8a644084a9b41e8f51',1,'GP::BFGS::Type()'],['../classGP_1_1LBFGS.html#a6c4cb3a00a0dda648b42f418855faf7b',1,'GP::LBFGS::Type()'],['../classGP_1_1DeltaFunc.html#a448d4e1c816b607bdc00f1b84f1b3402',1,'GP::DeltaFunc::Type()'],['../classGP_1_1GradientNorm.html#a1d8871374c8375a69e98d04d25a126ad',1,'GP::GradientNorm::Type()']]],
+  ['type_5fdefine_5fall_5fhyp',['TYPE_DEFINE_ALL_HYP',['../macros_8h.html#ad0aaebc2fe2ad1cf16bba0d21e48b9c5',1,'macros.h']]],
+  ['type_5fdefine_5fcholeskyfactor',['TYPE_DEFINE_CHOLESKYFACTOR',['../macros_8h.html#a34a63b721677949fa45106cc413bbe7e',1,'macros.h']]],
+  ['type_5fdefine_5fhyp',['TYPE_DEFINE_HYP',['../classGP_1_1CovProd.html#abf1ef183c4495c4e0b833695f6bd175a',1,'GP::CovProd::TYPE_DEFINE_HYP()'],['../macros_8h.html#af3b78d0477306a27d92eab769fd5d128',1,'TYPE_DEFINE_HYP():&#160;macros.h']]],
+  ['type_5fdefine_5fmatrix',['TYPE_DEFINE_MATRIX',['../classGP_1_1CovProd.html#a0c278399b38ffbd0b8e858f27cd069ac',1,'GP::CovProd::TYPE_DEFINE_MATRIX()'],['../macros_8h.html#aa1d6b82534f282d2e74aad4e94c36955',1,'TYPE_DEFINE_MATRIX():&#160;macros.h']]],
+  ['type_5fdefine_5frow_5fvector',['TYPE_DEFINE_ROW_VECTOR',['../macros_8h.html#a54561cd405afa8379538f090845ddf00',1,'macros.h']]],
+  ['type_5fdefine_5fvector',['TYPE_DEFINE_VECTOR',['../macros_8h.html#affbe4108989e82c9208c812b2d7eb5ff',1,'macros.h']]]
+];

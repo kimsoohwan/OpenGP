@@ -1,0 +1,10 @@
+<map id="GP::InfExact::predict" name="GP::InfExact::predict">
+<area shape="rect" id="node2" href="$classGP_1_1InfExact.html#a3fe502e53d4d848f51bca5ce5dc6e190" title="GP::InfExact::invSqrtD" alt="" coords="219,5,371,32"/>
+<area shape="rect" id="node3" href="$classGP_1_1InfExact.html#ab73ffa1abbb97c0f8318af9a9486e495" title="GP::InfExact::choleskyFactor" alt="" coords="198,56,391,83"/>
+<area shape="rect" id="node4" href="$classGP_1_1InfExact.html#a83057a23bf7772bc423c5f3448b26ae8" title="GP::InfExact::y_m" alt="" coords="230,107,359,133"/>
+<area shape="rect" id="node7" href="$classGP_1_1InfExact.html#ac93d3e89f43b8152e81c0f787a52d536" title="GP::InfExact::alpha" alt="" coords="227,157,362,184"/>
+<area shape="rect" id="node8" href="$classGP_1_1TestData.html#a7ddabc147cca67eadee5089851cb5df0" title="Gets the pointer to the output means. " alt="" coords="227,208,362,235"/>
+<area shape="rect" id="node9" href="$classGP_1_1TestData.html#a25e5553b1362a047d43b55af3915aebd" title="Gets the pointer to the output (co)variances. " alt="" coords="218,259,371,285"/>
+<area shape="rect" id="node5" href="$classGP_1_1TrainingData.html#ae5da6a507565e88f9f1a2ae52bf633da" title="Gets the number of functional observations. " alt="" coords="444,81,583,108"/>
+<area shape="rect" id="node6" href="$classGP_1_1TrainingData.html#a6caa4fd7b22b33cc32d22ce5956edea6" title="Gets the training outputs. " alt="" coords="441,132,586,159"/>
+</map>
