@@ -19,11 +19,14 @@ namespace GP{
 template<typename Scalar>
 class LikGauss
 {
+/**@brief Number of hyperparameters */
+public: static const int N = 1;
+
 // define matrix types
 protected:	TYPE_DEFINE_VECTOR(Scalar);
 
 // define hyperparameters
-public:		TYPE_DEFINE_HYP(Scalar, 1); // sigma_n
+public:		TYPE_DEFINE_HYP(Scalar, N); // sigma_n
 
 	// diagonal vector
 	static VectorPtr lik(const Hyp							&logHyp, 

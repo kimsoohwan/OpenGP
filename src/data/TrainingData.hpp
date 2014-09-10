@@ -41,6 +41,26 @@ public:
 	}
 
 	/**	
+	 * @brief		Copy constructor
+	 * @details		Copy const pointer only
+	 */
+	TrainingData(const TrainingData &other)
+	{
+		(*this) = other;
+	}
+
+	/**	
+	 * @brief		Assignment operator
+	 * @details		Copy const pointer only
+	 */
+	inline TrainingData& operator=(const TrainingData &other)
+	{
+		set(other.m_pX, other.m_pY);
+		return *this;
+	}
+
+
+	/**	
 	 * @brief	Gets the number of functional observations
 	 * @return	The number of functional observations
 	 */
@@ -80,9 +100,9 @@ public:
 	{
 		m_pX = pX;
 		m_pY = pY;
-		m_fSqDistXX		= false;
+		m_fSqDistXX			= false;
 		m_fAbsDistXX		= false;
-		m_fDeltaXXList = false;
+		m_fDeltaXXList		= false;
 	}
 
 	/**

@@ -12,7 +12,7 @@
  * @defgroup	-Mean
  * @brief		Mean functions for Gaussian processes
  */ 
-#include "../src/mean/MeanZero.hpp"
+#include "mean.h"
 
 
 /**

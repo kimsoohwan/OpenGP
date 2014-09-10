@@ -70,38 +70,7 @@ public:
 		const VectorConstPtr				pY_M		= y_m(logHyp.mean, generalTrainingData);
 		const VectorConstPtr				pAlpha	= alpha(pL, pY_M);
 
-		// too many test points: batch
-		if(!fVarianceVector || perBatch <= 0)
-		{
-			predict(logHyp, generalTrainingData, testData, pL, pAlpha, fVarianceVector);
-		}
-		else
-		{
-			// memory allocation
-			testData.pMu().reset(new Vector(M));
-			testData.pSigma().reset(new Matrix(M, 1)); // variance vector (Mx1)
-
-			// batch processing
-			int from	= 0;
-			int to	= -1;
-			while(to < M-1)
-			{
-				// range
-				from	= to + 1;
-				to		= (M-1 < from + perBatch - 1) ? M-1 : from + perBatch - 1;
-				const int MM = to - from + 1;
-
-				// part of test data
-				TestData<Scalar> testDataPart(testData, from, MM);
-
-				// predict
-				predict(logHyp, generalTrainingData, testDataPart, pL, pAlpha, fVarianceVector);
-
-				// copy
-				testData.pMu()->segment(from, MM).noalias()			= (*testDataPart.pMu());
-				testData.pSigma()->middleRows(from, MM).noalias()	= (*testDataPart.pSigma());
-			}
-		}
+		predict(logHyp, generalTrainingData, testData, pL, pAlpha, fVarianceVector, perBatch);
 	}
 
 	// nlZ, dnlZ
@@ -205,6 +174,74 @@ public:
 	}
 
 protected:
+	/**
+		* @brief	Predict the mean and [co]variance.
+		* @note	mu = ms + ks' * inv(Kn) * (y - m) 
+		*           = ms + ks' * alpha
+		*        sigma^2 = kss + ks' * inv(Kn) * ks
+		*                = kss + v' * v
+		* @param [in]		logHyp				The log hyperparameters.
+		* @param [in]		pXs				 	The test positions.
+		* @param [out]		pMu	 				The mean vector.
+		* @param [out]		pSigma 				The covariance matrix or variance vector.
+		* @param [in]		fVarianceVector 	(Optional) flag for true: variance vector, false: covariance matrix
+		* @param [in]		fBatchProcessing	(Optional) flag for the batch processing.
+		*/
+	template<template<typename> class GeneralTrainingData>
+	static void predict /* throw (Exception) */
+							 (const Hyp								&logHyp, 
+							  GeneralTrainingData<Scalar>		&generalTrainingData, 
+							  TestData<Scalar>					&testData,
+							  const CholeskyFactorConstPtr	&pL, 
+							  const VectorConstPtr				&pAlpha,
+							  const bool							fVarianceVector = true,
+							  const int								perBatch = 1000)
+	{
+		// number of data
+		const int NN = generalTrainingData.NN();
+		const int M  = testData.M();
+
+		// some constants
+		// Note that we make the cholesky factor not to throw an exception even the covariance matrix is numerically singular
+		//const bool			fDoNotThrowException = true;
+		//const CholeskyFactorConstPtr	pL			= choleskyFactor(logHyp, generalTrainingData, fDoNotThrowException);
+		//const VectorConstPtr				pY_M		= y_m(logHyp.mean, generalTrainingData);
+		//const VectorConstPtr				pAlpha	= alpha(pL, pY_M);
+
+		// too many test points: batch
+		if(!fVarianceVector || perBatch <= 0)
+		{
+			predict(logHyp, generalTrainingData, testData, pL, pAlpha, fVarianceVector);
+		}
+		else
+		{
+			// memory allocation
+			testData.pMu().reset(new Vector(M));
+			testData.pSigma().reset(new Matrix(M, 1)); // variance vector (Mx1)
+
+			// batch processing
+			int from	= 0;
+			int to	= -1;
+			while(to < M-1)
+			{
+				// range
+				from	= to + 1;
+				to		= (M-1 < from + perBatch - 1) ? M-1 : from + perBatch - 1;
+				const int MM = to - from + 1;
+
+				// part of test data
+				TestData<Scalar> testDataPart(testData, from, MM);
+
+				// predict
+				predict(logHyp, generalTrainingData, testDataPart, pL, pAlpha, fVarianceVector);
+
+				// copy
+				testData.pMu()->segment(from, MM).noalias()			= (*testDataPart.pMu());
+				testData.pSigma()->middleRows(from, MM).noalias()	= (*testDataPart.pSigma());
+			}
+		}
+	}
+
 	/** @brief	Predict the mean and the [co]variance 
 	  * @note	Please note that the [co]variance is 
 	  *			not for latent function outputs but for function outputs.

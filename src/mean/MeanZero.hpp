@@ -19,11 +19,14 @@ namespace GP{
 template<typename Scalar>
 class MeanZero
 {
+/**@brief Number of hyperparameters */
+public: static const int N = 0;
+
 // define matrix types
 protected:	TYPE_DEFINE_VECTOR(Scalar);
 
 // define hyperparameters
-public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
+public:		TYPE_DEFINE_HYP(Scalar, N); // No hyperparameter
 
 	/**
 		* @brief	The mean vector at the training positions. f(X)
@@ -48,7 +51,6 @@ public:		TYPE_DEFINE_HYP(Scalar, 0); // No hyperparameter
 	   * @param	[in] pXs 				The test inputs.
 		* @return	The mean vector.
 		*/
-	//VectorPtr operator()(const TestPositionsConstPtr pXs, const Hyp &logHyp) const
 	static VectorPtr ms(const Hyp &logHyp, const TestData<Scalar> &testData)
 	{
 		// Zero vector
