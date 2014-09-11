@@ -153,7 +153,7 @@ public:
 	 * @param	[in] pXd		The derivative inputs, \f$\mathbf{X}_d \in \mathbb{R}^{N_d \times D}}\f$
 	 * @param	[in] pYYd	The functional and derivative outputs, \f$\mathbf{yy}_d   \in \mathbb{R}^{N + N_d \times D}\f$
 	 */
-	void set(MatrixPtr pX, MatrixPtr pXd, VectorPtr pYYd)
+	void set(MatrixConstPtr pX, MatrixConstPtr pXd, VectorConstPtr pYYd)
 	{
 		TrainingData<Scalar>::set(pX, pYYd);
 		m_pXd = pXd;
@@ -172,7 +172,7 @@ public:
 	 * @param	[in] pXXd	The function/derivative training inputs, \f$\mathbf{X} = \f$\mathbf{X}_d in \mathbb{R}^{N \times D}, \; N = N_d\f$
 	 * @param	[in] pYYd	The function/derivative training outputs, \f$\mathbf{yy}_d \in \mathbb{R}^{N + N_d \times D}\f$
 	 */
-	void set(MatrixPtr pXXd, VectorPtr pYYd)
+	void set(MatrixConstPtr pXXd, VectorConstPtr pYYd)
 	{
 		set(pXXd, pXXd, pYYd);
 	}
@@ -339,7 +339,7 @@ public:
 
 protected:
 	/** @brief Training derivative inputs */
-	MatrixPtr m_pXd;	// NdxD matrix
+	MatrixConstPtr m_pXd;	// NdxD matrix
 
 	///** @brief Training function/derivative outputs */
 	//VectorPtr m_pYd;	// Ndx1 vector

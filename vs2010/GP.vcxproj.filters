@@ -64,27 +64,6 @@
     <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp">
       <Filter>src\cov\covSEiso</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cov\covseisobase.hpp.old">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisoder.hpp.old">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\covseisodiffbase.hpp.old">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp.old">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\isotropic.hpp.old">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp.old">
-      <Filter>src\cov</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\data\typetraits.hpp.old">
-      <Filter>src\data</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\gp\NlZ_DnlZ.hpp">
       <Filter>src\gp</Filter>
     </ClInclude>
@@ -108,6 +87,9 @@
     </ClInclude>
     <ClInclude Include="..\src\cov\covProd\CovProd.hpp">
       <Filter>src\cov\covProd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\mean.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

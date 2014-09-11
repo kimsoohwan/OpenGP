@@ -7,8 +7,12 @@
 // MeanGP
 #include "../src/mean/MeanGP.hpp"
 
-#include "../src/cov/covSEiso/CovSEiso.hpp"
-#include "../src/lik/LikGauss.hpp"
+#include "cov.h"
+#include "inf.h"
+
+//#include "../src/cov/covSEiso/CovSEiso.hpp"
+//#include "../src/lik/LikGauss.hpp"
+#include "../src/lik/LikGaussDerObs.hpp"
 
 namespace GP {
 
@@ -23,7 +27,9 @@ namespace GP {
  * @date			10/09/2014
  */
 template<typename Scalar>
-class MeanGlobalGP : public MeanGP<Scalar, MeanZero, CovSEiso, LikGauss> {};
+class MeanGlobalGP : public MeanGP<Scalar, MeanZeroDerObs, CovRQisoDerObs, LikGaussDerObs, InfExactDerObs> {};
+//class MeanGlobalGP : public MeanGP<Scalar, MeanZeroDerObs, CovSEisoDerObs, LikGaussDerObs, InfExactDerObs> {};
+//class MeanGlobalGP : public MeanGP<Scalar, MeanZero, CovSEiso, LikGauss> {};
 
 }
 

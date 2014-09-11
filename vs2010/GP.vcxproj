@@ -50,7 +50,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>E:\Documents\GitHub\OpenGP\include;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\include\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\include\ia32;E:\Documents\gtest-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Documents\GitHub\OpenGP\master\include;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\include\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\include\ia32;E:\Documents\gtest-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -65,7 +65,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>E:\Documents\GitHub\OpenGP\include;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\include\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\include\ia32;E:\Documents\gtest-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Documents\GitHub\OpenGP\master\include;C:\Program Files %28x86%29\PCL 1.6.0\3rdParty\Boost\include;E:\Documents\eigen-3.2.0;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\compiler\include\ia32;C:\Program Files %28x86%29\Intel\Composer XE 2013 SP1\mkl\include\ia32;E:\Documents\gtest-1.7.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -82,24 +82,18 @@
   <ItemGroup>
     <ClInclude Include="..\include\cov.h" />
     <ClInclude Include="..\include\gp.h" />
+    <ClInclude Include="..\include\mean.h" />
     <ClInclude Include="..\src\cov\CovDerObs.hpp" />
     <ClInclude Include="..\src\cov\covMaterniso\CovMaterniso.hpp" />
     <ClInclude Include="..\src\cov\covMaterniso\CovMaternisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\covProd\CovProd.hpp" />
-    <ClInclude Include="..\src\cov\covseisoder.hpp.old" />
-    <ClInclude Include="..\src\cov\covseisodiffbase.hpp.old" />
-    <ClInclude Include="..\src\cov\covseisobase.hpp.old" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEiso.hpp" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\covSparseiso\CovSparseiso.hpp" />
     <ClInclude Include="..\src\cov\covSparseiso\CovSparseisoDerObsBase.hpp" />
-    <ClInclude Include="..\src\cov\handlingderivativetrainingdata.hpp.old" />
-    <ClInclude Include="..\src\cov\isotropicanddifferentiable.hpp.old" />
-    <ClInclude Include="..\src\cov\isotropic.hpp.old" />
     <ClInclude Include="..\src\data\DerivativeTrainingData.hpp" />
     <ClInclude Include="..\src\data\TestData.hpp" />
     <ClInclude Include="..\src\data\TrainingData.hpp" />
-    <ClInclude Include="..\src\data\typetraits.hpp.old" />
     <ClInclude Include="..\src\gp\GaussianProcess.hpp" />
     <ClInclude Include="..\src\gp\NlZ_DnlZ.hpp" />
     <ClInclude Include="..\src\gp\Trainer.hpp" />

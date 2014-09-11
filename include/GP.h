@@ -27,9 +27,7 @@
  * @defgroup	-Inf
  * @brief		Inference methods for Gaussian processes
  */ 
-#include "../src/inf/Hyp.hpp"
-#include "../src/inf/InfExact.hpp"
-#include "../src/inf/InfExactGeneral.hpp"
+#include "inf.h"
 
 
 /**

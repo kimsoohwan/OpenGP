@@ -25,9 +25,14 @@ template<typename Scalar,
 class GaussianProcess : public InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>
 {
 public:
-	// train hyperparameters
+	//typedef typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp Hyp;
+
+public:
+	/** @brief Train hyperparameters */
 	template<class SearchStrategy, class StoppingStrategy, template<typename> class GeneralTrainingData>
-	static DlibScalar train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	&logHyp,
+	//static DlibScalar train(Hyp			&logHyp,
+	static DlibScalar train(typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp			&logHyp,
+	//static DlibScalar train(Hyp<Scalar, MeanFunc, CovFunc, LikFunc>									&logHyp,
 									GeneralTrainingData<Scalar>													&generalTrainingData,
 									const int																			maxIter = 0,
 									const DlibScalar																	minValue = 1e-15)

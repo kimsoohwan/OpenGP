@@ -70,7 +70,7 @@ public:
 		const VectorConstPtr				pY_M		= y_m(logHyp.mean, generalTrainingData);
 		const VectorConstPtr				pAlpha	= alpha(pL, pY_M);
 
-		predict(logHyp, generalTrainingData, testData, pL, pAlpha, fVarianceVector, perBatch);
+		predict_given_precalculation(logHyp, generalTrainingData, testData, pL, pAlpha, fVarianceVector, perBatch);
 	}
 
 	// nlZ, dnlZ
@@ -188,14 +188,14 @@ protected:
 		* @param [in]		fBatchProcessing	(Optional) flag for the batch processing.
 		*/
 	template<template<typename> class GeneralTrainingData>
-	static void predict /* throw (Exception) */
-							 (const Hyp								&logHyp, 
-							  GeneralTrainingData<Scalar>		&generalTrainingData, 
-							  TestData<Scalar>					&testData,
-							  const CholeskyFactorConstPtr	&pL, 
-							  const VectorConstPtr				&pAlpha,
-							  const bool							fVarianceVector = true,
-							  const int								perBatch = 1000)
+	static void predict_given_precalculation /* throw (Exception) */
+														 (const Hyp								&logHyp, 
+														 GeneralTrainingData<Scalar>		&generalTrainingData, 
+														 TestData<Scalar>						&testData,
+														 const CholeskyFactorConstPtr		&pL, 
+														 const VectorConstPtr				&pAlpha,
+														 const bool								fVarianceVector = true,
+														 const int								perBatch = 1000)
 	{
 		// number of data
 		const int NN = generalTrainingData.NN();

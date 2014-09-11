@@ -37,8 +37,9 @@ public:
 		assert(n > 0);
 		if(other.M() > 0 && startRow <= other.M() && n > 0)
 		{
-			m_pXs.reset(new Matrix(n, other.D()));
-			m_pXs->noalias() = other.m_pXs->middleRows(startRow, n);
+			//m_pXs.reset(new Matrix(n, other.D()));
+			//m_pXs->noalias() = other.m_pXs->middleRows(startRow, n);
+			m_pXs.reset(new Matrix(other.m_pXs->middleRows(startRow, n)));
 		}
 	}
 
@@ -66,7 +67,7 @@ public:
 	 * @brief	Resets the test data.
 	 * @param	[in] pXs	The test inputs.
 	 */
-	void set(const MatrixPtr pXs)
+	void set(const MatrixConstPtr pXs)
 	{
 		m_pXs = pXs;
 	}
@@ -93,7 +94,7 @@ public:
 	 * @brief	Gets the const pointer to the training inputs.
 	 * @return	A matrix const pointer.
 	 */
-	const MatrixPtr pXs() const
+	const MatrixConstPtr pXs() const
 	{
 		return m_pXs;
 	}
@@ -110,10 +111,10 @@ public:
 
 protected:
 	/** @brief function test inputs */
-	MatrixPtr m_pXs;	// MxD matrix
+	MatrixConstPtr m_pXs;	// MxD matrix
 
 	/** @brief derivative test inputs */
-	MatrixPtr m_pXds;	// MdxD matrix
+	//MatrixConstPtr m_pXds;	// MdxD matrix, TODO
 
 	/** @brief test outputs */
 	VectorPtr m_pMu;		// Mx1 vector

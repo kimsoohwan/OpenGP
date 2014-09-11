@@ -16,6 +16,10 @@
 #include "../src/cov/covSparseiso/CovSparseiso.hpp"
 #include "../src/cov/covSparseiso/CovSparseisoDerObsBase.hpp"
 
+// Rational Quadratic
+#include "../src/cov/covRQiso/CovRQiso.hpp"
+#include "../src/cov/covRQiso/CovRQisoDerObsBase.hpp"
+
 // Prod
 #include "../src/cov/covProd/CovProd.hpp"
 
@@ -114,10 +118,23 @@ template<typename Scalar>
 class CovMaternisoDerObs : public CovDerObs<Scalar, CovMaternisoDerObsBase> {};
 
 /**
+ * @defgroup	-Sparseiso
+ * @brief		Sparse covariance functions with isotropic distances\n
+ *					\f[
+ *					k(\mathbf{x}, \mathbf{z}) = 
+ *					\begin{cases} 
+ *					\sigma_f^2 \left( \frac{2+\cos(2\pi \frac{r}{l})}{3} \left(1-\frac{r}{l}\right) + \frac{1}{2\pi} \sin\left(2\pi \frac{r}{l}\right) \right) & r < l\\
+ *					0 & r \ge l
+ *					\end{cases}
+ *					\f]
+ * @ingroup		-Cov
+ */ 
+
+/**
  * @class		CovSparseisoDerObs
  * @brief		Sparse covariance function dealing with derivative observations\n
  *					It inherits from CovDerObs which takes CovSparseisoDerObsBase as a template parameter.\n
- *					Thus, CovMaternisoDerObs is a combination of CovDerObs and CovSparseisoDerObsBase.
+ *					Thus, CovSparseisoDerObs is a combination of CovDerObs and CovSparseisoDerObsBase.
  * @tparam		Scalar	Datatype such as float and double
  * @ingroup		-Sparseiso
  * @author		Soohwan Kim
@@ -125,6 +142,28 @@ class CovMaternisoDerObs : public CovDerObs<Scalar, CovMaternisoDerObsBase> {};
  */
 template<typename Scalar>
 class CovSparseisoDerObs : public CovDerObs<Scalar, CovSparseisoDerObsBase> {};
+
+/**
+ * @defgroup	-RQiso
+ * @brief		Rational quadratic covariance functions with isotropic distances\n
+ *					\f[
+ *					k(\mathbf{x}, \mathbf{z}) = \sigma_f^2 \left(1 + \frac{r^2}{2\alpha l^2} \right)^{-\alpha}, \quad r = |\mathbf{x}-\mathbf{z}|
+ *					\f]
+ * @ingroup		-Cov
+ */ 
+
+/**
+ * @class		CovRQisoDerObs
+ * @brief		Rational quadratic covariance function dealing with derivative observations\n
+ *					It inherits from CovDerObs which takes CovRQisoDerObsBase as a template parameter.\n
+ *					Thus, CovRQisoDerObs is a combination of CovDerObs and CovRQisoDerObsBase.
+ * @tparam		Scalar	Datatype such as float and double
+ * @ingroup		-Sparseiso
+ * @author		Soohwan Kim
+ * @date			11/09/2014
+ */
+template<typename Scalar>
+class CovRQisoDerObs : public CovDerObs<Scalar, CovRQisoDerObsBase> {};
 
 /**
  * @defgroup	-CovComposite

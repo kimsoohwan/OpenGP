@@ -72,15 +72,23 @@ public:
 public:
 	DlibScalar operator()(const DlibVector &logDlib) const
 	{
+		// total number of calls
+		static size_t numCalls = 0;
+
 		// convert a Dlib vector to GP hyperparameters
 		Hyp	logHyp;
 		Dlib2Hyp<Scalar, MeanFunc, CovFunc, LikFunc>(logDlib, logHyp);
 
 		// log file
 		LogFile logFile;
-		logFile << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
-		logFile << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
-		logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
+		//logFile << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
+		//logFile << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
+		//logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
+		logFile << "[" << numCalls++ << "] (";
+		for(int i = 0; i < logHyp.mean.size(); i++) { logFile  << exp(logHyp.mean(i)) << ", "; }
+		for(int i = 0; i < logHyp.cov.size(); i++)  { logFile  << exp(logHyp.cov(i))  << ", "; }
+		for(int i = 0; i < logHyp.lik.size(); i++)  { logFile  << exp(logHyp.lik(i))  << (i < logHyp.lik.size()-1 ? ", " : ""); }
+		logFile << "): ";
 
 		// calculate nlZ only
 		Scalar nlZ;
@@ -100,7 +108,8 @@ public:
 			nlZ = std::numeric_limits<Scalar>::infinity();
 		}
 
-		logFile << "nlz = " << nlZ << std::endl;
+		//logFile << "nlz = " << nlZ << std::endl;
+		logFile << nlZ << std::endl;
 		return nlZ;
 	}
 protected:
@@ -139,15 +148,23 @@ public:
 public:
 	DlibVector operator()(const DlibVector &logDlib) const
 	{
+		// total number of calls
+		static size_t numCalls = 0;
+
 		// convert a Dlib vector to GP hyperparameters
 		Hyp	logHyp;
 		Dlib2Hyp<Scalar, MeanFunc, CovFunc, LikFunc>(logDlib, logHyp);
 
 		// log file
 		LogFile logFile;
-		logFile << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
-		logFile << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
-		logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
+		//logFile << "hyp.mean = " << std::endl << logHyp.mean.array().exp().matrix() << std::endl << std::endl;
+		//logFile << "hyp.cov = "  << std::endl << logHyp.cov.array().exp().matrix()  << std::endl << std::endl;
+		//logFile << "hyp.lik = "  << std::endl << logHyp.lik.array().exp().matrix()  << std::endl << std::endl;
+		logFile << "[" << numCalls++ << "] (";
+		for(int i = 0; i < logHyp.mean.size(); i++) { logFile  << exp(logHyp.mean(i)) << ", "; }
+		for(int i = 0; i < logHyp.cov.size(); i++)  { logFile  << exp(logHyp.cov(i))  << ", "; }
+		for(int i = 0; i < logHyp.lik.size(); i++)  { logFile  << exp(logHyp.lik(i))  << (i < logHyp.lik.size()-1 ? ", " : ""); }
+		logFile << "): ";
 
 		// calculate dnlZ only
 		Scalar			nlZ;
@@ -168,7 +185,9 @@ public:
 			pDnlZ->setZero();
 		}
 
-		logFile << "dnlz = " << std::endl << *pDnlZ << std::endl << std::endl;
+		//logFile << "dnlz = " << std::endl << *pDnlZ << std::endl << std::endl;
+		for(int i = 0; i < pDnlZ->size(); i++)  { logFile  << exp(*pDnlZ(i))  << (i < pDnlZ->size()-1 ? ", " : ""); }
+		logFile << std::endl;
 
 		DlibVector dnlZ(logHyp.size());
 		Eigen2Dlib(pDnlZ, dnlZ);

@@ -5,7 +5,8 @@
 #include "../data/TrainingData.hpp"
 //#include "../data/DerivativeTrainingData.hpp"		// TODO
 #include "../data/TestData.hpp"
-#include "../inf/InfExactGeneral.hpp"
+#include "../inf/InfExactGeneral.hpp"	// InfExactGeneral
+#include "../gp/GaussianProcess.hpp"	// GaussianProcess
 
 namespace GP{
 
@@ -19,9 +20,13 @@ namespace GP{
 template<typename Scalar, 
 			template<typename> class MeanFunc, 
 			template<typename> class CovFunc, 
-			template<typename> class LikFunc>
+			template<typename> class LikFunc,
+			template <typename, 
+						 template<typename> class,
+						 template<typename> class,
+						 template<typename> class> class InfMethod>
 			//template<template<typename> class GlobalTrainingData> // TODO
-class MeanGP : protected InfExactGeneral<Scalar, MeanFunc, CovFunc, LikFunc>
+class MeanGP : protected InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>
 {
 /**@brief Number of hyperparameters */
 //public: static const int N = MeanFunc<Scalar>::N + CovFunc<Scalar>::N + LikFunc<Scalar>::N;
@@ -30,11 +35,16 @@ public: static const int N = 0;
 // define matrix types
 //protected:	TYPE_DEFINE_VECTOR(Scalar);
 //	typedef	InfExactGeneral<Scalar, MeanFunc, CovFunc, LikFunc>	InfType;
+public:		TYPE_DEFINE_MATRIX(Scalar);
+				TYPE_DEFINE_VECTOR(Scalar);
+				TYPE_DEFINE_CHOLESKYFACTOR();
 
 // define hyperparameters
 public:		TYPE_DEFINE_HYP(Scalar, N);	// hyperparameter vector for the local Gaussian process
 	//typedef	InfType::Hyp	GlobalHyp;		// a set of hyperparameters for the global Gaussian process
-	typedef	InfExactGeneral<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	GlobalHyp;		// a set of hyperparameters for the global Gaussian process
+	typedef	typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	GlobalHyp;		// a set of hyperparameters for the global Gaussian process
+	//typedef GP::GaussianProcess<Scalar, MeanFunc, CovFunc, LikFunc, InfExactGeneral>		GPType;
+	//typedef GPType::Hyp																						GlobalHyp;
 
 //// define shared pointers
 //protected:
@@ -47,18 +57,43 @@ public:
 	/** @brief	Set the global hyperparameters and training data,
 	  *			then precompute the Cholesky factor and alpha
 	  * @note	Use protected methods of InfExactGeneral */
-	static void set(const GlobalHyp &globalLogHyp, const TrainingData<Scalar> &globalTrainingData)
+	//template <template <typename> class GeneralTrainingData>
+	static void set(const GlobalHyp &logGlobalHyp, const DerivativeTrainingData<Scalar> &globalDerivativeTrainingData, const bool fTrainGlobalHyp = false, const int maxIter = 0)
 	{
 		// global hyperparameters
-		s_pGlobalHyp = globalLogHyp;
+		s_logGlobalHyp = logGlobalHyp;
 
 		// training data
-		s_globalTrainingData	= globalTrainingData;
+		s_globalDerivativeTrainingData	= globalDerivativeTrainingData;
+		//s_globalDerivativeTrainingData.set(globalDerivativeTrainingData.pX(), globalDerivativeTrainingData.pY());
+
+		// train hyperparameters
+		if(fTrainGlobalHyp)
+		{
+			// log file
+			LogFile logFile;
+			logFile << "Before training global hyperparameters" << std::endl;
+			int j = 0;
+			for(int i = 0; i < s_logGlobalHyp.mean.size(); i++)		logFile << "- mean[" << i << "] = " << expf(s_logGlobalHyp.mean(i)) << std::endl;
+			for(int i = 0; i < s_logGlobalHyp.cov.size();  i++)		logFile << "- cov["  << i << "] = " << expf(s_logGlobalHyp.cov(i))  << std::endl;
+			for(int i = 0; i < s_logGlobalHyp.lik.size();  i++)		logFile << "- lik["  << i << "] = " << expf(s_logGlobalHyp.lik(i))  << std::endl;
+
+			// training
+			typedef GaussianProcess<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod> GPType;
+			DlibScalar nlZ = GPType::train<BOBYQA, NoStopping>(s_logGlobalHyp, s_globalDerivativeTrainingData, maxIter);
+
+			//logFile << "nlZ = " << nlZ << std::endl;
+			logFile << "After training global hyperparameters" << std::endl;
+			j = 0;
+			for(int i = 0; i < s_logGlobalHyp.mean.size(); i++)		logFile << "- mean[" << i << "] = " << expf(s_logGlobalHyp.mean(i)) << std::endl;
+			for(int i = 0; i < s_logGlobalHyp.cov.size();  i++)		logFile << "- cov["  << i << "] = " << expf(s_logGlobalHyp.cov(i))  << std::endl;
+			for(int i = 0; i < s_logGlobalHyp.lik.size();  i++)		logFile << "- lik["  << i << "] = " << expf(s_logGlobalHyp.lik(i))  << std::endl;
+		}
 
 		// precompute the Cholesky factor and alpha
 		const bool fDoNotThrowException = true;
-		s_pL = choleskyFactor(s_pGlobalHyp, s_globalTrainingData, fDoNotThrowException);
-		const VectorConstPtr pY_M = y_m(s_pGlobalHyp.mean, s_globalTrainingData);
+		s_pL = choleskyFactor(s_logGlobalHyp, s_globalDerivativeTrainingData, fDoNotThrowException);
+		const VectorConstPtr pY_M = y_m(s_logGlobalHyp.mean, s_globalDerivativeTrainingData);
 		s_pAlpha	= alpha(s_pL, pY_M);
 
 		// set the flag
@@ -75,8 +110,9 @@ public:
 	//static VectorPtr m(const Hyp											&logHyp, 
 	//						 const GeneralLocalTrainingData<Scalar>	&generalLocalTrainingData, 
 	//						 const int											pdHypIndex = -1)
+	template <template <typename> class GeneralTrainingData>
 	static VectorPtr m(const Hyp											&logHyp, 
-							 const TrainingData<Scalar>					&localTrainingData, 
+							 const GeneralTrainingData<Scalar>			&localTrainingData, 
 							 const int											pdHypIndex = -1)
 	{
 		// check initialized
@@ -89,8 +125,8 @@ public:
 
 		// predict with precalulated
 		const bool fVarianceVector = true;
-		predict(s_globalHyp, s_globalTrainingData, globalTestData, s_pL, s_pAlpha, fVarianceVector);
-		//InfType::predict(s_globalHyp, s_globalTrainingData, globalTestData, fVarianceVector);
+		predict_given_precalculation(s_logGlobalHyp, s_globalDerivativeTrainingData, globalTestData, s_pL, s_pAlpha, fVarianceVector);
+		//InfType::predict(s_logGlobalHyp, s_globalDerivativeTrainingData, globalTestData, fVarianceVector);
 
 		// return the global mean
 		return globalTestData.pMu();
@@ -114,8 +150,8 @@ public:
 
 		// predict with precalulated
 		const bool fVarianceVector = true;
-		predict(s_globalHyp, s_globalTrainingData, globalTestData, s_pL, s_pAlpha, fVarianceVector);
-		//InfType::predict(s_globalHyp, s_globalTrainingData, globalTestData, fVarianceVector);
+		predict_given_precalculation(s_logGlobalHyp, s_globalDerivativeTrainingData, globalTestData, s_pL, s_pAlpha, fVarianceVector);
+		//InfType::predict(s_logGlobalHyp, s_globalDerivativeTrainingData, globalTestData, fVarianceVector);
 
 		// return the global mean
 		return globalTestData.pMu();
@@ -148,10 +184,10 @@ protected:
 	static bool								s_bInitialized;
 
 	/** @brief Training data for global GP */
-	static TrainingData<Scalar>		s_globalTrainingData;
+	static DerivativeTrainingData<Scalar>	s_globalDerivativeTrainingData;
 
 	/** @brief Hyperparameters for global GP */
-	static GlobalHyp						s_globalHyp;
+	static GlobalHyp						s_logGlobalHyp;
 
 	/** @brief Precalculated Cholesky factor for global GP */
 	static CholeskyFactorConstPtr		s_pL;
@@ -160,20 +196,20 @@ protected:
 	static VectorConstPtr				s_pAlpha;
 };
 
-template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc>
-bool																									MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::s_bInitialized = false;
+template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc, template <typename, template<typename> class, template<typename> class, template<typename> class> class InfMethod>
+bool																													MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::s_bInitialized = false;
 
-template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc>
-TrainingData<Scalar>																				MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::s_globalTrainingData;
+template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc, template <typename, template<typename> class, template<typename> class, template<typename> class> class InfMethod>
+DerivativeTrainingData<Scalar>																				MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::s_globalDerivativeTrainingData;
 
-template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc>
-typename MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::GlobalHyp						MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::s_globalHyp;
+template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc, template <typename, template<typename> class, template<typename> class, template<typename> class> class InfMethod>
+typename MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::GlobalHyp						MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::s_logGlobalHyp;
 
-template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc>
-typename MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::CholeskyFactorConstPtr	MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::s_pL;
+template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc, template <typename, template<typename> class, template<typename> class, template<typename> class> class InfMethod>
+typename MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::CholeskyFactorConstPtr		MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::s_pL;
 
-template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc>
-typename MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::VectorConstPtr				MeanGP<Scalar, MeanFunc, CovFunc, LikFunc>::s_pAlpha;
+template<typename Scalar, template<typename> class MeanFunc, template<typename> class CovFunc, template<typename> class LikFunc, template <typename, template<typename> class, template<typename> class, template<typename> class> class InfMethod>
+typename MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::VectorConstPtr				MeanGP<Scalar, MeanFunc, CovFunc, LikFunc, InfMethod>::s_pAlpha;
 
 }
 
