@@ -26,13 +26,21 @@ public:
 	/** @brief Default constructor */
 	Hyp() {}
 
-	///** @brief Coppy constructor */
-	//Hyp(const Hyp<Scalar, MeanFunc, CovFunc, LikFunc> &other)
-	//	mean(other.mean),
-	//	cov(other.cov),
-	//	lik(other.lik)
-	//{
-	//}
+	/** @brief Coppy constructor */
+	Hyp(const Hyp<Scalar, MeanFunc, CovFunc, LikFunc> &other)
+	{
+		(*this) = other;
+	}
+
+	/** @brief Assignment operator */
+	Hyp& operator=(const Hyp<Scalar, MeanFunc, CovFunc, LikFunc> &other)
+	{
+		mean	= other.mean;
+		cov	= other.cov;
+		lik	= other.lik;
+
+		return *this;
+	}
 
 	int size() const
 	{

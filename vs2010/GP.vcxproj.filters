@@ -91,6 +91,15 @@
     <ClInclude Include="..\include\mean.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\inf.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covRQiso\CovRQiso.hpp">
+      <Filter>src\cov\covRQiso</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cov\covRQiso\CovRQisoDerObsBase.hpp">
+      <Filter>src\cov\covRQiso</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -134,6 +143,9 @@
     </Filter>
     <Filter Include="src\cov\covProd">
       <UniqueIdentifier>{2c319aeb-1f40-4219-a4b7-be292a00bfc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cov\covRQiso">
+      <UniqueIdentifier>{e227546f-bce6-48d8-91bb-e34c952eb562}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

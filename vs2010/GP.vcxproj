@@ -82,11 +82,14 @@
   <ItemGroup>
     <ClInclude Include="..\include\cov.h" />
     <ClInclude Include="..\include\gp.h" />
+    <ClInclude Include="..\include\inf.h" />
     <ClInclude Include="..\include\mean.h" />
     <ClInclude Include="..\src\cov\CovDerObs.hpp" />
     <ClInclude Include="..\src\cov\covMaterniso\CovMaterniso.hpp" />
     <ClInclude Include="..\src\cov\covMaterniso\CovMaternisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\covProd\CovProd.hpp" />
+    <ClInclude Include="..\src\cov\covRQiso\CovRQiso.hpp" />
+    <ClInclude Include="..\src\cov\covRQiso\CovRQisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEiso.hpp" />
     <ClInclude Include="..\src\cov\covSEiso\CovSEisoDerObsBase.hpp" />
     <ClInclude Include="..\src\cov\covSparseiso\CovSparseiso.hpp" />
