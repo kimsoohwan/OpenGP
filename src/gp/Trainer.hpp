@@ -129,8 +129,8 @@ public:
 	static double train(DlibVector		&hypDlib,
 							  NlZ_T				&nlZ,
 							  DnlZ_T				&dnlZ,
-							  int					maxIter,
-							  const double		minValue)
+							  int					maxIter = 0,
+							  const double		minValue = 1e-15)
 	{
 		// maxIter
 		// [+]:		max iteration criteria on
@@ -237,9 +237,9 @@ public:
 												  NPT,    // number of interpolation points
 												  dlib::uniform_matrix<double>(hypDlib.nr(), 1, -1e100),  // lower bound constraint
 												  dlib::uniform_matrix<double>(hypDlib.nr(), 1,  1e100),  // upper bound constraint
-												  1,			// initial trust region radius: 10
-												  1e-15,		// stopping trust region radius: 1e-6
-												  maxIter    // max number of objective function evaluations
+												  1,				// initial trust region radius: 1, 10
+												  minValue,		// stopping trust region radius: 1e-15, 1e-6
+												  maxIter		// max number of objective function evaluations
 												  );
 		}
 		catch(const std::exception& e)

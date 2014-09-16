@@ -41,8 +41,12 @@ public:		TYPE_DEFINE_MATRIX(Scalar);
 
 // define hyperparameters
 public:		TYPE_DEFINE_HYP(Scalar, N);	// hyperparameter vector for the local Gaussian process
+
+protected:
+	typedef	InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>	InfType;		// a set of hyperparameters for the global Gaussian process
+public:
 	//typedef	InfType::Hyp	GlobalHyp;		// a set of hyperparameters for the global Gaussian process
-	typedef	typename InfMethod<Scalar, MeanFunc, CovFunc, LikFunc>::Hyp	GlobalHyp;		// a set of hyperparameters for the global Gaussian process
+	typedef	typename InfType::Hyp	GlobalHyp;		// a set of hyperparameters for the global Gaussian process
 	//typedef GP::GaussianProcess<Scalar, MeanFunc, CovFunc, LikFunc, InfExactGeneral>		GPType;
 	//typedef GPType::Hyp																						GlobalHyp;
 
@@ -99,6 +103,15 @@ public:
 		// set the flag
 		s_bInitialized = true;
 	}
+
+	///** @brief Predict with the global training data */
+	//static void predict /* throw (Exception) */
+	//						 (TestData<Scalar>				&testData,
+	//						  const bool						fVarianceVector = true,
+	//						  const int							perBatch = 1000)
+	//{
+	//	InfType::predict(s_logGlobalHyp, s_globalDerivativeTrainingData, testData, fVarianceVector, perBatch);
+	//}
 
 	/**
 		* @brief	The mean vector at the training positions. f(X)
